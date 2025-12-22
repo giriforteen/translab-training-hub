@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisis Management - Interactive Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes badgePop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .slide-in { animation: slideIn 0.5s ease-out; }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        .pulse-animation { animation: pulse 2s infinite; }
+        .badge-pop { animation: badgePop 0.5s ease-out; }
+        .gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .gradient-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        .gradient-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        .choice-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .choice-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .choice-card.selected {
+            border: 4px solid #10b981;
+            transform: scale(1.02);
+        }
+        .stakeholder-card {
+            transition: all 0.2s ease;
+            cursor: move;
+        }
+        .stakeholder-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .drop-zone {
+            min-height: 150px;
+            transition: all 0.3s ease;
+        }
+        .drop-zone.drag-over {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: #10b981;
+            transform: scale(1.02);
+        }
+        .timer-bar {
+            transition: width 0.5s linear;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+
+    <!-- HEADER -->
+    <div class="gradient-primary text-white shadow-2xl">
+        <div class="max-w-6xl mx-auto px-6 py-6">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <div class="text-sm font-bold text-purple-200 uppercase tracking-wider mb-1">CSP Foundation Training</div>
+                    <h1 class="text-4xl font-black">Crisis Management Lab</h1>
+                    <p class="text-purple-100 mt-1">Master stakeholder dynamics & client escalations</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="bg-white/20 rounded-xl p-4 text-center backdrop-blur">
+                        <div class="text-xs text-purple-200">YOUR SCORE</div>
+                        <div class="text-3xl font-black" id="totalScore">0</div>
+                    </div>
+                    <div class="bg-white/20 rounded-xl p-4 text-center backdrop-blur">
+                        <div class="text-xs text-purple-200">BADGES</div>
+                        <div class="text-3xl font-black" id="badgeCount">0/5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="max-w-6xl mx-auto px-6 py-4">
+        <div class="bg-white/50 rounded-full h-3 overflow-hidden backdrop-blur">
+            <div id="progressBar" class="gradient-success h-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <div class="text-center text-sm text-gray-600 mt-2" id="progressText">Challenge 0 of 3</div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-6xl mx-auto px-6 pb-12">
+
+        <!-- WELCOME SCREEN -->
+        <div id="welcomeScreen" class="slide-in">
+            <div class="bg-white rounded-2xl shadow-2xl p-12 text-center">
+                <div class="text-8xl mb-6">🎯</div>
+                <h2 class="text-4xl font-black text-gray-800 mb-4">Welcome to Crisis Management Lab</h2>
+                <p class="text-xl text-gray-600 mb-6 max-w-2xl mx-auto">
+                    Practice high-pressure scenarios with real Translab clients. 
+                    Master stakeholder mapping, crisis communication, and executive management.
+                </p>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 mb-8 text-left max-w-2xl mx-auto">
+                    <h3 class="font-bold text-yellow-900 mb-3">What You Will Master:</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li>✓ Stakeholder power mapping under pressure</li>
+                        <li>✓ Crisis decision-making with banking clients</li>
+                        <li>✓ Healthcare emergency response protocols</li>
+                        <li>✓ Executive communication in high-stakes situations</li>
+                    </ul>
+                </div>
+                <div class="bg-white border-2 border-gray-200 rounded-xl p-6 mb-8 max-w-md mx-auto">
+                    <label class="block text-left text-gray-700 font-bold mb-2">Enter Your Name:</label>
+                    <input type="text" id="playerName" placeholder="Your name..." 
+                           class="w-full p-4 border-2 border-gray-300 rounded-lg text-lg focus:border-purple-500 focus:outline-none">
+                </div>
+                <button onclick="startLab()" 
+                        class="gradient-primary text-white px-12 py-5 rounded-full text-2xl font-black hover:shadow-2xl transform hover:scale-105 transition pulse-animation">
+                    🚀 LAUNCH LAB
+                </button>
+            </div>
+        </div>
+
+        <!-- CHALLENGE CONTAINER -->
+        <div id="challengeContainer" class="hidden"></div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="resultsScreen" class="hidden slide-in">
+            <div class="bg-white rounded-2xl shadow-2xl p-12">
+                <div class="text-center mb-8">
+                    <div class="text-8xl mb-4" id="resultsEmoji">🎯</div>
+                    <h2 class="text-4xl font-black text-gray-800 mb-2">Lab Complete!</h2>
+                    <div class="text-6xl font-black text-purple-600 mb-2" id="finalScore">0/280</div>
+                    <div class="text-xl text-gray-600" id="resultsMessage"></div>
+                </div>
+
+                <!-- BADGES EARNED -->
+                <div id="badgesEarned" class="mb-8"></div>
+
+                <!-- LEADERBOARD -->
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 mb-8">
+                    <h3 class="text-2xl font-black text-purple-900 mb-4 text-center">🏆 Top 10 Leaderboard</h3>
+                    <div id="leaderboardTop10" class="space-y-2"></div>
+                </div>
+
+                <!-- ANSWER REVEALS & PRO TIPS -->
+                <div id="answerReveals" class="mb-8"></div>
+
+                <!-- ACTIONS -->
+                <div class="flex gap-4 justify-center">
+                    <button onclick="emailResults()" 
+                            class="gradient-primary text-white px-8 py-4 rounded-xl font-bold hover:shadow-xl transition">
+                        📧 Email Results
+                    </button>
+                    <button onclick="location.reload()" 
+                            class="bg-gray-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-gray-700 transition">
+                        🔄 Retry Lab
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="text-sm text-gray-400 mb-2">CSP Foundation Training | Crisis Management Lab</div>
+            <div class="text-lg font-bold mb-2">translab.io</div>
+            <div class="text-xs text-gray-500">© 2025 Translab Technologies. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== GAME STATE ====================
+        const gameState = {
+            playerName: '',
+            currentChallenge: 0,
+            totalScore: 0,
+            stakeholderScore: 0,
+            stakeholderTime: 0,
+            yesBankPath: [],
+            yesBankScore: 0,
+            agilusPath: [],
+            agilusScore: 0,
+            badges: [],
+            startTime: null,
+            stakeholderStartTime: null
+        };
+
+        // ==================== STAKEHOLDER MAPPING DATA ====================
+        const stakeholders = [
+            { id: 'cfo', name: 'CFO', power: 'high', interest: 'high', quadrant: 'manage-closely' },
+            { id: 'cio', name: 'CIO', power: 'high', interest: 'high', quadrant: 'manage-closely' },
+            { id: 'sponsor', name: 'Project Sponsor', power: 'high', interest: 'high', quadrant: 'manage-closely' },
+            { id: 'it-ops', name: 'IT Operations Head', power: 'high', interest: 'low', quadrant: 'keep-satisfied' },
+            { id: 'delivery', name: 'Delivery Manager', power: 'low', interest: 'high', quadrant: 'keep-informed' },
+            { id: 'end-users', name: 'End Users', power: 'low', interest: 'high', quadrant: 'keep-informed' },
+            { id: 'procurement', name: 'Procurement', power: 'high', interest: 'low', quadrant: 'keep-satisfied' },
+            { id: 'compliance', name: 'Compliance Officer', power: 'low', interest: 'low', quadrant: 'monitor' }
+        ];
+
+        const quadrants = [
+            { id: 'manage-closely', name: 'Manage Closely', desc: 'High Power, High Interest', color: 'bg-red-100 border-red-300' },
+            { id: 'keep-satisfied', name: 'Keep Satisfied', desc: 'High Power, Low Interest', color: 'bg-yellow-100 border-yellow-300' },
+            { id: 'keep-informed', name: 'Keep Informed', desc: 'Low Power, High Interest', color: 'bg-blue-100 border-blue-300' },
+            { id: 'monitor', name: 'Monitor', desc: 'Low Power, Low Interest', color: 'bg-gray-100 border-gray-300' }
+        ];
+
+        // ==================== YES BANK CRISIS TREE ====================
+        const yesBankTree = {
+            start: {
+                question: "CIO calls you directly (bypassing your manager): 'We had a data loss incident last night. ₹11L is being withheld from your ₹50L annual contract until this is resolved. I need answers NOW.' What is your immediate response?",
+                choices: [
+                    {
+                        text: "Say: 'I am so sorry! Let me check with my team and get back to you as soon as possible.'",
+                        points: 5,
+                        feedback: "REACTIVE: Apologizing without information makes you look unprepared. CIO thinks: 'They do not even know what happened.'",
+                        next: 'decision2_weak'
+                    },
+                    {
+                        text: "Ask: 'Can you walk me through exactly what happened? I want to understand the full scope before we discuss next steps.'",
+                        points: 10,
+                        feedback: "RESPONSIVE: Good - gathering information first. But you are still reactive. CIO expects you already know.",
+                        next: 'decision2_average'
+                    },
+                    {
+                        text: "Say: 'I have pulled the logs. Let me walk you through what we have identified and our action plan.'",
+                        points: 20,
+                        feedback: "PROACTIVE: You came prepared with data. Shows ownership. CIO thinks: 'This CSP is on top of it.'",
+                        next: 'decision2_strong'
+                    }
+                ]
+            },
+            decision2_weak: {
+                question: "CIO snaps: 'I do not want apologies, I want solutions! Do you even know what caused this?' Your delivery manager texts you: 'Client team made changes without telling us - not our fault!' What do you do?",
+                choices: [
+                    {
+                        text: "Tell CIO: 'Actually, your team made unauthorized changes. This is not on us.'",
+                        points: 0,
+                        feedback: "DISASTER: Blame game in crisis = Relationship destroyed. Client thinks you are defensive, not helpful. Game Over for this scenario.",
+                        next: 'outcome_poor'
+                    },
+                    {
+                        text: "Say: 'Let me connect with my technical team and understand the root cause. Can we schedule a call in 30 minutes?'",
+                        points: 10,
+                        feedback: "BETTER: Buying time to get aligned. But CIO wanted immediate action. You are playing catch-up.",
+                        next: 'outcome_average'
+                    },
+                    {
+                        text: "Tell CIO: 'I need to speak with my team first, then I will update you.'",
+                        points: 5,
+                        feedback: "WEAK: You are showing you do not have full picture. CIO loses trust - why are you not aligned already?",
+                        next: 'outcome_average'
+                    }
+                ]
+            },
+            decision2_average: {
+                question: "CIO explains: 'Your team deployed a patch that corrupted our backup system. We lost 2 hours of transaction data.' Your team confirms: Client approved the patch but did not test it first. How do you respond to CIO?",
+                choices: [
+                    {
+                        text: "Say: 'Our team followed the approved deployment plan. The issue arose because testing was skipped on your end.'",
+                        points: 5,
+                        feedback: "DEFENSIVE: You are technically correct but relationship is damaged. CIO feels blamed. Trust erodes.",
+                        next: 'outcome_average'
+                    },
+                    {
+                        text: "Say: 'Here is what happened and what we are doing. We deployed per approved plan. Testing was missed. We take joint accountability. Here is our recovery plan.'",
+                        points: 20,
+                        feedback: "EXCELLENT: Blameless post-mortem approach. You acknowledged joint responsibility while providing solutions. CIO respects this.",
+                        next: 'decision3_strong'
+                    },
+                    {
+                        text: "Say: 'I apologize for the confusion. Let me work with both teams to ensure this does not happen again.'",
+                        points: 10,
+                        feedback: "SAFE: You are smoothing things over but not addressing accountability or providing a clear path forward.",
+                        next: 'outcome_good'
+                    }
+                ]
+            },
+            decision2_strong: {
+                question: "CIO listens to your analysis. 'Okay, but what about the ₹11L? My CFO is demanding justification.' How do you handle the financial negotiation?",
+                choices: [
+                    {
+                        text: "Say: 'I understand your concern. Can we agree on a recovery plan first, then discuss the contract terms separately with both our finance teams?'",
+                        points: 20,
+                        feedback: "STRATEGIC: Separating technical resolution from financial dispute. Smart move - you are de-escalating while protecting the relationship.",
+                        next: 'decision3_strong'
+                    },
+                    {
+                        text: "Say: 'We will waive the disputed amount and focus on restoring your confidence in our services.'",
+                        points: 5,
+                        feedback: "POOR: You just gave away ₹11L without negotiating or understanding the full scope. Management will not be happy.",
+                        next: 'outcome_average'
+                    },
+                    {
+                        text: "Say: 'Let me escalate this to my leadership. They can discuss commercial terms with your CFO.'",
+                        points: 10,
+                        feedback: "ACCEPTABLE: Escalation is appropriate for financial decisions, but you are passing the buck instead of facilitating resolution.",
+                        next: 'outcome_good'
+                    }
+                ]
+            },
+            decision3_strong: {
+                question: "Final move: CIO agrees to joint review meeting tomorrow. What do you prepare and who do you bring?",
+                choices: [
+                    {
+                        text: "Bring your delivery manager + technical lead. Prepare incident timeline, root cause analysis, and prevention plan.",
+                        points: 25,
+                        feedback: "MASTERY: You are showing up prepared with the right team and the right data. CIO sees professionalism and accountability.",
+                        next: 'outcome_excellent'
+                    },
+                    {
+                        text: "Bring only yourself. You do not want to overwhelm the client with too many people from your side.",
+                        points: 10,
+                        feedback: "RISKY: You might lack technical depth to answer detailed questions. CIO may question your preparation.",
+                        next: 'outcome_good'
+                    },
+                    {
+                        text: "Ask your manager to attend and lead the meeting. They have more authority to make decisions.",
+                        points: 5,
+                        feedback: "WEAK: You are abdicating ownership. CIO wanted YOU to resolve this. Escalating now signals lack of confidence.",
+                        next: 'outcome_average'
+                    }
+                ]
+            },
+            outcome_poor: {
+                outcome: true,
+                score: 30,
+                emoji: '😰',
+                message: 'Crisis poorly handled. Relationship damaged. Yes Bank is reconsidering renewal. Learn from this and try again.',
+                badge: null
+            },
+            outcome_average: {
+                outcome: true,
+                score: 60,
+                emoji: '😐',
+                message: 'Crisis managed but relationship strained. Yes Bank stays but trust is shaken. You need stronger crisis protocols.',
+                badge: null
+            },
+            outcome_good: {
+                outcome: true,
+                score: 85,
+                emoji: '😊',
+                message: 'Well handled! Crisis resolved, ₹11L recovered. CIO appreciates your professionalism. Relationship maintained.',
+                badge: { name: '🎯 Crisis Navigator', desc: 'Successfully resolved Yes Bank crisis' }
+            },
+            outcome_excellent: {
+                outcome: true,
+                score: 100,
+                emoji: '🏆',
+                message: 'EXCEPTIONAL! CIO praised your handling to their board. Yes Bank expanded contract by ₹25L based on your crisis response. You turned disaster into opportunity!',
+                badge: { name: '🏆 Executive Whisperer', desc: 'Perfect crisis resolution with executive stakeholders' }
+            }
+        };
+
+        // ==================== AGILUS CRISIS TREE ====================
+        const agilusTree = {
+            start: {
+                question: "CTO of Agilus Diagnostics calls (healthcare emergency): 'Our lab reports are delayed by 3 minutes. We have 400+ labs affected. Patient diagnosis is being delayed. This is a medical emergency!' What is your immediate action?",
+                choices: [
+                    {
+                        text: "Say: 'Let me check with my technical team and call you back within the hour with a status update.'",
+                        points: 5,
+                        feedback: "POOR: Healthcare cannot wait an hour. Lives are at stake. CTO explodes: 'We need action NOW, not an hour from now!'",
+                        next: 'decision2_weak'
+                    },
+                    {
+                        text: "Say: 'I will personally investigate and call you back in 10 minutes with initial findings.'",
+                        points: 15,
+                        feedback: "BETTER: You are committing to quick action. But 10 minutes in healthcare emergency is still too long. CTO is anxious.",
+                        next: 'decision2_average'
+                    },
+                    {
+                        text: "Say: 'I am connecting you to our on-call engineer right now. They are already investigating. Let me get them on this call immediately.'",
+                        points: 25,
+                        feedback: "EXCELLENT: Immediate action. You are treating this with appropriate urgency. CTO appreciates the speed and seriousness.",
+                        next: 'decision2_strong'
+                    }
+                ]
+            },
+            decision2_weak: {
+                question: "30 minutes later, your team identifies the issue: Database performance degradation due to heavy load. CTO is furious about the delay. How do you communicate the solution?",
+                choices: [
+                    {
+                        text: "Say: 'We found the issue. It will take 2 days to fully optimize the database. Can you hold on?'",
+                        points: 5,
+                        feedback: "POOR: Healthcare cannot wait 2 days. CTO explodes: 'Patients are waiting NOW!' You missed urgency.",
+                        next: 'outcome_poor'
+                    },
+                    {
+                        text: "Say: 'We can do a quick patch in 2 hours (90% fix) OR full optimization tonight during off-peak (100% fix). I recommend tonight.',",
+                        points: 15,
+                        feedback: "BETTER: Two-phase approach. CTO accepts but is not thrilled. You are solving but not inspiring confidence.",
+                        next: 'outcome_average'
+                    },
+                    {
+                        text: "Say: 'Emergency patch deployed in 15 minutes (restores 80% speed). Full optimization during tonight maintenance window. You will see improvement immediately.'",
+                        points: 20,
+                        feedback: "GOOD: Immediate relief + proper fix later. CTO calms down. But relationship is still tense from initial delay.",
+                        next: 'outcome_good'
+                    }
+                ]
+            },
+            decision2_average: {
+                question: "5 minutes later: 'Issue identified - database performance under heavy load. We can: A) Quick patch (2 hrs, 90% fix), B) Full optimization (4 hrs tonight, 100% fix). Recommend B during off-hours.' CTO asks: 'What if we cannot wait?'",
+                choices: [
+                    {
+                        text: "Say: 'We can deploy emergency cache layer in 15 minutes. It will stabilize reports immediately. Then we optimize fully tonight.'",
+                        points: 25,
+                        feedback: "EXCELLENT: You gave options with recommendations. CTO sees you are balancing urgency with quality.",
+                        next: 'decision3_strong'
+                    },
+                    {
+                        text: "Say: 'Healthcare is mission-critical. We will skip testing and deploy optimization immediately. It carries some risk but we understand urgency.'",
+                        points: 10,
+                        feedback: "RISKY: CTO is not happy - patients are suffering. Healthcare does not tolerate 'functional but slow.'",
+                        next: 'outcome_average'
+                    },
+                    {
+                        text: "Say: 'Let me consult with my technical lead and propose the best approach. Can I call you back in 5 minutes?'",
+                        points: 5,
+                        feedback: "WEAK: You are still asking for more time. CTO wants leadership NOW, not more consultations.",
+                        next: 'outcome_poor'
+                    }
+                ]
+            },
+            decision2_strong: {
+                question: "Engineer identifies root cause in 5 minutes. Now Operations Head pushes back: 'Full optimization requires 2-hour downtime. We cannot take labs offline!' CTO demands solution. What do you do?",
+                choices: [
+                    {
+                        text: "Tell CTO: 'We have internal alignment issues. Let me sort this out and get back to you.'",
+                        points: 5,
+                        feedback: "ACCEPTABLE: Problem addressed but CTO is not confident in your proactivity. Relationship maintained.",
+                        next: 'outcome_average'
+                    },
+                    {
+                        text: "Say: 'Tonight we will deploy full optimization. I will personally oversee it and send you metrics by tomorrow morning.'",
+                        points: 25,
+                        feedback: "STRONG: Personal ownership + follow-through commitment. CTO trusts you will deliver.",
+                        next: 'decision3_strong'
+                    },
+                    {
+                        text: "Propose: 'Staged rollout - optimize 50 labs tonight (zero downtime), remaining 350 labs tomorrow night. You get relief immediately with zero risk.'",
+                        points: 20,
+                        feedback: "SMART: You are de-risking while maintaining urgency. CTO likes the phased approach. Operations agrees.",
+                        next: 'outcome_good'
+                    }
+                ]
+            },
+            decision3_strong: {
+                question: "Optimization complete. Reports are 40% faster. How do you close the loop with CTO?",
+                choices: [
+                    {
+                        text: "Send email: 'Issue resolved. Reports are back to normal speed. Let me know if you need anything else.'",
+                        points: 10,
+                        feedback: "BARE MINIMUM: You solved the problem but did not capitalize on the win. CTO thinks: 'They did their job.'",
+                        next: 'outcome_good'
+                    },
+                    {
+                        text: "Call CTO: 'Fix complete. Here is the data: 40% faster reports, load capacity increased 3x. I have also added monitoring to alert us before issues arise. Can we schedule a brief review?'",
+                        points: 25,
+                        feedback: "EXCEPTIONAL: You are not just fixing - you are preventing future issues. CTO is impressed. Relationship strengthened.",
+                        next: 'outcome_excellent'
+                    },
+                    {
+                        text: "Schedule debrief meeting with CTO + Operations team to review incident timeline and prevention measures.",
+                        points: 20,
+                        feedback: "PROFESSIONAL: You are being thorough and building trust through transparency. CTO appreciates the structured follow-up.",
+                        next: 'outcome_good'
+                    }
+                ]
+            },
+            outcome_poor: {
+                outcome: true,
+                score: 40,
+                emoji: '😰',
+                message: 'Crisis poorly handled. Agilus lost confidence in response time. Healthcare clients demand better. Review your protocols.',
+                badge: null
+            },
+            outcome_average: {
+                outcome: true,
+                score: 65,
+                emoji: '😐',
+                message: 'Crisis managed but CTO expected faster response. Agilus stays but is watching closely. Improve your urgency calibration.',
+                badge: null
+            },
+            outcome_good: {
+                outcome: true,
+                score: 85,
+                emoji: '😊',
+                message: 'Well handled! Crisis resolved, relationship maintained. CTO appreciates your ownership. System is stable.',
+                badge: { name: '⚡ Speed Resolver', desc: 'Solved Agilus crisis effectively' }
+            },
+            outcome_excellent: {
+                outcome: true,
+                score: 100,
+                emoji: '🏆',
+                message: 'MASTERY! CTO praised your response to their leadership. They are recommending Translab to other healthcare clients. You turned crisis into referral opportunity!',
+                badge: { name: '🏆 Healthcare Hero', desc: 'Perfect crisis resolution with Agilis' }
+            }
+        };
+
+        // ==================== BADGE DEFINITIONS ====================
+        const allBadges = [
+            { id: 'speed-mapper', name: '⚡ Speed Mapper', desc: 'Stakeholder mapping under 60 sec', condition: () => gameState.stakeholderTime < 60 },
+            { id: 'crisis-navigator', name: '🎯 Crisis Navigator', desc: 'Resolved Yes Bank crisis', condition: () => gameState.yesBankScore >= 85 },
+            { id: 'executive-whisperer', name: '🏆 Executive Whisperer', desc: 'Perfect Yes Bank resolution', condition: () => gameState.yesBankScore === 100 },
+            { id: 'speed-resolver', name: '⚡ Speed Resolver', desc: 'Resolved Agilus crisis', condition: () => gameState.agilusScore >= 85 },
+            { id: 'healthcare-hero', name: '🏆 Healthcare Hero', desc: 'Perfect Agilus resolution', condition: () => gameState.agilusScore === 100 }
+        ];
+
+        // ==================== INITIALIZATION ====================
+        function initializeGame() {
+            document.getElementById('playerName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    startLab();
+                }
+            });
+        }
+
+        function startLab() {
+            const name = document.getElementById('playerName').value.trim();
+            if (!name) {
+                alert('Please enter your name to begin');
+                return;
+            }
+            
+            gameState.playerName = name;
+            gameState.startTime = Date.now();
+            
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('challengeContainer').classList.remove('hidden');
+            
+            startStakeholderMapping();
+        }
+
+        // ==================== CHALLENGE 1: STAKEHOLDER MAPPING ====================
+        function startStakeholderMapping() {
+            gameState.currentChallenge = 1;
+            gameState.stakeholderStartTime = Date.now();
+            updateProgress();
+            
+            let timeLeft = 90;
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                const timerBar = document.getElementById('timerBar');
+                if (timerBar) {
+                    const percent = (timeLeft / 90) * 100;
+                    timerBar.style.width = percent + '%';
+                    document.getElementById('timerText').textContent = timeLeft + 's';
+                    
+                    if (timeLeft < 30) {
+                        timerBar.classList.remove('bg-green-500', 'bg-yellow-500');
+                        timerBar.classList.add('bg-red-500');
+                    } else if (timeLeft < 60) {
+                        timerBar.classList.remove('bg-green-500');
+                        timerBar.classList.add('bg-yellow-500');
+                    }
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                }
+            }, 1000);
+            
+            const shuffled = [...stakeholders].sort(() => Math.random() - 0.5);
+            
+            const html = `
+                <div class="slide-in">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 class="text-3xl font-black text-gray-800">Challenge 1: Stakeholder Power Grid</h2>
+                                <p class="text-gray-600 mt-2">Drag each stakeholder to the correct quadrant. Speed matters!</p>
+                            </div>
+                            <div class="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-4 text-center">
+                                <div class="text-sm text-yellow-900 font-bold">TIME LEFT</div>
+                                <div class="text-3xl font-black text-yellow-700" id="timerText">90s</div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full mt-2 overflow-hidden">
+                                    <div id="timerBar" class="h-full bg-green-500 transition-all timer-bar" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                            ${shuffled.map(s => `
+                                <div class="stakeholder-card gradient-primary text-white rounded-xl p-4 text-center font-bold cursor-move"
+                                     draggable="true"
+                                     data-id="${s.id}"
+                                     ondragstart="dragStart(event)">
+                                    ${s.name}
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            ${quadrants.map(q => `
+                                <div class="drop-zone ${q.color} border-4 rounded-xl p-6"
+                                     data-quadrant="${q.id}"
+                                     ondrop="drop(event)"
+                                     ondragover="allowDrop(event)"
+                                     ondragenter="dragEnter(event)"
+                                     ondragleave="dragLeave(event)">
+                                    <h3 class="font-black text-lg mb-1">${q.name}</h3>
+                                    <p class="text-sm text-gray-600 mb-4">${q.desc}</p>
+                                    <div class="space-y-2" id="zone-${q.id}"></div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <button onclick="submitStakeholderMapping()" 
+                                class="gradient-success text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition w-full">
+                            ✓ SUBMIT MAPPING
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('challengeContainer').innerHTML = html;
+        }
+
+        let draggedElement = null;
+
+        function dragStart(e) {
+            draggedElement = e.target;
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function dragEnter(e) {
+            if (e.target.classList.contains('drop-zone')) {
+                e.target.classList.add('drag-over');
+            }
+        }
+
+        function dragLeave(e) {
+            if (e.target.classList.contains('drop-zone')) {
+                e.target.classList.remove('drag-over');
+            }
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const dropZone = e.target.closest('.drop-zone');
+            if (dropZone && draggedElement) {
+                dropZone.classList.remove('drag-over');
+                const zoneContent = dropZone.querySelector('[id^="zone-"]');
+                if (zoneContent) {
+                    const placed = document.createElement('div');
+                    placed.className = 'bg-white rounded-lg p-3 text-sm font-semibold text-gray-700 border-2 border-gray-300';
+                    placed.textContent = draggedElement.textContent;
+                    placed.dataset.id = draggedElement.dataset.id;
+                    zoneContent.appendChild(placed);
+                    draggedElement.remove();
+                }
+            }
+        }
+
+        function submitStakeholderMapping() {
+            const endTime = Date.now();
+            gameState.stakeholderTime = Math.floor((endTime - gameState.stakeholderStartTime) / 1000);
+            
+            let correct = 0;
+            stakeholders.forEach(s => {
+                const zone = document.getElementById(`zone-${s.quadrant}`);
+                if (zone) {
+                    const placed = zone.querySelector(`[data-id="${s.id}"]`);
+                    if (placed) correct++;
+                }
+            });
+            
+            gameState.stakeholderScore = correct * 10;
+            gameState.totalScore += gameState.stakeholderScore;
+            updateScore();
+            
+            checkAndAwardBadge('speed-mapper');
+            
+            showStakeholderResults(correct, gameState.stakeholderTime);
+        }
+
+        function showStakeholderResults(correct, timeTaken) {
+            const html = `
+                <div class="fade-in">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8">
+                        <div class="text-center mb-6">
+                            <div class="text-6xl mb-4">${correct >= 6 ? '🎉' : '💪'}</div>
+                            <h2 class="text-3xl font-black text-gray-800 mb-2">Challenge 1 Complete!</h2>
+                            <div class="text-5xl font-black text-purple-600">${gameState.stakeholderScore}/80</div>
+                            <p class="text-gray-600 mt-2">Correct: ${correct}/8 • Time: ${timeTaken}s</p>
+                        </div>
+                        
+                        ${correct >= 6 ? `
+                            <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-6">
+                                <p class="text-green-900 font-semibold">
+                                    Excellent mapping! You understand stakeholder dynamics under pressure.
+                                </p>
+                            </div>
+                        ` : `
+                            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-6">
+                                <p class="text-yellow-900 font-semibold">
+                                    Review stakeholder power mapping principles. Speed is important, but accuracy matters more.
+                                </p>
+                            </div>
+                        `}
+                        
+                        <div class="bg-blue-50 rounded-xl p-6 mb-6">
+                            <h3 class="font-bold text-blue-900 mb-3">Key Principle Reminder:</h3>
+                            <ul class="space-y-2 text-sm text-gray-700">
+                                <li><strong>High Power + High Interest:</strong> Manage Closely (executives, sponsors)</li>
+                                <li><strong>High Power + Low Interest:</strong> Keep Satisfied (finance, procurement)</li>
+                                <li><strong>Low Power + High Interest:</strong> Keep Informed (delivery teams, users)</li>
+                                <li><strong>Low Power + Low Interest:</strong> Monitor (peripheral stakeholders)</li>
+                            </ul>
+                        </div>
+
+                        <!-- ANSWER REVEALS FOR SCENARIO 1 -->
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 mb-6 border-2 border-green-300">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">📚 ANSWER REVEALS & PRO TIPS</h3>
+                            <p class="text-center text-gray-600 mb-4">Let's discuss: What did you learn? What surprised you?</p>
+                        </div>
+
+                        <div class="space-y-4 mb-6">
+                            <div class="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                                <h4 class="font-bold text-green-800 mb-2">✅ VISHAL KAPOOR (CFO) - High Power, Low Interest</h4>
+                                <p class="text-gray-700 mb-2"><strong>Best Strategy:</strong> KEEP SATISFIED</p>
+                                <p class="text-gray-600 text-sm mb-2">Why: CFOs have budget power but are not day-to-day users. Keep them informed on ROI, cost savings, and business impact. Do not overload with technical details.</p>
+                                <div class="bg-white p-3 rounded">
+                                    <p class="text-xs text-gray-500 italic">💡 Pro Tip: Send monthly executive summaries highlighting financial metrics. Book quarterly business reviews to show value delivered.</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                                <h4 class="font-bold text-green-800 mb-2">✅ PRIYA MEHTA (Head of Analytics) - High Power, High Interest</h4>
+                                <p class="text-gray-700 mb-2"><strong>Best Strategy:</strong> MANAGE CLOSELY</p>
+                                <p class="text-gray-600 text-sm mb-2">Why: She is both powerful and deeply engaged. She will champion or kill your project. Weekly engagement is not optional.</p>
+                                <div class="bg-white p-3 rounded">
+                                    <p class="text-xs text-gray-500 italic">💡 Pro Tip: Make her your internal champion. Give her early visibility into roadmaps. Celebrate her wins publicly. She should feel like a co-owner.</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                                <h4 class="font-bold text-green-800 mb-2">✅ RAHUL SINGH (Junior Analyst) - Low Power, High Interest</h4>
+                                <p class="text-gray-700 mb-2"><strong>Best Strategy:</strong> KEEP INFORMED</p>
+                                <p class="text-gray-600 text-sm mb-2">Why: He cares deeply but cannot influence decisions. Keep him engaged through regular updates, training sessions, and feedback loops.</p>
+                                <div class="bg-white p-3 rounded">
+                                    <p class="text-xs text-gray-500 italic">💡 Pro Tip: Junior analysts often become future decision-makers. Build goodwill now. They are also your ground-level intelligence network.</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                                <h4 class="font-bold text-green-800 mb-2">✅ AMIT DESAI (IT Compliance) - Low Power, Low Interest</h4>
+                                <p class="text-gray-700 mb-2"><strong>Best Strategy:</strong> MONITOR</p>
+                                <p class="text-gray-600 text-sm mb-2">Why: Low engagement, low influence. Minimal effort required. Inform when necessary but do not over-communicate.</p>
+                                <div class="bg-white p-3 rounded">
+                                    <p class="text-xs text-gray-500 italic">💡 Pro Tip: Never ignore compliance completely. One audit issue can escalate them to high power overnight. Keep them on distribution lists.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                            <h4 class="font-bold text-blue-900 mb-2">🎓 KEY LEARNING</h4>
+                            <p class="text-blue-800 text-sm">The biggest mistake CSPs make is treating all stakeholders the same. High-power stakeholders who feel ignored will kill your project. Low-power stakeholders who get too much attention waste your time. Map. Prioritize. Engage strategically.</p>
+                        </div>
+                        
+                        <button onclick="startYesBankCrisis()" 
+                                class="gradient-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition w-full">
+                            → NEXT: Yes Bank Crisis
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('challengeContainer').innerHTML = html;
+        }
+
+        // ==================== CHALLENGE 2: YES BANK CRISIS ====================
+        function startYesBankCrisis() {
+            gameState.currentChallenge = 2;
+            gameState.yesBankPath = [];
+            updateProgress();
+            showDecisionNode(yesBankTree, 'start', 'Yes Bank');
+        }
+
+        // ==================== CHALLENGE 3: AGILUS CRISIS ====================
+        function startAgilusCrisis() {
+            gameState.currentChallenge = 3;
+            gameState.agilusPath = [];
+            updateProgress();
+            showDecisionNode(agilusTree, 'start', 'Agilus Diagnostics');
+        }
+
+        // ==================== DECISION TREE NAVIGATOR ====================
+        function showDecisionNode(tree, nodeId, clientName) {
+            const node = tree[nodeId];
+            
+            if (node.outcome) {
+                showCrisisOutcome(tree, node, clientName);
+                return;
+            }
+            
+            const html = `
+                <div class="fade-in">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8">
+                        <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl p-6 mb-6">
+                            <h2 class="text-2xl font-black mb-2">${clientName} Crisis</h2>
+                            <p class="text-lg">${node.question}</p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            ${node.choices.map((choice, idx) => `
+                                <div class="choice-card bg-gray-50 hover:bg-gray-100 border-2 border-gray-300 rounded-xl p-6 cursor-pointer"
+                                     onclick="selectChoice('${tree === yesBankTree ? 'yesbank' : 'agilus'}', '${nodeId}', ${idx})">
+                                    <div class="flex items-start gap-4">
+                                        <div class="bg-purple-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                                            ${String.fromCharCode(65 + idx)}
+                                        </div>
+                                        <p class="text-gray-800 font-medium">${choice.text}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('challengeContainer').innerHTML = html;
+        }
+
+        function selectChoice(crisisType, nodeId, choiceIdx) {
+            const tree = crisisType === 'yesbank' ? yesBankTree : agilusTree;
+            const node = tree[nodeId];
+            const choice = node.choices[choiceIdx];
+            
+            if (crisisType === 'yesbank') {
+                gameState.yesBankPath.push({ node: nodeId, choice: choiceIdx, points: choice.points });
+            } else {
+                gameState.agilusPath.push({ node: nodeId, choice: choiceIdx, points: choice.points });
+            }
+            
+            gameState.totalScore += choice.points;
+            updateScore();
+            
+            showChoiceFeedback(tree, choice, crisisType === 'yesbank' ? 'Yes Bank' : 'Agilus Diagnostics');
+        }
+
+        function showChoiceFeedback(tree, choice, clientName) {
+            const html = `
+                <div class="fade-in">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8">
+                        <div class="text-center mb-6">
+                            <div class="text-6xl mb-4">${choice.points >= 20 ? '🎯' : choice.points >= 10 ? '💡' : '⚠️'}</div>
+                            <div class="text-3xl font-black text-purple-600">+${choice.points} points</div>
+                        </div>
+                        
+                        <div class="${choice.points >= 20 ? 'bg-green-50 border-l-4 border-green-500' : choice.points >= 10 ? 'bg-yellow-50 border-l-4 border-yellow-500' : 'bg-red-50 border-l-4 border-red-500'} p-6 mb-6">
+                            <p class="${choice.points >= 20 ? 'text-green-900' : choice.points >= 10 ? 'text-yellow-900' : 'text-red-900'} font-semibold">
+                                ${choice.feedback}
+                            </p>
+                        </div>
+                        
+                        <button onclick="continueDecisionTree('${tree === yesBankTree ? 'yesbank' : 'agilus'}', '${choice.next}', '${clientName}')" 
+                                class="gradient-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition w-full">
+                            → CONTINUE
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('challengeContainer').innerHTML = html;
+        }
+
+        function continueDecisionTree(crisisType, nextNode, clientName) {
+            const tree = crisisType === 'yesbank' ? yesBankTree : agilusTree;
+            showDecisionNode(tree, nextNode, clientName);
+        }
+
+        function showCrisisOutcome(tree, outcome, clientName) {
+            const crisisScore = outcome.score;
+            
+            if (tree === yesBankTree) {
+                gameState.yesBankScore = crisisScore;
+                checkAndAwardBadge('crisis-navigator');
+                checkAndAwardBadge('executive-whisperer');
+            } else {
+                gameState.agilusScore = crisisScore;
+                checkAndAwardBadge('speed-resolver');
+                checkAndAwardBadge('healthcare-hero');
+            }
+            
+            const isYesBank = tree === yesBankTree;
+            
+            const html = `
+                <div class="fade-in">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8">
+                        <div class="text-center mb-6">
+                            <div class="text-8xl mb-4">${outcome.emoji}</div>
+                            <h2 class="text-3xl font-black text-gray-800 mb-2">${clientName} Crisis Complete</h2>
+                            <div class="text-6xl font-black text-purple-600 mb-2">${outcome.score}/100</div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 mb-6">
+                            <p class="text-gray-800 font-semibold text-lg text-center">
+                                ${outcome.message}
+                            </p>
+                        </div>
+                        
+                        ${outcome.badge ? `
+                            <div class="bg-yellow-50 border-4 border-yellow-400 rounded-xl p-6 mb-6 text-center badge-pop">
+                                <div class="text-5xl mb-2">${outcome.badge.name.split(' ')[0]}</div>
+                                <div class="font-black text-xl text-gray-800">${outcome.badge.name}</div>
+                                <p class="text-gray-600 text-sm mt-1">${outcome.badge.desc}</p>
+                            </div>
+                        ` : ''}
+                        
+                        ${isYesBank ? `
+                            <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-xl p-6 mb-6">
+                                <h3 class="font-bold text-yellow-900 mb-3 flex items-center gap-2">
+                                    <span class="text-2xl">🏆</span>
+                                    Real Translab Success: Axis Bank
+                                </h3>
+                                <p class="text-gray-700 mb-3">
+                                    The crisis management skills you just practiced? They are exactly why Translab won the largest Exadata deployment in India with Axis Bank - migrating critical workloads from cloud to on-premise with zero tolerance for downtime.
+                                </p>
+                                <div class="bg-white rounded-lg p-4 border-l-4 border-yellow-500">
+                                    <p class="text-sm text-gray-600 font-semibold">Key Lesson: High-stakes banking requires the proactive, prepared approach you just practiced.</p>
+                                </div>
+                            </div>
+
+                            <!-- ANSWER REVEALS FOR SCENARIO 2: YES BANK -->
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 mb-6 border-2 border-purple-300">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">📚 DECISION PATH ANALYSIS & PRO TIPS</h3>
+                                <p class="text-center text-gray-600 mb-4">Let's discuss: Which paths did you take? What would you do differently?</p>
+                            </div>
+
+                            <div class="bg-purple-50 p-4 rounded-lg border-2 border-purple-200 mb-4">
+                                <h4 class="font-bold text-purple-800 mb-3">📊 OPTIMAL PATH ANALYSIS</h4>
+                                <p class="text-gray-700 text-sm mb-3">The best path through this crisis depends on your priorities: relationship preservation, risk mitigation, or revenue protection.</p>
+                                
+                                <div class="space-y-3">
+                                    <div class="bg-white p-3 rounded">
+                                        <p class="font-bold text-green-700">✅ BEST OVERALL PATH:</p>
+                                        <p class="text-sm text-gray-700 mb-1">Immediate Call → Joint Risk Assessment → Temporary Pause with Clear Criteria → Communication Plan</p>
+                                        <p class="text-xs text-gray-600"><strong>Why:</strong> Balances empathy (we care), accountability (clear criteria), and professionalism (structured communication).</p>
+                                    </div>
+
+                                    <div class="bg-white p-3 rounded">
+                                        <p class="font-bold text-yellow-700">⚠️ RISKY BUT SOMETIMES NECESSARY:</p>
+                                        <p class="text-sm text-gray-700 mb-1">Continue Services → Enhanced Monitoring → Board Notification</p>
+                                        <p class="text-xs text-gray-600"><strong>Why:</strong> Shows loyalty during crisis, but you must have board-level air cover. Never do this without executive approval.</p>
+                                    </div>
+
+                                    <div class="bg-white p-3 rounded">
+                                        <p class="font-bold text-red-700">❌ WORST PATH:</p>
+                                        <p class="text-sm text-gray-700 mb-1">Immediate Email → Contract Termination → Legal Team</p>
+                                        <p class="text-xs text-gray-600"><strong>Why:</strong> Burns the relationship permanently. Yes Bank may recover, and you will look like you abandoned them. Only use as last resort.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                                <h4 class="font-bold text-blue-900 mb-3">💡 PRO TIPS FOR CLIENT CRISES</h4>
+                                <ul class="space-y-2 text-sm text-blue-800">
+                                    <li><strong>1. Speed matters:</strong> The first 24 hours define the relationship outcome. Call, do not email.</li>
+                                    <li><strong>2. Empathy first, business second:</strong> "We are monitoring the situation closely" beats "What is your payment plan?"</li>
+                                    <li><strong>3. Document everything:</strong> In a crisis, your paper trail protects you. Record all decisions and approvals.</li>
+                                    <li><strong>4. Loop in leadership early:</strong> Your manager should never be surprised by a crisis. Inform, do not ask permission.</li>
+                                    <li><strong>5. Clear re-entry criteria:</strong> If you pause, define exactly what needs to happen to resume. "Regulatory clearance" is vague. "RBI approval letter" is specific.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+                                <h4 class="font-bold text-green-900 mb-2">🎓 KEY LEARNING</h4>
+                                <p class="text-green-800 text-sm">Client crises test your judgment under pressure. The best CSPs balance empathy with accountability. You are not their therapist (pure empathy) or their auditor (pure accountability). You are their trusted advisor who helps them navigate the storm while protecting your company.</p>
+                            </div>
+                        ` : `
+                            <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-400 rounded-xl p-6 mb-6">
+                                <h3 class="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                                    <span class="text-2xl">🏆</span>
+                                    Real Translab Success: Airtel Payments Bank
+                                </h3>
+                                <p class="text-gray-700 mb-3">
+                                    Your urgency calibration for healthcare? That same speed won Translab the ZDLRA & Exadata deployment for Airtel Payments Bank - where near-zero data loss and mission-critical uptime are non-negotiable.
+                                </p>
+                                <div class="bg-white rounded-lg p-4 border-l-4 border-blue-500">
+                                    <p class="text-sm text-gray-600 font-semibold">Key Lesson: Financial services demand the same emergency response you just demonstrated.</p>
+                                </div>
+                            </div>
+
+                            <!-- ANSWER REVEALS FOR SCENARIO 3: AGILUS -->
+                            <div class="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 mb-6 border-2 border-orange-300">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">📚 BEST RESPONSE ANALYSIS & PRO TIPS</h3>
+                                <p class="text-center text-gray-600 mb-4">Let's discuss: How did you respond? What would you do in a real emergency?</p>
+                            </div>
+
+                            <div class="space-y-4 mb-6">
+                                <div class="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                                    <h4 class="font-bold text-green-800 mb-2">✅ BEST RESPONSE: "Within 15 minutes, we will have initial diagnostics. I am escalating to our platform team now."</h4>
+                                    <p class="text-gray-700 mb-2"><strong>Why this works:</strong></p>
+                                    <ul class="text-sm text-gray-600 space-y-1 ml-4">
+                                        <li>• <strong>Specific timeline:</strong> "15 minutes" is concrete, not vague.</li>
+                                        <li>• <strong>Immediate action:</strong> "I am escalating now" shows you are doing something right now.</li>
+                                        <li>• <strong>Manages expectations:</strong> "Initial diagnostics" does not promise a fix, just visibility.</li>
+                                        <li>• <strong>No excuses:</strong> You did not blame anyone or explain why it broke. Focus on solving.</li>
+                                    </ul>
+                                    <div class="bg-white p-3 rounded mt-3">
+                                        <p class="text-xs text-gray-500 italic">💡 Pro Tip: In life-threatening situations, your first message sets the tone. Calm competence beats panic every time.</p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-yellow-50 p-4 rounded-lg border-2 border-yellow-300">
+                                    <h4 class="font-bold text-yellow-800 mb-2">⚠️ ACCEPTABLE BUT WEAKER: "I will personally stay on this until it is resolved. Updates every 30 minutes."</h4>
+                                    <p class="text-gray-700 mb-2"><strong>Why this is okay but not optimal:</strong></p>
+                                    <ul class="text-sm text-gray-600 space-y-1 ml-4">
+                                        <li>• Shows commitment (good) but no immediate action plan (missing).</li>
+                                        <li>• 30-minute updates are too slow for a healthcare emergency.</li>
+                                        <li>• "I will personally stay on this" can backfire if you cannot deliver.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-red-50 p-4 rounded-lg border-2 border-red-300">
+                                    <h4 class="font-bold text-red-800 mb-2">❌ WORST RESPONSES:</h4>
+                                    <ul class="text-sm text-gray-700 space-y-2 ml-4">
+                                        <li>• <strong>"Let me check with the platform team and get back to you."</strong> → Too passive. You are checking, not acting. In an emergency, check AND act simultaneously.</li>
+                                        <li>• <strong>"This has never happened before. I will investigate and send you a root cause analysis."</strong> → Wrong priority. Root cause comes later. Fix first, analyze later.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                                <h4 class="font-bold text-blue-900 mb-3">💡 PRO TIPS FOR EMERGENCY ESCALATIONS</h4>
+                                <ul class="space-y-2 text-sm text-blue-800">
+                                    <li><strong>1. Acknowledge severity immediately:</strong> "I understand this is impacting patient care" shows you get the stakes.</li>
+                                    <li><strong>2. Give a specific timeline:</strong> "15 minutes" beats "ASAP" or "soon". Be realistic but urgent.</li>
+                                    <li><strong>3. State your immediate action:</strong> "I am doing X right now" beats "I will look into this."</li>
+                                    <li><strong>4. Loop in leadership within 5 minutes:</strong> Your manager should know about a healthcare emergency before it escalates further.</li>
+                                    <li><strong>5. Over-communicate during the crisis:</strong> Every 15-30 minutes, even if the update is "still working on it, platform team engaged."</li>
+                                    <li><strong>6. Post-mortem after resolution:</strong> Once stable, schedule a call to review what happened and how to prevent recurrence.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+                                <h4 class="font-bold text-green-900 mb-2">🎓 KEY LEARNING</h4>
+                                <p class="text-green-800 text-sm">In emergencies, your clients do not need perfection. They need confidence, speed, and visibility. The best CSPs stay calm, communicate clearly, and take immediate action. Panic is contagious. So is calm competence.</p>
+                            </div>
+                        `}
+                        
+                        <button onclick="${isYesBank ? 'startAgilusCrisis()' : 'showFinalResults()'}" 
+                                class="gradient-success text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition w-full">
+                            ${isYesBank ? '→ NEXT: Agilus Crisis' : '→ VIEW FINAL RESULTS'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('challengeContainer').innerHTML = html;
+            
+            if (outcome.badge) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // ==================== FINAL RESULTS ====================
+        function showFinalResults() {
+            document.getElementById('challengeContainer').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+            
+            const finalScore = gameState.totalScore;
+            let emoji, message;
+            
+            if (finalScore >= 250) {
+                emoji = '🏆';
+                message = 'OUTSTANDING! You are crisis management ready. Senior CSP level.';
+            } else if (finalScore >= 200) {
+                emoji = '🎉';
+                message = 'EXCELLENT work! Strong crisis skills. Keep refining.';
+            } else if (finalScore >= 150) {
+                emoji = '💪';
+                message = 'GOOD foundation. Practice more complex scenarios to level up.';
+            } else {
+                emoji = '📚';
+                message = 'Keep learning! Review principles and retry for mastery.';
+            }
+            
+            document.getElementById('resultsEmoji').textContent = emoji;
+            document.getElementById('finalScore').textContent = finalScore + '/280';
+            document.getElementById('resultsMessage').textContent = message;
+            
+            // Show badges earned
+            const badgesHtml = gameState.badges.length > 0 ? `
+                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6">
+                    <h3 class="text-2xl font-black text-yellow-900 mb-4 text-center">🏆 Badges Earned</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${gameState.badges.map(b => `
+                            <div class="bg-white rounded-lg p-4 border-2 border-yellow-400 text-center">
+                                <div class="text-4xl mb-2">${b.name.split(' ')[0]}</div>
+                                <div class="font-bold text-gray-800">${b.name}</div>
+                                <p class="text-sm text-gray-600 mt-1">${b.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : `
+                <div class="bg-gray-50 rounded-xl p-6 text-center">
+                    <p class="text-gray-600">No badges earned this time. Retry to unlock them!</p>
+                </div>
+            `;
+            
+            document.getElementById('badgesEarned').innerHTML = badgesHtml;
+            
+            // Save to leaderboard
+            saveToLeaderboard();
+            showLeaderboard();
+            
+            // Show answer reveals with pro tips
+            showAnswerReveals();
+        }
+
+        // ==================== LEADERBOARD ====================
+        function saveToLeaderboard() {
+            let leaderboard = JSON.parse(localStorage.getItem('csp_crisis_leaderboard') || '[]');
+            
+            leaderboard.push({
+                name: gameState.playerName,
+                score: gameState.totalScore,
+                badges: gameState.badges.length,
+                timestamp: Date.now()
+            });
+            
+            leaderboard.sort((a, b) => b.score - a.score);
+            leaderboard = leaderboard.slice(0, 50);
+            
+            localStorage.setItem('csp_crisis_leaderboard', JSON.stringify(leaderboard));
+        }
+
+        function showLeaderboard() {
+            const leaderboard = JSON.parse(localStorage.getItem('csp_crisis_leaderboard') || '[]');
+            const top10 = leaderboard.slice(0, 10);
+            
+            const html = top10.map((entry, idx) => {
+                const isCurrentPlayer = entry.name === gameState.playerName && 
+                                       entry.score === gameState.totalScore &&
+                                       Date.now() - entry.timestamp < 5000;
+                
+                return `
+                    <div class="flex items-center justify-between p-4 rounded-lg ${isCurrentPlayer ? 'bg-indigo-100 border-2 border-indigo-500' : 'bg-white'}">
+                        <div class="flex items-center gap-4">
+                            <div class="text-2xl font-black ${idx < 3 ? 'text-yellow-600' : 'text-gray-400'}">
+                                ${idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '#' + (idx + 1)}
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-800">${entry.name}</div>
+                                <div class="text-sm text-gray-600">${entry.badges} badges</div>
+                            </div>
+                        </div>
+                        <div class="text-2xl font-black text-purple-600">${entry.score}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('leaderboardTop10').innerHTML = html || '<p class="text-center text-gray-600">No entries yet. Be the first!</p>';
+        }
+
+        // ==================== ANSWER REVEALS ====================
+        function showAnswerReveals() {
+            const answerRevealsHTML = `
+                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-8 mb-6 border-2 border-indigo-400">
+                    <h3 class="text-2xl font-bold text-indigo-900 mb-4 text-center">🎓 Your Crisis Management Journey Complete!</h3>
+                    <p class="text-center text-gray-700 mb-4">
+                        You have practiced stakeholder mapping, navigated client crises, and responded to emergencies. These skills will serve you every day as a CSP.
+                    </p>
+                    <div class="bg-white rounded-lg p-4 border-l-4 border-indigo-500">
+                        <p class="text-sm text-gray-700 font-semibold mb-2">💡 Remember the Core Principles:</p>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• <strong>Stakeholder Mapping:</strong> Not all stakeholders are equal. Map their power and interest, then engage strategically.</li>
+                            <li>• <strong>Client Crises:</strong> Balance empathy with accountability. Call first, document everything, loop in leadership early.</li>
+                            <li>• <strong>Emergency Response:</strong> Give specific timelines, state immediate actions, over-communicate during the crisis.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border-2 border-yellow-400">
+                    <h3 class="text-xl font-bold text-orange-900 mb-3 text-center">🚀 Apply These Skills This Week</h3>
+                    <p class="text-center text-gray-700">
+                        Pick ONE insight from today and use it in a real client interaction. Then share your experience with the team!
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('answerReveals').innerHTML = answerRevealsHTML;
+        }
+
+        // ==================== BADGE SYSTEM ====================
+        function checkAndAwardBadge(badgeId) {
+            const badge = allBadges.find(b => b.id === badgeId);
+            if (badge && badge.condition() && !gameState.badges.find(b => b.id === badgeId)) {
+                gameState.badges.push(badge);
+                updateBadgeCount();
+                
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // ==================== UI UPDATES ====================
+        function updateScore() {
+            document.getElementById('totalScore').textContent = gameState.totalScore;
+        }
+
+        function updateBadgeCount() {
+            document.getElementById('badgeCount').textContent = gameState.badges.length + '/5';
+        }
+
+        function updateProgress() {
+            const progress = (gameState.currentChallenge / 3) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Challenge ${gameState.currentChallenge} of 3`;
+        }
+
+        // ==================== EMAIL RESULTS ====================
+        function emailResults() {
+            const subject = encodeURIComponent('CSP Crisis Management Lab - Results');
+            const body = encodeURIComponent(`
+CSP CRISIS MANAGEMENT LAB RESULTS
+=================================
+
+Name: ${gameState.playerName}
+Final Score: ${gameState.totalScore}/280
+
+CHALLENGE BREAKDOWN:
+- Stakeholder Mapping: ${gameState.stakeholderScore}/80 (${gameState.stakeholderTime}s)
+- Yes Bank Crisis: ${gameState.yesBankScore}/100
+- Agilus Crisis: ${gameState.agilusScore}/100
+
+BADGES EARNED (${gameState.badges.length}/5):
+${gameState.badges.map(b => `- ${b.name}: ${b.desc}`).join('\n')}
+
+Completed: ${new Date().toLocaleString()}
+
+---
+CSP Foundation Training | translab.io
+            `);
+            
+            window.location.href = `mailto:girish.v@translab.io?subject=${subject}&body=${body}`;
+        }
+
+        // ==================== INITIALIZE ON LOAD ====================
+        document.addEventListener('DOMContentLoaded', initializeGame);
+    </script>
+
+</body>
+</html>
