@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Protecting the Client | PM Excellence Program</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: slideIn 0.5s ease-out; }
+        .hidden { display: none; }
+        .timer-pulse {
+            animation: pulse 1s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .option-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .option-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .option-correct {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: white !important;
+            border: 3px solid #047857 !important;
+        }
+        .option-incorrect {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            color: white !important;
+            border: 3px solid #b91c1c !important;
+        }
+        .option-selected {
+            border: 4px solid #3b82f6 !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3) !important;
+            background: #eff6ff !important;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    
+    <!-- Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-2 bg-gray-200 z-50">
+        <div id="progressBar" class="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-500" style="width: 0%"></div>
+    </div>
+
+    <!-- Score Display -->
+    <div class="fixed top-4 right-4 z-40">
+        <div class="bg-white rounded-2xl shadow-2xl p-4 border-4 border-purple-500">
+            <div class="text-center">
+                <div class="text-4xl mb-1">🏆</div>
+                <div class="text-sm font-bold text-gray-600">SCORE</div>
+                <div id="scoreDisplay" class="text-3xl font-black text-purple-600">0/3</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Header -->
+        <div class="text-center mb-8 animate-in">
+            <div class="inline-block bg-gradient-to-r from-orange-500 to-pink-500 text-white px-6 py-2 rounded-full text-sm font-black mb-4">
+                SESSION 3 OF 24 • PILLAR #3
+            </div>
+            <h1 class="text-6xl font-black mb-4 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-600 bg-clip-text text-transparent">
+                🛡️ PROTECTING THE CLIENT
+            </h1>
+            <p class="text-2xl text-gray-700 font-bold">Be Their Advocate, Not Just Their Executor</p>
+            <p class="text-lg text-gray-600 mt-2">15-20 minutes • Individual work • Live guided</p>
+        </div>
+
+        <!-- Facilitator Prompt Box -->
+        <div id="facilitatorPrompt" class="bg-blue-100 border-l-8 border-blue-600 rounded-xl p-6 mb-8 shadow-lg">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">💡</div>
+                <div>
+                    <div class="text-sm font-black text-blue-800 uppercase mb-1">Facilitator Prompt</div>
+                    <div id="promptText" class="text-lg text-blue-900 font-semibold"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer Display -->
+        <div id="timerDisplay" class="hidden bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl p-6 mb-8 text-center shadow-2xl">
+            <div class="text-sm font-black uppercase mb-2">Time Remaining</div>
+            <div id="timerText" class="text-6xl font-black timer-pulse">60</div>
+            <div class="text-sm mt-2">seconds</div>
+        </div>
+
+        <!-- Section Container -->
+        <div id="sectionContainer" class="mb-8">
+            <!-- Sections will be injected here -->
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between items-center gap-4">
+            <button id="backBtn" class="hidden bg-gray-300 hover:bg-gray-400 text-gray-800 font-black py-4 px-8 rounded-xl text-lg transition-all shadow-lg">
+                ← Back
+            </button>
+            <div class="flex-1"></div>
+            <button id="nextBtn" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-black py-4 px-12 rounded-xl text-xl transition-all shadow-2xl">
+                Next Section →
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 text-gray-500 text-sm">
+            <p>© 2025 Translab Technologies • PM Excellence Program</p>
+            <p class="mt-2">Module 3: Protecting the Client</p>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================================
+        // STATE MANAGEMENT
+        // ============================================================================
+        let currentSection = 0;
+        let score = 0;
+        let totalScenarios = 3;
+        let scenarioResults = [];
+        let timerInterval = null;
+
+        // ============================================================================
+        // MODULE CONTENT
+        // ============================================================================
+        const sections = [
+            // SECTION 0: WELCOME
+            {
+                id: 'welcome',
+                title: 'Welcome',
+                facilitatorPrompt: 'Welcome everyone! Open the module link. Quick check-in: Who used AEO Formula last week? Type in chat.',
+                timer: 120,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-12 text-center animate-in">
+                        <div class="text-8xl mb-6">👋</div>
+                        <h2 class="text-4xl font-black mb-6 text-gray-800">Welcome Back!</h2>
+                        <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6 mb-8">
+                            <p class="text-xl text-yellow-900"><strong>Last week:</strong> You learned to protect TRANSLAB using the AEO Formula</p>
+                        </div>
+                        <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mb-8">
+                            <p class="text-xl text-purple-900"><strong>Today:</strong> You'll learn to protect THE CLIENT from their own blind spots</p>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-700">The flip side of last week's lesson 🔄</p>
+                    </div>
+                `
+            },
+
+            // SECTION 1: FRAMEWORK
+            {
+                id: 'framework',
+                title: 'The 5 Client Protections',
+                facilitatorPrompt: 'Read this framework. Take 2 minutes to absorb it. This is what great PMs protect clients FROM.',
+                timer: 120,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                        <h2 class="text-4xl font-black mb-6 text-center bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                            🛡️ THE 5 CLIENT PROTECTIONS
+                        </h2>
+                        
+                        <div class="bg-orange-100 border-4 border-orange-400 rounded-2xl p-6 mb-8 text-center">
+                            <p class="text-xl text-orange-900 font-bold">Your job isn't just to deliver what they ASK for.</p>
+                            <p class="text-xl text-orange-900 font-bold">It's to deliver what they NEED (even when they don't know it).</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl p-6 shadow-lg">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-5xl">1️⃣</div>
+                                    <div>
+                                        <h3 class="text-2xl font-black mb-2">BAD DECISIONS</h3>
+                                        <p class="text-lg">They don't have all the information. Fill their blind spots.</p>
+                                        <p class="text-sm mt-2 opacity-90">Example: "Feature X will hurt your UX based on what I've seen"</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl p-6 shadow-lg">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-5xl">2️⃣</div>
+                                    <div>
+                                        <h3 class="text-2xl font-black mb-2">UNREALISTIC EXPECTATIONS</h3>
+                                        <p class="text-lg">Timeline/budget/scope don't match. Reset expectations early.</p>
+                                        <p class="text-sm mt-2 opacity-90">Example: "Friday is impossible without cutting quality. Here's why..."</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-2xl p-6 shadow-lg">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-5xl">3️⃣</div>
+                                    <div>
+                                        <h3 class="text-2xl font-black mb-2">INTERNAL POLITICS</h3>
+                                        <p class="text-lg">Stakeholder conflicts they can't see. Spot them early.</p>
+                                        <p class="text-sm mt-2 opacity-90">Example: "I notice CFO hasn't been in meetings. Should we loop them in?"</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-2xl p-6 shadow-lg">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-5xl">4️⃣</div>
+                                    <div>
+                                        <h3 class="text-2xl font-black mb-2">COMMUNICATION BREAKDOWNS</h3>
+                                        <p class="text-lg">Assumptions that will hurt later. Clarify now.</p>
+                                        <p class="text-sm mt-2 opacity-90">Example: "Just to confirm: when you say 'done', you mean with testing, right?"</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl p-6 shadow-lg">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-5xl">5️⃣</div>
+                                    <div>
+                                        <h3 class="text-2xl font-black mb-2">THEIR OWN BLIND SPOTS</h3>
+                                        <p class="text-lg">Risks they're not aware of. Be their early warning system.</p>
+                                        <p class="text-sm mt-2 opacity-90">Example: "Have you considered what happens if the API changes mid-project?"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-purple-100 to-pink-100 border-4 border-purple-400 rounded-2xl p-6 mt-8 text-center">
+                            <p class="text-xl text-purple-900 font-black">Great PMs are ADVOCATES, not just order-takers.</p>
+                        </div>
+                    </div>
+                `
+            },
+
+            // SECTION 2: KNOWLEDGE CHECK
+            {
+                id: 'knowledge-check',
+                title: 'Quick Knowledge Check',
+                facilitatorPrompt: 'Quick check to make sure everyone absorbed the framework. Take 60 seconds.',
+                timer: 60,
+                render: () => {
+                    const questions = [
+                        {
+                            q: "Client says 'Build feature X immediately!' - which protection is most relevant?",
+                            options: [
+                                { text: "Bad Decisions - they might not know the impact", correct: true },
+                                { text: "Internal Politics - CFO might disagree", correct: false },
+                                { text: "Communication Breakdowns - unclear requirements", correct: false },
+                                { text: "Unrealistic Expectations - timeline might be tight", correct: false }
+                            ]
+                        },
+                        {
+                            q: "Client hasn't responded in 5 days - which protection?",
+                            options: [
+                                { text: "Communication Breakdowns - they might be overwhelmed", correct: true },
+                                { text: "Bad Decisions - they're making wrong choices", correct: false },
+                                { text: "Their Blind Spots - they don't see the risk", correct: false },
+                                { text: "Internal Politics - stakeholders are fighting", correct: false }
+                            ]
+                        },
+                        {
+                            q: "You notice CFO not in any meetings - which protection?",
+                            options: [
+                                { text: "Internal Politics - stakeholder alignment missing", correct: true },
+                                { text: "Bad Decisions - client choosing wrong path", correct: false },
+                                { text: "Unrealistic Expectations - budget won't work", correct: false },
+                                { text: "Communication Breakdowns - messages not clear", correct: false }
+                            ]
+                        }
+                    ];
+
+                    // Randomize options for each question
+                    questions.forEach(q => {
+                        q.options = q.options.sort(() => Math.random() - 0.5);
+                    });
+
+                    let html = `
+                        <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                            <h2 class="text-4xl font-black mb-6 text-center text-gray-800">✅ Quick Knowledge Check</h2>
+                            <p class="text-center text-xl text-gray-600 mb-8">Test if you absorbed the 5 protections</p>
+                    `;
+
+                    questions.forEach((q, qIndex) => {
+                        html += `
+                            <div class="mb-8">
+                                <p class="text-xl font-bold text-gray-800 mb-4">${qIndex + 1}. ${q.q}</p>
+                                <div class="space-y-3">
+                        `;
+                        q.options.forEach((opt, optIndex) => {
+                            html += `
+                                <div class="option-card bg-gray-50 border-2 border-gray-300 rounded-xl p-4 hover:border-purple-400" 
+                                     onclick="checkKnowledge(${qIndex}, ${optIndex}, ${opt.correct})">
+                                    <p class="text-lg font-semibold text-gray-700">${opt.text}</p>
+                                </div>
+                            `;
+                        });
+                        html += `
+                                </div>
+                                <div id="feedback-${qIndex}" class="hidden mt-4"></div>
+                            </div>
+                        `;
+                    });
+
+                    html += `</div>`;
+                    return html;
+                }
+            },
+
+            // SECTION 3: SCENARIO 1 - UNREALISTIC DEADLINE
+            {
+                id: 'scenario1',
+                title: 'Scenario 1: The Unrealistic Deadline',
+                facilitatorPrompt: 'Read the scenario. Take 60 seconds. Then pick your answer.',
+                timer: 90,
+                isScenario: true,
+                scenarioData: {
+                    emoji: '⏰',
+                    title: 'THE UNREALISTIC DEADLINE',
+                    setup: `
+                        <div class="bg-red-50 border-4 border-red-300 rounded-2xl p-6 mb-6">
+                            <p class="text-xl text-red-900 mb-4"><strong>THE SITUATION:</strong></p>
+                            <p class="text-lg text-red-800">It's Wednesday 2pm. Client calls you:</p>
+                            <p class="text-2xl font-black text-red-900 my-4">"We NEED the dashboard delivered by Friday 5pm for our board meeting."</p>
+                            <p class="text-lg text-red-800 mt-4"><strong>THE REALITY:</strong></p>
+                            <ul class="list-disc ml-6 text-lg text-red-800 space-y-2">
+                                <li>Your team estimated 2 weeks for this deliverable</li>
+                                <li>You're only 40% done</li>
+                                <li>Friday delivery would require cutting testing</li>
+                                <li>Rushed work = bugs in front of their board</li>
+                            </ul>
+                        </div>
+                    `,
+                    question: "What do you do?",
+                    options: [
+                        {
+                            text: "Say YES - work team overtime Thursday/Friday to deliver",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ NOT THE BEST MOVE</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this doesn't protect the client:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>Rushed work = bugs in their board presentation (embarrassing)</li>
+                                        <li>No testing = potential crash during demo</li>
+                                        <li>You're protecting their TIMELINE but risking their REPUTATION</li>
+                                        <li>Short-term yes → long-term failure</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Better to delay than deliver broken.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Say NO - explain it's impossible, offer Monday delivery instead",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-yellow-900 mb-4">⚠️ CLOSE, BUT MISSING SOMETHING</h4>
+                                    <p class="text-lg text-yellow-800 mb-4"><strong>Why this is half-right:</strong></p>
+                                    <ul class="list-disc ml-6 text-yellow-800 space-y-2">
+                                        <li>✅ You're protecting quality (good!)</li>
+                                        <li>✅ You're being honest about timeline (good!)</li>
+                                        <li>❌ But you're not giving them OPTIONS</li>
+                                        <li>❌ Maybe they don't need the FULL dashboard for the board</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-yellow-900 mt-4">Better approach: Offer partial delivery options.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Use AEO Formula - acknowledge urgency, explain risk, offer partial delivery for Friday",
+                            correct: true,
+                            feedback: `
+                                <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-green-900 mb-4">✅ CORRECT! THIS PROTECTS THE CLIENT</h4>
+                                    <p class="text-lg text-green-800 mb-4"><strong>Why this works:</strong></p>
+                                    <ul class="list-disc ml-6 text-green-800 space-y-2">
+                                        <li>✅ Acknowledges their board meeting urgency</li>
+                                        <li>✅ Explains WHY full delivery risks their reputation</li>
+                                        <li>✅ Offers PARTIAL delivery (key metrics dashboard) for Friday</li>
+                                        <li>✅ Promises FULL tested dashboard by Monday</li>
+                                    </ul>
+                                    <div class="bg-white rounded-xl p-4 mt-4">
+                                        <p class="font-black text-green-900 mb-2">EXAMPLE RESPONSE:</p>
+                                        <p class="text-green-800">"I understand the board meeting is critical. Delivering the full dashboard by Friday would mean skipping testing, which risks bugs during your presentation. What I CAN do: deliver the key metrics view (revenue, users, growth) by Friday tested and ready. Then the full interactive dashboard with filters by Monday. Would that work for your board meeting?"</p>
+                                    </div>
+                                </div>
+                            `,
+                            insight: `
+                                <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mt-4">
+                                    <h4 class="text-xl font-black text-purple-900 mb-3">💡 PRO TIP: THE PARTIAL DELIVERY MOVE</h4>
+                                    <p class="text-lg text-purple-800">When clients have unrealistic deadlines, don't just say "no" - offer them a PARTIAL WIN that protects their reputation. Most board meetings need HIGHLIGHTS, not every feature. Give them what they need to look good, then deliver the rest properly.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Escalate to your manager - let them handle the client expectation",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ TOO EARLY TO ESCALATE</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this doesn't work:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>This is your FIRST attempt - try solving it first</li>
+                                        <li>You have the AEO Formula - use it!</li>
+                                        <li>Escalating immediately = avoiding ownership</li>
+                                        <li>Your manager will just send it back to you anyway</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Try twice before escalating. This is attempt #1.</p>
+                                </div>
+                            `
+                        }
+                    ]
+                }
+            },
+
+            // SECTION 4: SCENARIO 2 - MISSING STAKEHOLDER
+            {
+                id: 'scenario2',
+                title: 'Scenario 2: The Missing Stakeholder',
+                facilitatorPrompt: 'New scenario. Read it. Pick your answer. 90 seconds.',
+                timer: 90,
+                isScenario: true,
+                scenarioData: {
+                    emoji: '👻',
+                    title: 'THE MISSING STAKEHOLDER',
+                    setup: `
+                        <div class="bg-yellow-50 border-4 border-yellow-300 rounded-2xl p-6 mb-6">
+                            <p class="text-xl text-yellow-900 mb-4"><strong>THE SITUATION:</strong></p>
+                            <p class="text-lg text-yellow-800">You're in Week 3 of a 12-week project. Your main contact (VP Product) has been making all the decisions.</p>
+                            <p class="text-2xl font-black text-yellow-900 my-4">But you notice: The CFO has never been in any meeting.</p>
+                            <p class="text-lg text-yellow-800 mt-4"><strong>THE REALITY:</strong></p>
+                            <ul class="list-disc ml-6 text-lg text-yellow-800 space-y-2">
+                                <li>This project will cost them $250K</li>
+                                <li>VP Product seems excited, making quick decisions</li>
+                                <li>But big $ decisions usually need CFO approval</li>
+                                <li>If CFO blocks this at Week 10, entire project dies</li>
+                            </ul>
+                        </div>
+                    `,
+                    question: "What do you do?",
+                    options: [
+                        {
+                            text: "Stay quiet - VP Product is your contact, not your job to manage their stakeholders",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ DANGEROUS MOVE</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why staying quiet hurts the client:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>CFO blocks project at Week 10 = wasted time and money</li>
+                                        <li>VP Product looks bad (approved without CFO buy-in)</li>
+                                        <li>YOUR project gets killed</li>
+                                        <li>You saw the risk and said nothing = you failed to protect them</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Great PMs spot political risks EARLY.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Gently ask VP Product: 'Should we loop in your CFO at some point?'",
+                            correct: true,
+                            feedback: `
+                                <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-green-900 mb-4">✅ CORRECT! PROTECTING FROM INTERNAL POLITICS</h4>
+                                    <p class="text-lg text-green-800 mb-4"><strong>Why this works:</strong></p>
+                                    <ul class="list-disc ml-6 text-green-800 space-y-2">
+                                        <li>✅ Flags the risk WITHOUT being pushy</li>
+                                        <li>✅ Gives VP Product space to say "already handled" or "good catch"</li>
+                                        <li>✅ Protects their internal alignment</li>
+                                        <li>✅ Shows you're thinking ahead (not just taking orders)</li>
+                                    </ul>
+                                    <div class="bg-white rounded-xl p-4 mt-4">
+                                        <p class="font-black text-green-900 mb-2">EXAMPLE PHRASING:</p>
+                                        <p class="text-green-800">"Quick question - I noticed CFO hasn't been in our meetings. Given the budget, should we loop them in for a checkpoint? Just want to make sure we have everyone aligned before we get too far."</p>
+                                    </div>
+                                </div>
+                            `,
+                            insight: `
+                                <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mt-4">
+                                    <h4 class="text-xl font-black text-purple-900 mb-3">💡 PRO TIP: THE STAKEHOLDER RADAR</h4>
+                                    <p class="text-lg text-purple-800">Always ask yourself: "Who's NOT in the room who should be?" Missing stakeholders kill projects late. Spot them early. Flag them gently. Protect your client from their own blind spots about internal politics.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Email CFO directly to introduce yourself and get their input",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-yellow-900 mb-4">⚠️ TOO AGGRESSIVE</h4>
+                                    <p class="text-lg text-yellow-800 mb-4"><strong>Why this backfires:</strong></p>
+                                    <ul class="list-disc ml-6 text-yellow-800 space-y-2">
+                                        <li>You're going around your contact (VP Product)</li>
+                                        <li>VP might feel undermined</li>
+                                        <li>CFO might wonder "why is vendor contacting me directly?"</li>
+                                        <li>Creates internal tension instead of solving it</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-yellow-900 mt-4">Better: Flag the issue to your contact, let THEM loop in CFO.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Wait until Week 8, then escalate to your manager about CFO risk",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ TOO LATE</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why waiting hurts:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>Week 8 is too late - half the project is done</li>
+                                        <li>Why escalate when YOU can handle it?</li>
+                                        <li>Simple question to VP Product solves this now</li>
+                                        <li>Waiting = letting risk grow instead of mitigating early</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Spot risks early. Flag them early. Don't wait.</p>
+                                </div>
+                            `
+                        }
+                    ]
+                }
+            },
+
+            // SECTION 5: SCENARIO 3 - THE BAD IDEA
+            {
+                id: 'scenario3',
+                title: 'Scenario 3: The Bad Idea',
+                facilitatorPrompt: 'Final scenario. This one is tough. Read and decide. 90 seconds.',
+                timer: 90,
+                isScenario: true,
+                scenarioData: {
+                    emoji: '💡',
+                    title: 'THE BAD IDEA',
+                    setup: `
+                        <div class="bg-purple-50 border-4 border-purple-300 rounded-2xl p-6 mb-6">
+                            <p class="text-xl text-purple-900 mb-4"><strong>THE SITUATION:</strong></p>
+                            <p class="text-lg text-purple-800">Client is EXCITED. They came up with a new feature idea:</p>
+                            <p class="text-2xl font-black text-purple-900 my-4">"Add a pop-up survey on EVERY page load to collect user feedback!"</p>
+                            <p class="text-lg text-purple-800 mt-4"><strong>THE REALITY:</strong></p>
+                            <ul class="list-disc ml-6 text-lg text-purple-800 space-y-2">
+                                <li>You KNOW this will annoy users (terrible UX)</li>
+                                <li>Pop-ups on every page = people will close the site</li>
+                                <li>But the client is genuinely excited about "user feedback"</li>
+                                <li>They're paying you to build what they want</li>
+                            </ul>
+                        </div>
+                    `,
+                    question: "What do you do?",
+                    options: [
+                        {
+                            text: "Build it - they're paying, they decide, not your job to question their ideas",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ ORDER-TAKER, NOT ADVISOR</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this fails them:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>You're paid for your EXPERTISE, not just your hands</li>
+                                        <li>Bad UX = their users leave = their revenue drops</li>
+                                        <li>You saw the problem and built it anyway = you failed to protect them</li>
+                                        <li>"They told me to" is not an excuse</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Great PMs are advisors, not vendors.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Say 'That won't work' - flat-out tell them it's a bad idea",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-yellow-900 mb-4">⚠️ RIGHT INTENT, WRONG DELIVERY</h4>
+                                    <p class="text-lg text-yellow-800 mb-4"><strong>Why this backfires:</strong></p>
+                                    <ul class="list-disc ml-6 text-yellow-800 space-y-2">
+                                        <li>✅ You're trying to protect them (good!)</li>
+                                        <li>❌ But "that won't work" shuts down conversation</li>
+                                        <li>❌ Client gets defensive ("I know my users!")</li>
+                                        <li>❌ Relationship damaged over delivery style</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-yellow-900 mt-4">Better: Show WHY it's risky, offer alternatives.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Acknowledge their goal, explain UX risk, offer better alternatives (exit survey, email, etc)",
+                            correct: true,
+                            feedback: `
+                                <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-green-900 mb-4">✅ CORRECT! THIS IS ADVOCACY</h4>
+                                    <p class="text-lg text-green-800 mb-4"><strong>Why this protects them:</strong></p>
+                                    <ul class="list-disc ml-6 text-green-800 space-y-2">
+                                        <li>✅ Acknowledges they want user feedback (validates their goal)</li>
+                                        <li>✅ Explains WHY pop-ups hurt their conversion</li>
+                                        <li>✅ Offers BETTER ways to get feedback (exit survey, email, in-app widget)</li>
+                                        <li>✅ Positions you as expert advisor, not order-taker</li>
+                                    </ul>
+                                    <div class="bg-white rounded-xl p-4 mt-4">
+                                        <p class="font-black text-green-900 mb-2">EXAMPLE RESPONSE:</p>
+                                        <p class="text-green-800">"I love that you want user feedback - that's critical. My concern with pop-ups on every page is we'll see higher bounce rates (users close the tab). What if we tried: 1) Exit survey when they close, 2) In-app widget on ONE page only, or 3) Email survey after 3 visits? Same feedback, better UX. Which sounds good?"</p>
+                                    </div>
+                                </div>
+                            `,
+                            insight: `
+                                <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mt-4">
+                                    <h4 class="text-xl font-black text-purple-900 mb-3">💡 PRO TIP: THE "YES, AND..." TECHNIQUE</h4>
+                                    <p class="text-lg text-purple-800">When clients have bad ideas, don't say "NO, BECAUSE..." Say "YES, AND here's a better way to achieve that goal." Validate their INTENT, redirect their APPROACH. You keep the relationship strong while protecting their outcome.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Build a quick prototype to SHOW them how annoying it is",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-yellow-900 mb-4">⚠️ CLEVER BUT RISKY</h4>
+                                    <p class="text-lg text-yellow-800 mb-4"><strong>Why this might backfire:</strong></p>
+                                    <ul class="list-disc ml-6 text-yellow-800 space-y-2">
+                                        <li>Takes your time to build a prototype just to prove it's bad</li>
+                                        <li>Feels passive-aggressive ("I told you so" energy)</li>
+                                        <li>Better to just EXPLAIN the risk + offer alternatives</li>
+                                        <li>Prototyping bad ideas wastes everyone's time</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-yellow-900 mt-4">Sometimes showing is better than telling, but not here.</p>
+                                </div>
+                            `
+                        }
+                    ]
+                }
+            },
+
+            // SECTION 6: SUMMARY
+            {
+                id: 'summary',
+                title: 'Key Takeaways',
+                facilitatorPrompt: 'Read the takeaways. This is what you learned today. 90 seconds.',
+                timer: 90,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                        <h2 class="text-4xl font-black mb-6 text-center bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                            🎯 WHAT YOU LEARNED TODAY
+                        </h2>
+
+                        <div class="bg-gradient-to-r from-green-100 to-blue-100 border-4 border-green-400 rounded-2xl p-6 mb-8">
+                            <p class="text-2xl font-black text-green-900 text-center">You are your client's ADVOCATE, not just their EXECUTOR.</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-red-50 border-4 border-red-300 rounded-xl p-6">
+                                <h3 class="text-xl font-black text-red-900 mb-3">❌ ORDER-TAKER PM</h3>
+                                <ul class="space-y-2 text-red-800">
+                                    <li>• "You're the client, you decide"</li>
+                                    <li>• Builds what they ask for</li>
+                                    <li>• Stays quiet about risks</li>
+                                    <li>• Lets them fail</li>
+                                </ul>
+                            </div>
+                            <div class="bg-green-50 border-4 border-green-300 rounded-xl p-6">
+                                <h3 class="text-xl font-black text-green-900 mb-3">✅ ADVOCATE PM</h3>
+                                <ul class="space-y-2 text-green-800">
+                                    <li>• "Here's what I recommend and why"</li>
+                                    <li>• Builds what they NEED</li>
+                                    <li>• Flags risks early</li>
+                                    <li>• Protects their success</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="bg-purple-100 border-l-8 border-purple-600 rounded-xl p-6">
+                                <h4 class="text-lg font-black text-purple-900 mb-2">PROTECT FROM BAD DECISIONS</h4>
+                                <p class="text-purple-800">When they want feature X but you know it hurts UX → Acknowledge goal, explain risk, offer better path</p>
+                            </div>
+
+                            <div class="bg-blue-100 border-l-8 border-blue-600 rounded-xl p-6">
+                                <h4 class="text-lg font-black text-blue-900 mb-2">PROTECT FROM UNREALISTIC EXPECTATIONS</h4>
+                                <p class="text-blue-800">When timeline is impossible → Offer partial delivery that protects their reputation</p>
+                            </div>
+
+                            <div class="bg-yellow-100 border-l-8 border-yellow-600 rounded-xl p-6">
+                                <h4 class="text-lg font-black text-yellow-900 mb-2">PROTECT FROM INTERNAL POLITICS</h4>
+                                <p class="text-yellow-800">When you spot missing stakeholders → Gently flag it early before it kills the project</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl p-6 mt-8 text-center">
+                            <p class="text-2xl font-black">Last week: Protected TRANSLAB</p>
+                            <p class="text-2xl font-black mt-2">This week: Protected THE CLIENT</p>
+                            <p class="text-xl mt-4">Great PMs protect BOTH. 🛡️</p>
+                        </div>
+                    </div>
+                `
+            },
+
+            // SECTION 7: COMMITMENT
+            {
+                id: 'commitment',
+                title: 'Your Weekly Commitment',
+                facilitatorPrompt: 'Fill in your commitment. Share it in chat so your buddy sees it. 90 seconds.',
+                timer: 90,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                        <h2 class="text-4xl font-black mb-6 text-center text-gray-800">📝 YOUR COMMITMENT THIS WEEK</h2>
+                        
+                        <div class="bg-orange-100 border-4 border-orange-400 rounded-2xl p-6 mb-8 text-center">
+                            <p class="text-2xl font-black text-orange-900">Spot ONE client blind spot.</p>
+                            <p class="text-lg text-orange-800 mt-2">Flag it proactively. Protect them BEFORE it becomes a problem.</p>
+                        </div>
+
+                        <div class="bg-gray-50 border-4 border-gray-300 rounded-2xl p-6 mb-6">
+                            <label class="block text-lg font-bold text-gray-700 mb-3">This week I will spot and flag:</label>
+                            <textarea id="commitment" rows="4" 
+                                      class="w-full border-2 border-gray-300 rounded-xl p-4 text-lg focus:border-purple-500 focus:outline-none"
+                                      placeholder="Example: I'll check if all stakeholders are aligned on Project X timeline..."></textarea>
+                            <p class="text-sm text-gray-600 mt-2">Type your commitment above. It will auto-save.</p>
+                        </div>
+
+                        <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mb-6">
+                            <p class="text-lg font-bold text-purple-900 mb-2">Your Accountability Buddy:</p>
+                            <p id="buddyName" class="text-2xl font-black text-purple-900"></p>
+                            <p class="text-sm text-purple-800 mt-2">Check in by Wednesday. Share what blind spot you caught.</p>
+                        </div>
+
+                        <div class="text-center">
+                            <button onclick="saveCommitment()" class="bg-gradient-to-r from-green-500 to-blue-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg hover:shadow-2xl transition-all">
+                                💾 Save My Commitment
+                            </button>
+                        </div>
+
+                        <div id="commitmentSaved" class="hidden mt-6 bg-green-100 border-4 border-green-400 rounded-2xl p-6 text-center">
+                            <p class="text-2xl font-black text-green-900">✅ Commitment Saved!</p>
+                            <p class="text-lg text-green-800 mt-2">Now type it in chat so everyone witnesses it.</p>
+                        </div>
+                    </div>
+                `
+            },
+
+            // SECTION 8: COMPLETION
+            {
+                id: 'completion',
+                title: 'Module Complete',
+                facilitatorPrompt: 'Well done everyone! Download your takeaway. Next week: How to Do the Job - the daily rituals. See you then!',
+                timer: 0,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-12 text-center animate-in">
+                        <div class="text-8xl mb-6">🎉</div>
+                        <h2 class="text-5xl font-black mb-6 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                            MODULE 3 COMPLETE!
+                        </h2>
+                        
+                        <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-8 mb-8">
+                            <p class="text-3xl font-black text-green-900 mb-4">Your Final Score:</p>
+                            <p id="finalScore" class="text-6xl font-black text-green-900 mb-4">-</p>
+                            <p class="text-xl text-green-800">out of 3 scenarios</p>
+                        </div>
+
+                        <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mb-8">
+                            <h3 class="text-2xl font-black text-purple-900 mb-4">🎯 WHAT YOU MASTERED TODAY</h3>
+                            <div class="grid md:grid-cols-3 gap-4 text-left">
+                                <div>
+                                    <p class="font-black text-purple-900">✅ 5 Client Protections</p>
+                                </div>
+                                <div>
+                                    <p class="font-black text-purple-900">✅ Advocate vs Executor</p>
+                                </div>
+                                <div>
+                                    <p class="font-black text-purple-900">✅ Partial Delivery Move</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <button onclick="downloadTakeaway()" class="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg hover:shadow-2xl transition-all">
+                                📥 Download Takeaway Sheet
+                            </button>
+                        </div>
+
+                        <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                            <p class="text-2xl font-black text-yellow-900 mb-2">NEXT WEEK:</p>
+                            <p class="text-xl text-yellow-800">Module 4: How to Do the Job</p>
+                            <p class="text-lg text-yellow-800 mt-2">The daily/weekly rituals that keep you sane (without tools)</p>
+                        </div>
+
+                        <p class="text-gray-500 mt-8">© 2025 Translab Technologies • PM Excellence Program</p>
+                    </div>
+                `
+            }
+        ];
+
+        // ============================================================================
+        // NAVIGATION FUNCTIONS
+        // ============================================================================
+        function updateProgress() {
+            const progress = ((currentSection + 1) / sections.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `${score}/${totalScenarios}`;
+        }
+
+        function showSection(index) {
+            const section = sections[index];
+            const container = document.getElementById('sectionContainer');
+            
+            // Render section content
+            if (section.isScenario) {
+                container.innerHTML = renderScenario(section.scenarioData);
+                // Attach event listeners after rendering (increased delay for reliability)
+                setTimeout(() => attachScenarioListeners(), 200);
+            } else {
+                container.innerHTML = section.render();
+            }
+
+            // Update facilitator prompt
+            document.getElementById('promptText').textContent = section.facilitatorPrompt;
+
+            // Handle timer
+            if (section.timer > 0) {
+                showTimer(section.timer);
+            } else {
+                document.getElementById('timerDisplay').classList.add('hidden');
+            }
+
+            // Update navigation buttons
+            document.getElementById('backBtn').classList.toggle('hidden', index === 0);
+            
+            const nextBtn = document.getElementById('nextBtn');
+            if (index === sections.length - 1) {
+                nextBtn.textContent = 'Finish';
+            } else {
+                nextBtn.textContent = 'Next Section →';
+            }
+
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function nextSection() {
+            if (currentSection < sections.length - 1) {
+                currentSection++;
+                showSection(currentSection);
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 0) {
+                currentSection--;
+                showSection(currentSection);
+            }
+        }
+
+        // ============================================================================
+        // TIMER FUNCTION
+        // ============================================================================
+        function showTimer(seconds) {
+            clearInterval(timerInterval);
+            const timerDisplay = document.getElementById('timerDisplay');
+            const timerText = document.getElementById('timerText');
+            
+            timerDisplay.classList.remove('hidden');
+            timerText.textContent = seconds;
+            
+            let remaining = seconds;
+            timerInterval = setInterval(() => {
+                remaining--;
+                timerText.textContent = remaining;
+                
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.classList.add('hidden');
+                }
+            }, 1000);
+        }
+
+        // ============================================================================
+        // SCENARIO FUNCTIONS - DEFINE EARLY FOR GLOBAL ACCESS
+        // ============================================================================
+        let selectedOptionIndex = null;
+
+        function selectOption(displayIndex, originalIndex, isCorrect) {
+            console.log('selectOption called:', displayIndex, originalIndex, isCorrect);
+            
+            // Highlight selected option - ONLY from current section
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Found', options.length, 'options to highlight');
+            options.forEach(opt => opt.classList.remove('option-selected'));
+            if (options[displayIndex]) {
+                options[displayIndex].classList.add('option-selected');
+                console.log('Highlighted option', displayIndex);
+            }
+
+            selectedOptionIndex = displayIndex;
+            window.selectedCorrect = isCorrect;
+
+            // Show reveal button
+            document.getElementById('revealBtn').classList.remove('hidden');
+        }
+
+        function revealAnswer() {
+            if (selectedOptionIndex === null) return;
+
+            // Only select options from current section
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Revealing answer for', options.length, 'options');
+            const selectedOption = window.currentScenarioOptions[selectedOptionIndex];
+
+            // Show correct/incorrect styling
+            options.forEach((opt, idx) => {
+                const optionData = window.currentScenarioOptions[idx];
+                if (optionData.correct) {
+                    opt.classList.add('option-correct');
+                } else if (idx === selectedOptionIndex) {
+                    opt.classList.add('option-incorrect');
+                }
+            });
+
+            // Show feedback
+            const feedbackContainer = document.getElementById('answerFeedback');
+            feedbackContainer.innerHTML = selectedOption.feedback;
+            feedbackContainer.classList.remove('hidden');
+
+            // Show insight if correct
+            if (selectedOption.correct && selectedOption.insight) {
+                const insightContainer = document.getElementById('insightBox');
+                insightContainer.innerHTML = selectedOption.insight;
+                insightContainer.classList.remove('hidden');
+            }
+
+            // Update score
+            if (selectedOption.correct) {
+                score++;
+                updateScore();
+                // Confetti!
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                // Show try again button
+                document.getElementById('tryAgainBtn').classList.remove('hidden');
+            }
+
+            // Hide reveal button
+            document.getElementById('revealBtn').classList.add('hidden');
+
+            // Record result
+            scenarioResults.push({
+                scenario: currentSection,
+                correct: selectedOption.correct
+            });
+        }
+
+        function tryAgain() {
+            // Reset the scenario - only options from current section
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Try again - resetting', options.length, 'options');
+            options.forEach(opt => {
+                opt.classList.remove('option-selected', 'option-correct', 'option-incorrect');
+            });
+
+            document.getElementById('answerFeedback').classList.add('hidden');
+            document.getElementById('insightBox').classList.add('hidden');
+            document.getElementById('tryAgainBtn').classList.add('hidden');
+            selectedOptionIndex = null;
+        }
+
+        // Make functions globally accessible IMMEDIATELY
+        window.selectOption = selectOption;
+        window.revealAnswer = revealAnswer;
+        window.tryAgain = tryAgain;
+
+        // ============================================================================
+        // SCENARIO RENDERING
+        // ============================================================================
+        function renderScenario(data) {
+            // Randomize options
+            const randomized = data.options
+                .map((opt, index) => ({ ...opt, originalIndex: index }))
+                .sort(() => Math.random() - 0.5);
+
+            let html = `
+                <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                    <div class="text-center mb-8">
+                        <div class="text-7xl mb-4">${data.emoji}</div>
+                        <h2 class="text-4xl font-black text-gray-800">${data.title}</h2>
+                    </div>
+
+                    ${data.setup}
+
+                    <div class="bg-gray-100 border-4 border-gray-400 rounded-2xl p-6 mb-6 text-center">
+                        <p class="text-2xl font-black text-gray-800">${data.question}</p>
+                    </div>
+
+                    <div class="space-y-4 mb-6" id="optionsContainer">
+            `;
+
+            randomized.forEach((opt, displayIndex) => {
+                html += `
+                    <div class="option-card bg-white border-4 border-gray-300 rounded-2xl p-6 shadow-lg" 
+                         data-display-index="${displayIndex}"
+                         data-original-index="${opt.originalIndex}"
+                         data-correct="${opt.correct}">
+                        <p class="text-xl font-bold text-gray-800">${opt.text}</p>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+
+                    <div id="answerFeedback" class="hidden mb-6"></div>
+                    <div id="insightBox" class="hidden"></div>
+
+                    <div class="text-center">
+                        <button id="revealBtn" class="hidden bg-gradient-to-r from-blue-500 to-purple-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg">
+                            👀 Reveal Answer
+                        </button>
+                        <button id="tryAgainBtn" class="hidden bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg">
+                            🔄 Try Again
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Store randomized options for later access
+            window.currentScenarioOptions = randomized;
+
+            return html;
+        }
+
+        // ============================================================================
+        // ATTACH EVENT LISTENERS AFTER RENDERING
+        // ============================================================================
+        function attachScenarioListeners() {
+            // Only select option-cards that have data-display-index (scenario options, not knowledge check)
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Attaching listeners to', options.length, 'options');
+            options.forEach((opt, idx) => {
+                console.log('Option', idx, ':', opt.getAttribute('data-display-index'), opt.getAttribute('data-correct'));
+                opt.addEventListener('click', function(e) {
+                    console.log('Click detected on option', this.getAttribute('data-display-index'));
+                    const displayIndex = parseInt(this.getAttribute('data-display-index'));
+                    const originalIndex = parseInt(this.getAttribute('data-original-index'));
+                    const isCorrect = this.getAttribute('data-correct') === 'true';
+                    selectOption(displayIndex, originalIndex, isCorrect);
+                });
+            });
+        }
+
+        // ============================================================================
+        // KNOWLEDGE CHECK
+        // ============================================================================
+        window.checkKnowledge = function(qIndex, optIndex, isCorrect) {
+            const feedback = document.getElementById(`feedback-${qIndex}`);
+            if (isCorrect) {
+                feedback.innerHTML = `
+                    <div class="bg-green-100 border-4 border-green-400 rounded-xl p-4">
+                        <p class="text-lg font-black text-green-900">✅ Correct!</p>
+                    </div>
+                `;
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = `
+                    <div class="bg-red-100 border-4 border-red-400 rounded-xl p-4">
+                        <p class="text-lg font-black text-red-900">❌ Not quite. Try again!</p>
+                    </div>
+                `;
+                feedback.classList.remove('hidden');
+            }
+        };
+
+        // ============================================================================
+        // COMMITMENT
+        // ============================================================================
+        window.saveCommitment = function() {
+            const commitment = document.getElementById('commitment').value;
+            if (commitment.trim()) {
+                localStorage.setItem('module3_commitment', commitment);
+                document.getElementById('commitmentSaved').classList.remove('hidden');
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                alert('Please fill in your commitment first!');
+            }
+        };
+
+        // Auto-save commitment
+        document.addEventListener('DOMContentLoaded', () => {
+            const commitmentField = document.getElementById('commitment');
+            if (commitmentField) {
+                commitmentField.addEventListener('input', (e) => {
+                    localStorage.setItem('module3_commitment_draft', e.target.value);
+                });
+
+                // Load draft
+                const draft = localStorage.getItem('module3_commitment_draft');
+                if (draft) {
+                    commitmentField.value = draft;
+                }
+            }
+
+            // Load buddy name (from Session 1)
+            const buddyName = localStorage.getItem('accountabilityBuddy') || 'Your Buddy';
+            const buddyDisplay = document.getElementById('buddyName');
+            if (buddyDisplay) {
+                buddyDisplay.textContent = buddyName;
+            }
+        });
+
+        // ============================================================================
+        // TAKEAWAY DOWNLOAD
+        // ============================================================================
+        window.downloadTakeaway = function() {
+            const takeawayContent = `
+PM EXCELLENCE PROGRAM - MODULE 3 TAKEAWAY
+==========================================
+
+SESSION: Protecting the Client
+PILLAR: #3 - Protecting the Client
+DATE: ${new Date().toLocaleDateString()}
+
+THE 5 CLIENT PROTECTIONS
+-------------------------
+1. BAD DECISIONS - They don't have full information
+2. UNREALISTIC EXPECTATIONS - Timeline/budget/scope mismatch
+3. INTERNAL POLITICS - Stakeholder conflicts they can't see
+4. COMMUNICATION BREAKDOWNS - Assumptions that will hurt later
+5. THEIR OWN BLIND SPOTS - Risks they're not aware of
+
+KEY FRAMEWORKS
+--------------
+ADVOCATE vs EXECUTOR:
+- Order-taker PM: "You're the client, you decide"
+- Advocate PM: "Here's what I recommend and why"
+
+THE PARTIAL DELIVERY MOVE:
+When deadlines are unrealistic, offer partial delivery that protects their reputation.
+
+THE "YES, AND..." TECHNIQUE:
+When clients have bad ideas, validate their INTENT, redirect their APPROACH.
+
+THE STAKEHOLDER RADAR:
+Always ask: "Who's NOT in the room who should be?"
+
+YOUR COMMITMENT THIS WEEK
+--------------------------
+${localStorage.getItem('module3_commitment') || 'Spot ONE client blind spot and flag it proactively.'}
+
+ACCOUNTABILITY BUDDY
+--------------------
+${localStorage.getItem('accountabilityBuddy') || 'Your Buddy'}
+
+NEXT WEEK
+---------
+Module 4: How to Do the Job
+The daily/weekly rituals that keep you sane without tools.
+
+© 2025 Translab Technologies
+            `;
+
+            const blob = new Blob([takeawayContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Module3_Protecting_Client_Takeaway.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        };
+
+        // ============================================================================
+        // EVENT LISTENERS
+        // ============================================================================
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentSection === sections.length - 1) {
+                // Show final score
+                document.getElementById('finalScore').textContent = `${score}/${totalScenarios}`;
+            }
+            nextSection();
+        });
+
+        document.getElementById('backBtn').addEventListener('click', previousSection);
+
+        // Reveal button listener
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'revealBtn') {
+                revealAnswer();
+            }
+            if (e.target.id === 'tryAgainBtn') {
+                tryAgain();
+            }
+        });
+
+        // ============================================================================
+        // INITIALIZE
+        // ============================================================================
+        showSection(0);
+    </script>
+</body>
+</html>

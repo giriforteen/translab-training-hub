@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4: How to Do the Job | PM Excellence Program</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: slideIn 0.5s ease-out; }
+        .hidden { display: none; }
+        .timer-pulse {
+            animation: pulse 1s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .option-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .option-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .option-correct {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: white !important;
+            border: 3px solid #047857 !important;
+        }
+        .option-incorrect {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            color: white !important;
+            border: 3px solid #b91c1c !important;
+        }
+        .option-selected {
+            border: 4px solid #3b82f6 !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3) !important;
+            background: #eff6ff !important;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 min-h-screen">
+    
+    <!-- Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-2 bg-gray-200 z-50">
+        <div id="progressBar" class="h-full bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 transition-all duration-500" style="width: 0%"></div>
+    </div>
+
+    <!-- Score Display -->
+    <div class="fixed top-4 right-4 z-40">
+        <div class="bg-white rounded-2xl shadow-2xl p-4 border-4 border-blue-500">
+            <div class="text-center">
+                <div class="text-4xl mb-1">⚡</div>
+                <div class="text-sm font-bold text-gray-600">SCORE</div>
+                <div id="scoreDisplay" class="text-3xl font-black text-blue-600">0/3</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Header -->
+        <div class="text-center mb-8 animate-in">
+            <div class="inline-block bg-gradient-to-r from-green-500 to-blue-500 text-white px-6 py-2 rounded-full text-sm font-black mb-4">
+                SESSION 4 OF 24 • PILLAR #4
+            </div>
+            <h1 class="text-6xl font-black mb-4 bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+                ⚡ HOW TO DO THE JOB
+            </h1>
+            <p class="text-2xl text-gray-700 font-bold">The Daily Rituals of Outstanding PMs</p>
+            <p class="text-lg text-gray-600 mt-2">15-20 minutes • Individual work • Live guided</p>
+        </div>
+
+        <!-- Facilitator Prompt Box -->
+        <div id="facilitatorPrompt" class="bg-green-100 border-l-8 border-green-600 rounded-xl p-6 mb-8 shadow-lg">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">💡</div>
+                <div>
+                    <div class="text-sm font-black text-green-800 uppercase mb-1">Facilitator Prompt</div>
+                    <div id="promptText" class="text-lg text-green-900 font-semibold"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer Display -->
+        <div id="timerDisplay" class="hidden bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-2xl p-6 mb-8 text-center shadow-2xl">
+            <div class="text-sm font-black uppercase mb-2">Time Remaining</div>
+            <div id="timerText" class="text-6xl font-black timer-pulse">60</div>
+            <div class="text-sm mt-2">seconds</div>
+        </div>
+
+        <!-- Section Container -->
+        <div id="sectionContainer" class="mb-8">
+            <!-- Sections will be injected here -->
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between items-center gap-4">
+            <button id="backBtn" class="hidden bg-gray-300 hover:bg-gray-400 text-gray-800 font-black py-4 px-8 rounded-xl text-lg transition-all shadow-lg">
+                ← Back
+            </button>
+            <div class="flex-1"></div>
+            <button id="nextBtn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 px-12 rounded-xl text-xl transition-all shadow-2xl">
+                Next Section →
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 text-gray-500 text-sm">
+            <p>© 2025 Translab Technologies • PM Excellence Program</p>
+            <p class="mt-2">Module 4: How to Do the Job</p>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================================
+        // STATE MANAGEMENT
+        // ============================================================================
+        let currentSection = 0;
+        let score = 0;
+        let totalScenarios = 3;
+        let scenarioResults = [];
+        let timerInterval = null;
+
+        // ============================================================================
+        // MODULE CONTENT
+        // ============================================================================
+        const sections = [
+            // SECTION 0: WELCOME
+            {
+                id: 'welcome',
+                title: 'Welcome',
+                facilitatorPrompt: 'Welcome everyone! Quick poll in chat: Is your Monday morning ORGANIZED or CHAOS? Type O or C.',
+                timer: 90,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-12 text-center animate-in">
+                        <div class="text-8xl mb-6">⚡</div>
+                        <h2 class="text-4xl font-black mb-6 text-gray-800">From Chaos to Control</h2>
+                        <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6 mb-8">
+                            <p class="text-xl text-red-900"><strong>The Reality:</strong> No Jira, no tools, multiple projects, constant firefighting</p>
+                        </div>
+                        <div class="bg-blue-100 border-4 border-blue-400 rounded-2xl p-6 mb-8">
+                            <p class="text-xl text-blue-900"><strong>Today:</strong> Simple daily/weekly rituals that create control WITHOUT tools</p>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-700">The PM Operating System 🖥️</p>
+                    </div>
+                `
+            },
+
+            // SECTION 1: FRAMEWORK
+            {
+                id: 'framework',
+                title: 'The PM Operating System',
+                facilitatorPrompt: 'Read the framework. This is how great PMs structure their days and weeks. Take 2 minutes.',
+                timer: 120,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                        <h2 class="text-4xl font-black mb-6 text-center bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                            🖥️ THE PM OPERATING SYSTEM
+                        </h2>
+                        
+                        <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6 mb-8 text-center">
+                            <p class="text-xl text-green-900 font-bold">Without structure, you're always REACTING.</p>
+                            <p class="text-xl text-green-900 font-bold">With rituals, you start MANAGING.</p>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-3xl font-black mb-4 text-gray-800">📅 DAILY RITUALS (10 mins every morning)</h3>
+                            <div class="space-y-4">
+                                <div class="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl p-6 shadow-lg">
+                                    <h4 class="text-2xl font-black mb-2">1️⃣ PRIORITY TRIAGE</h4>
+                                    <p class="text-lg">Red/Yellow/Green each project. Which needs attention TODAY?</p>
+                                    <p class="text-sm mt-2 opacity-90">🔴 Red = On fire, needs immediate action</p>
+                                    <p class="text-sm opacity-90">🟡 Yellow = At risk, monitor closely</p>
+                                    <p class="text-sm opacity-90">🟢 Green = On track, maintain</p>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl p-6 shadow-lg">
+                                    <h4 class="text-2xl font-black mb-2">2️⃣ BLOCKER CHECK</h4>
+                                    <p class="text-lg">What's stuck? Who's waiting on you? Who are YOU waiting on?</p>
+                                    <p class="text-sm mt-2 opacity-90">Unblock ONE thing before your first meeting</p>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-2xl p-6 shadow-lg">
+                                    <h4 class="text-2xl font-black mb-2">3️⃣ QUICK WINS</h4>
+                                    <p class="text-lg">One small thing you can CLOSE today. Build momentum.</p>
+                                    <p class="text-sm mt-2 opacity-90">Update a status? Send a follow-up? Close a tiny task?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <h3 class="text-3xl font-black mb-4 text-gray-800">📊 WEEKLY RITUALS (30 mins every Friday)</h3>
+                            <div class="space-y-4">
+                                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl p-6 shadow-lg">
+                                    <h4 class="text-2xl font-black mb-2">1️⃣ WEEK REVIEW</h4>
+                                    <p class="text-lg">What moved forward? What didn't? Why?</p>
+                                    <p class="text-sm mt-2 opacity-90">Celebrate wins. Understand blockers.</p>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl p-6 shadow-lg">
+                                    <h4 class="text-2xl font-black mb-2">2️⃣ NEXT WEEK PREVIEW</h4>
+                                    <p class="text-lg">What's critical next week? What's risky?</p>
+                                    <p class="text-sm mt-2 opacity-90">Plan for risks BEFORE they hit</p>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-2xl p-6 shadow-lg">
+                                    <h4 class="text-2xl font-black mb-2">3️⃣ STAKEHOLDER SCAN</h4>
+                                    <p class="text-lg">Who needs an update? Who's been too quiet?</p>
+                                    <p class="text-sm mt-2 opacity-90">Send proactive updates BEFORE they ask</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-green-100 to-blue-100 border-4 border-green-400 rounded-2xl p-6 text-center">
+                            <p class="text-xl text-green-900 font-black">10 mins daily + 30 mins weekly = Control without tools</p>
+                        </div>
+                    </div>
+                `
+            },
+
+            // SECTION 2: KNOWLEDGE CHECK
+            {
+                id: 'knowledge-check',
+                title: 'Quick Knowledge Check',
+                facilitatorPrompt: 'Quick check. Make sure you absorbed the rituals. 60 seconds.',
+                timer: 60,
+                render: () => {
+                    const questions = [
+                        {
+                            q: "When should you do your Priority Triage?",
+                            options: [
+                                { text: "Every morning (10 mins before first meeting)", correct: true },
+                                { text: "Every Friday afternoon", correct: false },
+                                { text: "Whenever fires happen", correct: false },
+                                { text: "Only when projects are red", correct: false }
+                            ]
+                        },
+                        {
+                            q: "What's the purpose of 'Quick Wins' in your daily ritual?",
+                            options: [
+                                { text: "Build momentum by closing one small thing", correct: true },
+                                { text: "Finish all your tasks for the day", correct: false },
+                                { text: "Impress your manager", correct: false },
+                                { text: "Avoid difficult conversations", correct: false }
+                            ]
+                        },
+                        {
+                            q: "When do you do your Stakeholder Scan?",
+                            options: [
+                                { text: "Every Friday (part of weekly review)", correct: true },
+                                { text: "Every morning", correct: false },
+                                { text: "Only when stakeholders ask", correct: false },
+                                { text: "Once a month", correct: false }
+                            ]
+                        }
+                    ];
+
+                    questions.forEach(q => {
+                        q.options = q.options.sort(() => Math.random() - 0.5);
+                    });
+
+                    let html = `
+                        <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                            <h2 class="text-4xl font-black mb-6 text-center text-gray-800">✅ Quick Knowledge Check</h2>
+                            <p class="text-center text-xl text-gray-600 mb-8">Test if you absorbed the rituals</p>
+                    `;
+
+                    questions.forEach((q, qIndex) => {
+                        html += `
+                            <div class="mb-8">
+                                <p class="text-xl font-bold text-gray-800 mb-4">${qIndex + 1}. ${q.q}</p>
+                                <div class="space-y-3">
+                        `;
+                        q.options.forEach((opt, optIndex) => {
+                            html += `
+                                <div class="option-card bg-gray-50 border-2 border-gray-300 rounded-xl p-4 hover:border-blue-400" 
+                                     onclick="checkKnowledge(${qIndex}, ${optIndex}, ${opt.correct})">
+                                    <p class="text-lg font-semibold text-gray-700">${opt.text}</p>
+                                </div>
+                            `;
+                        });
+                        html += `
+                                </div>
+                                <div id="feedback-${qIndex}" class="hidden mt-4"></div>
+                            </div>
+                        `;
+                    });
+
+                    html += `</div>`;
+                    return html;
+                }
+            },
+
+            // SECTION 3: SCENARIO 1 - MONDAY MORNING CHAOS
+            {
+                id: 'scenario1',
+                title: 'Scenario 1: Monday Morning Chaos',
+                facilitatorPrompt: 'Read the scenario. You have 3 projects in different states. How do you triage? 90 seconds.',
+                timer: 90,
+                isScenario: true,
+                scenarioData: {
+                    emoji: '🔥',
+                    title: 'MONDAY MORNING CHAOS',
+                    setup: `
+                        <div class="bg-red-50 border-4 border-red-300 rounded-2xl p-6 mb-6">
+                            <p class="text-xl text-red-900 mb-4"><strong>THE SITUATION:</strong></p>
+                            <p class="text-lg text-red-800">It's Monday 9am. You arrive to find:</p>
+                            
+                            <div class="mt-4 space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-8 border-red-500">
+                                    <p class="font-black text-red-900">PROJECT A:</p>
+                                    <p class="text-red-800">Client sent angry email at 6am: "Deadline missed! This is unacceptable!"</p>
+                                </div>
+                                
+                                <div class="bg-white rounded-xl p-4 border-l-8 border-yellow-500">
+                                    <p class="font-black text-yellow-900">PROJECT B:</p>
+                                    <p class="text-yellow-800">Your team stuck for 2 days, waiting on YOUR decision about tech approach</p>
+                                </div>
+                                
+                                <div class="bg-white rounded-xl p-4 border-l-8 border-green-500">
+                                    <p class="font-black text-green-900">PROJECT C:</p>
+                                    <p class="text-green-800">On track, but QBR is tomorrow and you haven't prepared</p>
+                                </div>
+                            </div>
+
+                            <p class="text-lg text-red-800 mt-4"><strong>THE REALITY:</strong></p>
+                            <ul class="list-disc ml-6 text-lg text-red-800 space-y-2">
+                                <li>Your first meeting starts in 2 hours</li>
+                                <li>You can't do all three at once</li>
+                                <li>What you tackle first matters</li>
+                            </ul>
+                        </div>
+                    `,
+                    question: "What's your sequence?",
+                    options: [
+                        {
+                            text: "A → B → C (angry client first, then team, then QBR prep)",
+                            correct: true,
+                            feedback: `
+                                <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-green-900 mb-4">✅ CORRECT! URGENCY + IMPACT WINS</h4>
+                                    <p class="text-lg text-green-800 mb-4"><strong>Why this works:</strong></p>
+                                    <ul class="list-disc ml-6 text-green-800 space-y-2">
+                                        <li>✅ Project A = Urgent + High Impact (client threatening)</li>
+                                        <li>✅ Project B = Urgent + High Impact (team blocked 2 days)</li>
+                                        <li>✅ Project C = Important but NOT urgent (QBR tomorrow, not today)</li>
+                                        <li>✅ You can prep QBR tonight if needed</li>
+                                    </ul>
+                                    <div class="bg-white rounded-xl p-4 mt-4">
+                                        <p class="font-black text-green-900 mb-2">THE TRIAGE RULE:</p>
+                                        <p class="text-green-800">Urgent + Important → Do NOW<br>
+                                        Important but not urgent → Schedule<br>
+                                        Urgent but not important → Delegate or quick win<br>
+                                        Neither urgent nor important → Drop</p>
+                                    </div>
+                                </div>
+                            `,
+                            insight: `
+                                <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mt-4">
+                                    <h4 class="text-xl font-black text-purple-900 mb-3">💡 PRO TIP: THE 2-HOUR RULE</h4>
+                                    <p class="text-lg text-purple-800">Before your first meeting, you have a window. Use it for RED items (fires) and BLOCKERS (team waiting). Everything else can wait or be scheduled later. Don't let nice-to-haves steal your critical window.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "C → B → A (QBR prep first, it's tomorrow)",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ MISREADING URGENCY</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this backfires:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>QBR is tomorrow, not today - you have time</li>
+                                        <li>Meanwhile Project A client is getting angrier</li>
+                                        <li>And Project B team is stuck another 2 hours</li>
+                                        <li>You prioritized preparation over fires</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">QBR prep can happen tonight. Fires can't wait.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "B → A → C (unblock team first, then client, then QBR)",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-yellow-900 mb-4">⚠️ CLOSE, BUT WRONG PRIORITY</h4>
+                                    <p class="text-lg text-yellow-800 mb-4"><strong>Why this doesn't work:</strong></p>
+                                    <ul class="list-disc ml-6 text-yellow-800 space-y-2">
+                                        <li>✅ Good instinct: unblock team quickly</li>
+                                        <li>❌ But angry client = relationship risk NOW</li>
+                                        <li>Team has been stuck 2 days, another 30 mins won't kill the project</li>
+                                        <li>Client anger compounds by the hour</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-yellow-900 mt-4">Relationship fires beat process blockers.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Escalate all three to your manager - too much to handle",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ AVOIDING OWNERSHIP</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this fails:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>None of these need escalation - you can handle them</li>
+                                        <li>Angry client? Respond with recovery plan</li>
+                                        <li>Blocked team? Make the tech decision</li>
+                                        <li>QBR prep? You have 1 full day</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">This is exactly what you're paid to triage.</p>
+                                </div>
+                            `
+                        }
+                    ]
+                }
+            },
+
+            // SECTION 4: SCENARIO 2 - THE FORGOTTEN FOLLOW-UP
+            {
+                id: 'scenario2',
+                title: 'Scenario 2: The Forgotten Follow-Up',
+                facilitatorPrompt: 'New scenario. You dropped the ball. How do you recover? 90 seconds.',
+                timer: 90,
+                isScenario: true,
+                scenarioData: {
+                    emoji: '😰',
+                    title: 'THE FORGOTTEN FOLLOW-UP',
+                    setup: `
+                        <div class="bg-orange-50 border-4 border-orange-300 rounded-2xl p-6 mb-6">
+                            <p class="text-xl text-orange-900 mb-4"><strong>THE SITUATION:</strong></p>
+                            <p class="text-lg text-orange-800">Wednesday afternoon. You suddenly realize:</p>
+                            <p class="text-2xl font-black text-orange-900 my-4">"I forgot to chase the client on that critical decision... 3 DAYS AGO."</p>
+                            <p class="text-lg text-orange-800 mt-4"><strong>THE REALITY:</strong></p>
+                            <ul class="list-disc ml-6 text-lg text-orange-800 space-y-2">
+                                <li>You needed their approval to proceed</li>
+                                <li>Your team has been waiting 3 days (you look incompetent)</li>
+                                <li>Deadline is Friday (2 days away)</li>
+                                <li>Project is now at risk because of YOUR follow-up failure</li>
+                            </ul>
+                        </div>
+                    `,
+                    question: "How do you recover?",
+                    options: [
+                        {
+                            text: "Email client immediately: 'Following up on approval needed. Timeline now tight.'",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-yellow-900 mb-4">⚠️ TECHNICALLY CORRECT, MISSING THE TONE</h4>
+                                    <p class="text-lg text-yellow-800 mb-4"><strong>Why this is incomplete:</strong></p>
+                                    <ul class="list-disc ml-6 text-yellow-800 space-y-2">
+                                        <li>✅ You're following up (good)</li>
+                                        <li>❌ But you're not owning YOUR mistake</li>
+                                        <li>❌ 'Timeline now tight' sounds like you're blaming them</li>
+                                        <li>❌ You waited 3 days - own that</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-yellow-900 mt-4">Own the mistake, offer the path forward.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Call client: 'Apologies for delay on my end. Need your approval to hit Friday. Can we decide today?'",
+                            correct: true,
+                            feedback: `
+                                <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-green-900 mb-4">✅ CORRECT! OWNERSHIP + PATH FORWARD</h4>
+                                    <p class="text-lg text-green-800 mb-4"><strong>Why this works:</strong></p>
+                                    <ul class="list-disc ml-6 text-green-800 space-y-2">
+                                        <li>✅ CALL (not email) = shows urgency and accountability</li>
+                                        <li>✅ 'Apologies for delay on MY end' = owns the mistake</li>
+                                        <li>✅ States the consequence clearly (Friday deadline)</li>
+                                        <li>✅ Asks for decision TODAY (creates urgency)</li>
+                                    </ul>
+                                    <div class="bg-white rounded-xl p-4 mt-4">
+                                        <p class="font-black text-green-900 mb-2">THE RECOVERY PROTOCOL:</p>
+                                        <p class="text-green-800">1. Own the mistake<br>
+                                        2. Explain the impact<br>
+                                        3. Offer the path forward<br>
+                                        4. Set new expectation</p>
+                                    </div>
+                                </div>
+                            `,
+                            insight: `
+                                <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mt-4">
+                                    <h4 class="text-xl font-black text-purple-900 mb-3">💡 PRO TIP: CALL > EMAIL FOR RECOVERY</h4>
+                                    <p class="text-lg text-purple-800">When YOU dropped the ball, don't hide behind email. Pick up the phone. It shows: (1) You're not avoiding accountability, (2) It's urgent enough for a call, (3) You want to solve it NOW. Email lets them ignore you for another 3 days.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Wait for them to respond to your original email - they might not have noticed",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ PASSIVE AND RISKY</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this fails:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>You've already waited 3 days - can't wait longer</li>
+                                        <li>Friday is 2 days away - no time for passive waiting</li>
+                                        <li>Their silence means they forgot OR it's not urgent to them</li>
+                                        <li>Waiting = project misses deadline</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Proactive recovery beats passive hope.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Tell your team to proceed without approval - deal with consequences later",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ DANGEROUS MOVE</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this backfires:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>If client rejects it later, you rebuild from scratch</li>
+                                        <li>Wasted team effort (morale hit)</li>
+                                        <li>YOU look reckless (proceeding without approval)</li>
+                                        <li>2 days to get approval vs. 2 weeks to rebuild</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Never proceed on assumptions. Get the approval.</p>
+                                </div>
+                            `
+                        }
+                    ]
+                }
+            },
+
+            // SECTION 5: SCENARIO 3 - EVERYTHING IS URGENT
+            {
+                id: 'scenario3',
+                title: 'Scenario 3: Everything Is Urgent',
+                facilitatorPrompt: 'Final scenario. Everything hits at once. What do you do? 90 seconds.',
+                timer: 90,
+                isScenario: true,
+                scenarioData: {
+                    emoji: '⚡',
+                    title: 'EVERYTHING IS URGENT',
+                    setup: `
+                        <div class="bg-purple-50 border-4 border-purple-300 rounded-2xl p-6 mb-6">
+                            <p class="text-xl text-purple-900 mb-4"><strong>THE SITUATION:</strong></p>
+                            <p class="text-lg text-purple-800">Thursday 2pm. Three urgent requests hit simultaneously:</p>
+                            
+                            <div class="mt-4 space-y-3">
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-purple-900">CLIENT A (Slack):</p>
+                                    <p class="text-purple-800">"Need status update ASAP for stakeholder meeting in 1 hour"</p>
+                                </div>
+                                
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-purple-900">CLIENT B (Email):</p>
+                                    <p class="text-purple-800">"Critical decision needed NOW - timeline depends on it"</p>
+                                </div>
+                                
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-purple-900">YOUR BOSS (Text):</p>
+                                    <p class="text-purple-800">"Need revenue forecast report by EOD for board meeting tomorrow"</p>
+                                </div>
+                            </div>
+
+                            <p class="text-lg text-purple-800 mt-4"><strong>THE REALITY:</strong></p>
+                            <ul class="list-disc ml-6 text-lg text-purple-800 space-y-2">
+                                <li>Each task takes 30-45 mins minimum</li>
+                                <li>You can't do all three before EOD</li>
+                                <li>All feel equally urgent</li>
+                            </ul>
+                        </div>
+                    `,
+                    question: "What gets done first?",
+                    options: [
+                        {
+                            text: "Client A status update (meeting in 1 hour = most urgent)",
+                            correct: true,
+                            feedback: `
+                                <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-green-900 mb-4">✅ CORRECT! IMMINENT DEADLINE WINS</h4>
+                                    <p class="text-lg text-green-800 mb-4"><strong>Why this is right:</strong></p>
+                                    <ul class="list-disc ml-6 text-green-800 space-y-2">
+                                        <li>✅ 1 hour = imminent, cannot be moved</li>
+                                        <li>✅ Client B said 'NOW' but didn't give hard deadline</li>
+                                        <li>✅ Boss report is EOD (you have 4 hours)</li>
+                                        <li>✅ Status update is quick win (15 mins, not 45)</li>
+                                    </ul>
+                                    <div class="bg-white rounded-xl p-4 mt-4">
+                                        <p class="font-black text-green-900 mb-2">THEN WHAT?</p>
+                                        <p class="text-green-800">After Client A (15 mins):<br>
+                                        - Quick message Client B: 'Working on it, ETA 3pm'<br>
+                                        - Start boss report (1-2 hours)<br>
+                                        - Circle back to Client B decision</p>
+                                    </div>
+                                </div>
+                            `,
+                            insight: `
+                                <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mt-4">
+                                    <h4 class="text-xl font-black text-purple-900 mb-3">💡 PRO TIP: IMPACT vs EFFORT MATRIX</h4>
+                                    <p class="text-lg text-purple-800">When everything is urgent, ask: (1) What has the hardest deadline? (2) What's the quickest win? Client A = both (1 hour AND 15 mins). Do it first. Then communicate to others: 'I'm on it, ETA X.' Don't go silent.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Boss revenue report (board meeting tomorrow = highest stakes)",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-yellow-900 mb-4">⚠️ WRONG URGENCY ASSESSMENT</h4>
+                                    <p class="text-lg text-yellow-800 mb-4"><strong>Why this doesn't work:</strong></p>
+                                    <ul class="list-disc ml-6 text-yellow-800 space-y-2">
+                                        <li>Tomorrow = 24 hours away</li>
+                                        <li>Client A meeting = 1 hour away</li>
+                                        <li>Report takes 1-2 hours - you have 4</li>
+                                        <li>Meanwhile Client A goes into meeting with no status</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-yellow-900 mt-4">EOD ≠ RIGHT NOW. Handle imminent first.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Client B decision (they said 'NOW' and 'critical')",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ FALLING FOR 'URGENCY LANGUAGE'</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this is wrong:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>'NOW' without a specific deadline = subjective</li>
+                                        <li>Client A has ACTUAL meeting in 1 hour</li>
+                                        <li>Urgency language ≠ actual urgency</li>
+                                        <li>Ask Client B: 'When exactly do you need this?'</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Verify urgency. Don't assume.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Delegate all three - ask team members to handle",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ THESE ARE PM RESPONSIBILITIES</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why delegation fails here:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>Status update = YOUR job (client relationship)</li>
+                                        <li>Critical decision = YOUR call (PM authority)</li>
+                                        <li>Revenue forecast = YOUR visibility (management report)</li>
+                                        <li>All three require PM-level judgment</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Triage yourself. Don't delegate ownership.</p>
+                                </div>
+                            `
+                        }
+                    ]
+                }
+            },
+
+            // SECTION 6: SUMMARY
+            {
+                id: 'summary',
+                title: 'Key Takeaways',
+                facilitatorPrompt: 'Read the takeaways. This is your new PM Operating System. 90 seconds.',
+                timer: 90,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                        <h2 class="text-4xl font-black mb-6 text-center bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                            🎯 YOUR NEW OPERATING SYSTEM
+                        </h2>
+
+                        <div class="bg-gradient-to-r from-green-100 to-blue-100 border-4 border-green-400 rounded-2xl p-6 mb-8">
+                            <p class="text-2xl font-black text-green-900 text-center">Structure beats chaos. Rituals beat firefighting.</p>
+                        </div>
+
+                        <div class="space-y-6 mb-8">
+                            <div class="bg-red-50 border-l-8 border-red-600 rounded-xl p-6">
+                                <h4 class="text-lg font-black text-red-900 mb-2">EVERY MORNING (10 mins)</h4>
+                                <p class="text-red-800">🔴🟡🟢 Triage projects → Unblock one thing → Find one quick win</p>
+                            </div>
+
+                            <div class="bg-blue-50 border-l-8 border-blue-600 rounded-xl p-6">
+                                <h4 class="text-lg font-black text-blue-900 mb-2">EVERY FRIDAY (30 mins)</h4>
+                                <p class="text-blue-800">Review what moved → Preview next week → Scan stakeholders</p>
+                            </div>
+
+                            <div class="bg-purple-50 border-l-8 border-purple-600 rounded-xl p-6">
+                                <h4 class="text-lg font-black text-purple-900 mb-2">WHEN EVERYTHING IS URGENT</h4>
+                                <p class="text-purple-800">Imminent deadline > Subjective urgency > High impact > Quick wins</p>
+                            </div>
+
+                            <div class="bg-yellow-50 border-l-8 border-yellow-600 rounded-xl p-6">
+                                <h4 class="text-lg font-black text-yellow-900 mb-2">WHEN YOU DROP THE BALL</h4>
+                                <p class="text-yellow-800">Own it → Call (don't email) → Explain impact → Offer path forward</p>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-red-50 border-4 border-red-300 rounded-xl p-6">
+                                <h3 class="text-xl font-black text-red-900 mb-3">❌ REACTIVE PM</h3>
+                                <ul class="space-y-2 text-red-800">
+                                    <li>• Arrives and reacts to whatever screams loudest</li>
+                                    <li>• No morning ritual</li>
+                                    <li>• Everything feels urgent</li>
+                                    <li>• Always firefighting</li>
+                                </ul>
+                            </div>
+                            <div class="bg-green-50 border-4 border-green-300 rounded-xl p-6">
+                                <h3 class="text-xl font-black text-green-900 mb-3">✅ STRUCTURED PM</h3>
+                                <ul class="space-y-2 text-green-800">
+                                    <li>• 10-min morning triage sets the day</li>
+                                    <li>• 30-min Friday review sets the week</li>
+                                    <li>• Knows what's truly urgent vs loud</li>
+                                    <li>• In control, not chaos</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-2xl p-6 text-center">
+                            <p class="text-2xl font-black">40 mins/week buys you CONTROL</p>
+                            <p class="text-xl mt-2">10 mins daily + 30 mins weekly = Your PM Operating System 🖥️</p>
+                        </div>
+                    </div>
+                `
+            },
+
+            // SECTION 7: COMMITMENT
+            {
+                id: 'commitment',
+                title: 'Your Weekly Commitment',
+                facilitatorPrompt: 'Pick ONE ritual to try this week. Fill it in. Share in chat. 90 seconds.',
+                timer: 90,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                        <h2 class="text-4xl font-black mb-6 text-center text-gray-800">📝 YOUR COMMITMENT THIS WEEK</h2>
+                        
+                        <div class="bg-blue-100 border-4 border-blue-400 rounded-2xl p-6 mb-8 text-center">
+                            <p class="text-2xl font-black text-blue-900">Try ONE ritual.</p>
+                            <p class="text-lg text-blue-800 mt-2">Daily triage OR weekly review. Pick one. Do it consistently.</p>
+                        </div>
+
+                        <div class="bg-gray-50 border-4 border-gray-300 rounded-2xl p-6 mb-6">
+                            <label class="block text-lg font-bold text-gray-700 mb-3">This week I will try:</label>
+                            <div class="space-y-3 mb-4">
+                                <label class="flex items-center gap-3 p-4 bg-white rounded-xl cursor-pointer hover:bg-blue-50">
+                                    <input type="radio" name="ritual" value="daily" class="w-5 h-5">
+                                    <span class="text-lg">Daily Morning Triage (10 mins before first meeting)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white rounded-xl cursor-pointer hover:bg-blue-50">
+                                    <input type="radio" name="ritual" value="weekly" class="w-5 h-5">
+                                    <span class="text-lg">Weekly Friday Review (30 mins end of week)</span>
+                                </label>
+                            </div>
+                            <textarea id="commitment" rows="3" 
+                                      class="w-full border-2 border-gray-300 rounded-xl p-4 text-lg focus:border-blue-500 focus:outline-none"
+                                      placeholder="What specific time will you do it? (e.g., 'Every morning 8:50-9:00am' or 'Every Friday 4:30-5:00pm')"></textarea>
+                        </div>
+
+                        <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mb-6">
+                            <p class="text-lg font-bold text-purple-900 mb-2">Your Accountability Buddy:</p>
+                            <p id="buddyName" class="text-2xl font-black text-purple-900"></p>
+                            <p class="text-sm text-purple-800 mt-2">Check in Friday. Share how the ritual went.</p>
+                        </div>
+
+                        <div class="text-center">
+                            <button onclick="saveCommitment()" class="bg-gradient-to-r from-green-500 to-blue-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg hover:shadow-2xl transition-all">
+                                💾 Save My Commitment
+                            </button>
+                        </div>
+
+                        <div id="commitmentSaved" class="hidden mt-6 bg-green-100 border-4 border-green-400 rounded-2xl p-6 text-center">
+                            <p class="text-2xl font-black text-green-900">✅ Commitment Saved!</p>
+                            <p class="text-lg text-green-800 mt-2">Now type it in chat so everyone witnesses it.</p>
+                        </div>
+                    </div>
+                `
+            },
+
+            // SECTION 8: COMPLETION
+            {
+                id: 'completion',
+                title: 'Module Complete',
+                facilitatorPrompt: 'Amazing work! Foundation complete (Pillars 1-4). Download your takeaway. Next week we move to STRENGTH. See you then!',
+                timer: 0,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-12 text-center animate-in">
+                        <div class="text-8xl mb-6">🎉</div>
+                        <h2 class="text-5xl font-black mb-6 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                            MODULE 4 COMPLETE!
+                        </h2>
+                        
+                        <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-8 mb-8">
+                            <p class="text-3xl font-black text-green-900 mb-4">Your Final Score:</p>
+                            <p id="finalScore" class="text-6xl font-black text-green-900 mb-4">-</p>
+                            <p class="text-xl text-green-800">out of 3 scenarios</p>
+                        </div>
+
+                        <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-8 mb-8">
+                            <h3 class="text-3xl font-black text-yellow-900 mb-4">🏆 FOUNDATION COMPLETE!</h3>
+                            <p class="text-xl text-yellow-800 mb-4">You've mastered the 4 foundation pillars:</p>
+                            <div class="grid md:grid-cols-2 gap-4 text-left">
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-yellow-900">✅ Who Am I? (Role Clarity)</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-yellow-900">✅ Protecting Translab</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-yellow-900">✅ Protecting the Client</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-yellow-900">✅ How to Do the Job</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <button onclick="downloadTakeaway()" class="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg hover:shadow-2xl transition-all">
+                                📥 Download Takeaway Sheet
+                            </button>
+                        </div>
+
+                        <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6">
+                            <p class="text-2xl font-black text-purple-900 mb-2">NEXT PHASE: STRENGTH</p>
+                            <p class="text-xl text-purple-800">Starting next week: Governance, Escalation, Difficult Situations</p>
+                            <p class="text-lg text-purple-800 mt-2">You've got the foundation. Now we build muscle. 💪</p>
+                        </div>
+
+                        <p class="text-gray-500 mt-8">© 2025 Translab Technologies • PM Excellence Program</p>
+                    </div>
+                `
+            }
+        ];
+
+        // ============================================================================
+        // NAVIGATION FUNCTIONS
+        // ============================================================================
+        function updateProgress() {
+            const progress = ((currentSection + 1) / sections.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `${score}/${totalScenarios}`;
+        }
+
+        function showSection(index) {
+            const section = sections[index];
+            const container = document.getElementById('sectionContainer');
+            
+            if (section.isScenario) {
+                container.innerHTML = renderScenario(section.scenarioData);
+                // Attach event listeners after rendering (increased delay for reliability)
+                setTimeout(() => attachScenarioListeners(), 200);
+            } else {
+                container.innerHTML = section.render();
+            }
+
+            document.getElementById('promptText').textContent = section.facilitatorPrompt;
+
+            if (section.timer > 0) {
+                showTimer(section.timer);
+            } else {
+                document.getElementById('timerDisplay').classList.add('hidden');
+            }
+
+            document.getElementById('backBtn').classList.toggle('hidden', index === 0);
+            
+            const nextBtn = document.getElementById('nextBtn');
+            if (index === sections.length - 1) {
+                nextBtn.textContent = 'Finish';
+            } else {
+                nextBtn.textContent = 'Next Section →';
+            }
+
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function nextSection() {
+            if (currentSection < sections.length - 1) {
+                currentSection++;
+                showSection(currentSection);
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 0) {
+                currentSection--;
+                showSection(currentSection);
+            }
+        }
+
+        function showTimer(seconds) {
+            clearInterval(timerInterval);
+            const timerDisplay = document.getElementById('timerDisplay');
+            const timerText = document.getElementById('timerText');
+            
+            timerDisplay.classList.remove('hidden');
+            timerText.textContent = seconds;
+            
+            let remaining = seconds;
+            timerInterval = setInterval(() => {
+                remaining--;
+                timerText.textContent = remaining;
+                
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.classList.add('hidden');
+                }
+            }, 1000);
+        }
+
+        // ============================================================================
+        // SCENARIO FUNCTIONS - DEFINE EARLY FOR GLOBAL ACCESS
+        // ============================================================================
+        let selectedOptionIndex = null;
+
+        function selectOption(displayIndex, originalIndex, isCorrect) {
+            console.log('selectOption called:', displayIndex, originalIndex, isCorrect);
+            
+            // Highlight selected option - ONLY from current section
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Found', options.length, 'options to highlight');
+            options.forEach(opt => opt.classList.remove('option-selected'));
+            if (options[displayIndex]) {
+                options[displayIndex].classList.add('option-selected');
+                console.log('Highlighted option', displayIndex);
+            }
+
+            selectedOptionIndex = displayIndex;
+            window.selectedCorrect = isCorrect;
+
+            // Show reveal button
+            document.getElementById('revealBtn').classList.remove('hidden');
+        }
+
+        function revealAnswer() {
+            if (selectedOptionIndex === null) return;
+
+            // Only select options from current section
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Revealing answer for', options.length, 'options');
+            const selectedOption = window.currentScenarioOptions[selectedOptionIndex];
+
+            // Show correct/incorrect styling
+            options.forEach((opt, idx) => {
+                const optionData = window.currentScenarioOptions[idx];
+                if (optionData.correct) {
+                    opt.classList.add('option-correct');
+                } else if (idx === selectedOptionIndex) {
+                    opt.classList.add('option-incorrect');
+                }
+            });
+
+            // Show feedback
+            const feedbackContainer = document.getElementById('answerFeedback');
+            feedbackContainer.innerHTML = selectedOption.feedback;
+            feedbackContainer.classList.remove('hidden');
+
+            // Show insight if correct
+            if (selectedOption.correct && selectedOption.insight) {
+                const insightContainer = document.getElementById('insightBox');
+                insightContainer.innerHTML = selectedOption.insight;
+                insightContainer.classList.remove('hidden');
+            }
+
+            // Update score
+            if (selectedOption.correct) {
+                score++;
+                updateScore();
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                document.getElementById('tryAgainBtn').classList.remove('hidden');
+            }
+
+            document.getElementById('revealBtn').classList.add('hidden');
+
+            scenarioResults.push({
+                scenario: currentSection,
+                correct: selectedOption.correct
+            });
+        }
+
+        function tryAgain() {
+            // Reset the scenario - only options from current section
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Try again - resetting', options.length, 'options');
+            options.forEach(opt => {
+                opt.classList.remove('option-selected', 'option-correct', 'option-incorrect');
+            });
+
+            document.getElementById('answerFeedback').classList.add('hidden');
+            document.getElementById('insightBox').classList.add('hidden');
+            document.getElementById('tryAgainBtn').classList.add('hidden');
+            selectedOptionIndex = null;
+        }
+
+        // Make functions globally accessible IMMEDIATELY
+        window.selectOption = selectOption;
+        window.revealAnswer = revealAnswer;
+        window.tryAgain = tryAgain;
+
+        // ============================================================================
+        // SCENARIO RENDERING
+        // ============================================================================
+        function renderScenario(data) {
+            const randomized = data.options
+                .map((opt, index) => ({ ...opt, originalIndex: index }))
+                .sort(() => Math.random() - 0.5);
+
+            let html = `
+                <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                    <div class="text-center mb-8">
+                        <div class="text-7xl mb-4">${data.emoji}</div>
+                        <h2 class="text-4xl font-black text-gray-800">${data.title}</h2>
+                    </div>
+                    ${data.setup}
+                    <div class="bg-gray-100 border-4 border-gray-400 rounded-2xl p-6 mb-6 text-center">
+                        <p class="text-2xl font-black text-gray-800">${data.question}</p>
+                    </div>
+                    <div class="space-y-4 mb-6" id="optionsContainer">
+            `;
+
+            randomized.forEach((opt, displayIndex) => {
+                html += `
+                    <div class="option-card bg-white border-4 border-gray-300 rounded-2xl p-6 shadow-lg" 
+                         data-display-index="${displayIndex}"
+                         data-original-index="${opt.originalIndex}"
+                         data-correct="${opt.correct}">
+                        <p class="text-xl font-bold text-gray-800">${opt.text}</p>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                    <div id="answerFeedback" class="hidden mb-6"></div>
+                    <div id="insightBox" class="hidden"></div>
+                    <div class="text-center">
+                        <button id="revealBtn" class="hidden bg-gradient-to-r from-blue-500 to-purple-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg">
+                            👀 Reveal Answer
+                        </button>
+                        <button id="tryAgainBtn" class="hidden bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg">
+                            🔄 Try Again
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            window.currentScenarioOptions = randomized;
+            return html;
+        }
+
+        // ============================================================================
+        // ATTACH EVENT LISTENERS AFTER RENDERING
+        // ============================================================================
+        function attachScenarioListeners() {
+            // Only select option-cards that have data-display-index (scenario options, not knowledge check)
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Attaching listeners to', options.length, 'options');
+            options.forEach((opt, idx) => {
+                console.log('Option', idx, ':', opt.getAttribute('data-display-index'), opt.getAttribute('data-correct'));
+                opt.addEventListener('click', function(e) {
+                    console.log('Click detected on option', this.getAttribute('data-display-index'));
+                    const displayIndex = parseInt(this.getAttribute('data-display-index'));
+                    const originalIndex = parseInt(this.getAttribute('data-original-index'));
+                    const isCorrect = this.getAttribute('data-correct') === 'true';
+                    selectOption(displayIndex, originalIndex, isCorrect);
+                });
+            });
+        }
+
+        window.checkKnowledge = function(qIndex, optIndex, isCorrect) {
+            const feedback = document.getElementById(`feedback-${qIndex}`);
+            if (isCorrect) {
+                feedback.innerHTML = `
+                    <div class="bg-green-100 border-4 border-green-400 rounded-xl p-4">
+                        <p class="text-lg font-black text-green-900">✅ Correct!</p>
+                    </div>
+                `;
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = `
+                    <div class="bg-red-100 border-4 border-red-400 rounded-xl p-4">
+                        <p class="text-lg font-black text-red-900">❌ Not quite. Try again!</p>
+                    </div>
+                `;
+                feedback.classList.remove('hidden');
+            }
+        };
+
+        window.saveCommitment = function() {
+            const ritual = document.querySelector('input[name="ritual"]:checked');
+            const commitment = document.getElementById('commitment').value;
+            
+            if (ritual && commitment.trim()) {
+                const fullCommitment = `${ritual.value === 'daily' ? 'Daily Morning Triage' : 'Weekly Friday Review'}: ${commitment}`;
+                localStorage.setItem('module4_commitment', fullCommitment);
+                document.getElementById('commitmentSaved').classList.remove('hidden');
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                alert('Please select a ritual and specify when you\'ll do it!');
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const commitmentField = document.getElementById('commitment');
+            if (commitmentField) {
+                commitmentField.addEventListener('input', (e) => {
+                    localStorage.setItem('module4_commitment_draft', e.target.value);
+                });
+
+                const draft = localStorage.getItem('module4_commitment_draft');
+                if (draft) {
+                    commitmentField.value = draft;
+                }
+            }
+
+            const buddyName = localStorage.getItem('accountabilityBuddy') || 'Your Buddy';
+            const buddyDisplay = document.getElementById('buddyName');
+            if (buddyDisplay) {
+                buddyDisplay.textContent = buddyName;
+            }
+        });
+
+        window.downloadTakeaway = function() {
+            const takeawayContent = `
+PM EXCELLENCE PROGRAM - MODULE 4 TAKEAWAY
+==========================================
+
+SESSION: How to Do the Job
+PILLAR: #4 - How to Do the Job
+DATE: ${new Date().toLocaleDateString()}
+
+THE PM OPERATING SYSTEM
+------------------------
+DAILY RITUALS (10 mins every morning):
+1. Priority Triage - 🔴🟡🟢 each project
+2. Blocker Check - What's stuck? Who's waiting?
+3. Quick Wins - One small thing to close today
+
+WEEKLY RITUALS (30 mins every Friday):
+1. Week Review - What moved? What didn't? Why?
+2. Next Week Preview - What's critical? What's risky?
+3. Stakeholder Scan - Who needs updates? Who's quiet?
+
+KEY FRAMEWORKS
+--------------
+THE TRIAGE RULE:
+- Urgent + Important → Do NOW
+- Important but not urgent → Schedule
+- Urgent but not important → Delegate or quick win
+- Neither → Drop
+
+THE RECOVERY PROTOCOL (when you drop the ball):
+1. Own the mistake
+2. Explain the impact
+3. Offer the path forward
+4. Set new expectation
+
+IMPACT vs EFFORT MATRIX:
+When everything is urgent:
+1. Imminent deadline first
+2. Quick wins second
+3. High impact third
+4. Communicate ETAs to everyone else
+
+YOUR COMMITMENT THIS WEEK
+--------------------------
+${localStorage.getItem('module4_commitment') || 'Try one ritual: Daily triage OR weekly review.'}
+
+ACCOUNTABILITY BUDDY
+--------------------
+${localStorage.getItem('accountabilityBuddy') || 'Your Buddy'}
+
+FOUNDATION COMPLETE!
+--------------------
+✅ Module 1: Role Clarity
+✅ Module 2: Protecting Translab
+✅ Module 3: Protecting the Client
+✅ Module 4: How to Do the Job
+
+NEXT PHASE: STRENGTH (Pillars 5-8)
+Starting next week: Governance, Escalation, Difficult Situations
+
+© 2025 Translab Technologies
+            `;
+
+            const blob = new Blob([takeawayContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Module4_How_To_Do_The_Job_Takeaway.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        };
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentSection === sections.length - 1) {
+                document.getElementById('finalScore').textContent = `${score}/${totalScenarios}`;
+            }
+            nextSection();
+        });
+
+        document.getElementById('backBtn').addEventListener('click', previousSection);
+
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'revealBtn') {
+                revealAnswer();
+            }
+            if (e.target.id === 'tryAgainBtn') {
+                tryAgain();
+            }
+        });
+
+        showSection(0);
+    </script>
+</body>
+</html>
