@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 5, Section 5: Demo Simulator - Translab Sales Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-label {
+            font-size: 0.85em;
+            color: #94a3b8;
+        }
+
+        .deal-health {
+            width: 150px;
+            height: 12px;
+            background: #334155;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .deal-health-fill {
+            height: 100%;
+            transition: all 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .deal-health-fill.high { background: linear-gradient(90deg, #10b981, #34d399); }
+        .deal-health-fill.medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .deal-health-fill.low { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+        .health-percent {
+            font-weight: 600;
+            min-width: 45px;
+        }
+
+        .stakeholder-mood {
+            font-size: 1.5em;
+        }
+
+        .scenario-counter {
+            background: #334155;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        /* Main Content */
+        .content {
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Intro Screen */
+        .intro-content {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .intro-content h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #a78bfa;
+        }
+
+        .intro-content p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            color: #cbd5e1;
+        }
+
+        .rules-box {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid #7c3aed;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .rules-box h3 {
+            color: #a78bfa;
+            margin-bottom: 15px;
+        }
+
+        .rules-box ul {
+            margin-left: 20px;
+        }
+
+        .rules-box li {
+            margin: 10px 0;
+            color: #e2e8f0;
+        }
+
+        /* Scenario Screen */
+        .scenario-header {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #7c3aed;
+        }
+
+        .scenario-header h2 {
+            color: #a78bfa;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .scenario-context {
+            color: #94a3b8;
+            font-size: 0.95em;
+        }
+
+        .scenario-context strong {
+            color: #e2e8f0;
+        }
+
+        /* Situation Box */
+        .situation-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .situation-box .narrator {
+            color: #94a3b8;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .situation-box .dialogue {
+            background: #334155;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .situation-box .speaker {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .situation-box .speech {
+            color: #e2e8f0;
+            font-size: 1.05em;
+        }
+
+        /* Choice Cards */
+        .choices-container {
+            margin: 25px 0;
+        }
+
+        .choices-container h3 {
+            color: #fbbf24;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .choice-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 12px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .choice-card:hover {
+            border-color: #7c3aed;
+            transform: translateX(5px);
+            background: linear-gradient(135deg, #2d3a4f 0%, #1e293b 100%);
+        }
+
+        .choice-card .choice-label {
+            display: inline-block;
+            background: #7c3aed;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .choice-card .choice-text {
+            color: #e2e8f0;
+        }
+
+        .choice-card.selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .choice-card.correct {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .choice-card.wrong {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .choice-card.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Consequence Box */
+        .consequence-box {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .consequence-box.show {
+            display: block;
+        }
+
+        .consequence-box.positive {
+            border-left: 4px solid #10b981;
+        }
+
+        .consequence-box.negative {
+            border-left: 4px solid #ef4444;
+        }
+
+        .consequence-box.neutral {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .consequence-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .consequence-header .icon {
+            font-size: 1.5em;
+        }
+
+        .consequence-header h4 {
+            color: #e2e8f0;
+        }
+
+        .consequence-text {
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        .consequence-impact {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #334155;
+        }
+
+        .impact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+
+        .impact-item.positive { color: #10b981; }
+        .impact-item.negative { color: #ef4444; }
+
+        /* Pro Tip Box */
+        .pro-tip {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid #7c3aed;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-top: 20px;
+        }
+
+        .pro-tip h5 {
+            color: #a78bfa;
+            margin-bottom: 8px;
+        }
+
+        .pro-tip p {
+            color: #cbd5e1;
+            font-size: 0.95em;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-secondary {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        /* Results Screen */
+        .results-container {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .results-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .results-title.win { color: #10b981; }
+        .results-title.partial { color: #f59e0b; }
+        .results-title.lose { color: #ef4444; }
+
+        .results-message {
+            font-size: 1.1em;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+        }
+
+        .final-score {
+            background: #1e293b;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .score-item {
+            background: #334155;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .score-item .label {
+            color: #94a3b8;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+
+        .score-item .value {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .score-item .value.good { color: #10b981; }
+        .score-item .value.medium { color: #f59e0b; }
+        .score-item .value.bad { color: #ef4444; }
+
+        /* Scenario Summary */
+        .scenario-summary {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .scenario-summary h4 {
+            color: #a78bfa;
+            margin-bottom: 10px;
+        }
+
+        .decision-list {
+            margin-left: 20px;
+        }
+
+        .decision-list li {
+            margin: 8px 0;
+            color: #cbd5e1;
+        }
+
+        .decision-list .good { color: #10b981; }
+        .decision-list .bad { color: #ef4444; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .status-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Demo Simulator</h1>
+            <p class="subtitle">Module 5, Section 5 - Translab Sales Academy</p>
+            <div class="badge">4 Scenarios • 20-25 Minutes • Interactive</div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar" id="statusBar" style="display: none;">
+            <div class="status-item">
+                <span class="status-label">Deal Health:</span>
+                <div class="deal-health">
+                    <div class="deal-health-fill high" id="healthFill" style="width: 100%;"></div>
+                </div>
+                <span class="health-percent" id="healthPercent">100%</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Stakeholder:</span>
+                <span class="stakeholder-mood" id="stakeholderMood">😊</span>
+            </div>
+            <div class="status-item">
+                <span class="scenario-counter" id="scenarioCounter">Scenario 1 of 4</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- INTRO SCREEN -->
+            <div class="screen active" id="introScreen">
+                <div class="intro-content">
+                    <h2>Welcome to the Demo Simulator</h2>
+                    <p>You're about to face realistic sales demo scenarios. Make decisions, face consequences, and learn to handle any situation.</p>
+
+                    <div class="rules-box">
+                        <h3>📋 How It Works</h3>
+                        <ul>
+                            <li><strong>4 Scenarios:</strong> Tantor AI, Kong, HashiCorp, and Tantor Data</li>
+                            <li><strong>2-3 Decisions per Scenario:</strong> Each choice affects the outcome</li>
+                            <li><strong>Deal Health Meter:</strong> Starts at 100%, changes based on your choices</li>
+                            <li><strong>Stakeholder Mood:</strong> Watch how they react to your approach</li>
+                            <li><strong>Goal:</strong> Keep Deal Health above 50% to close the deal</li>
+                        </ul>
+                    </div>
+
+                    <div class="rules-box">
+                        <h3>🎯 Scoring</h3>
+                        <ul>
+                            <li><strong>Optimal Choice:</strong> +10 to +15 Deal Health</li>
+                            <li><strong>Acceptable Choice:</strong> 0 to +5 Deal Health</li>
+                            <li><strong>Poor Choice:</strong> -10 to -20 Deal Health</li>
+                            <li><strong>Win:</strong> Finish with 70%+ Deal Health</li>
+                            <li><strong>Partial:</strong> Finish with 50-69% Deal Health</li>
+                            <li><strong>Lose:</strong> Finish below 50% Deal Health</li>
+                        </ul>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="startSimulation()">Start Simulation →</button>
+                </div>
+            </div>
+
+            <!-- SCENARIO SCREENS (populated by JavaScript) -->
+            <div class="screen" id="scenarioScreen">
+                <div id="scenarioContent"></div>
+            </div>
+
+            <!-- RESULTS SCREEN -->
+            <div class="screen" id="resultsScreen">
+                <div class="results-container" id="resultsContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // GAME STATE
+        // ============================================
+        let dealHealth = 100;
+        let currentScenario = 0;
+        let currentStep = 0;
+        let decisions = [];
+        let stakeholderMood = 'happy'; // happy, neutral, unhappy
+
+        // ============================================
+        // SCENARIO DATA
+        // ============================================
+        const scenarios = [
+            // SCENARIO 1: TANTOR AI - CIO Interrupts
+            {
+                id: 1,
+                title: "Scenario 1: The Unexpected Question",
+                product: "Tantor AI Platform",
+                context: {
+                    prospect: "Mid-size Private Bank",
+                    attendees: "CIO, VP Analytics, 2 Data Engineers",
+                    stage: "First Demo (15 minutes in)",
+                    situation: "You're demonstrating NPA prediction when the CIO interrupts."
+                },
+                steps: [
+                    {
+                        narrator: "You're 15 minutes into your Tantor AI demo. The NPA prediction dashboard is showing impressive results. Suddenly, the CIO leans forward.",
+                        dialogue: {
+                            speaker: "CIO",
+                            speech: "This looks good, but we have 80% of our data in Oracle. How does Tantor integrate with Oracle? Our last vendor promised seamless integration and it took 6 months."
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "Great question! Let me finish the NPA demo first, then I'll cover Oracle integration in our architecture section afterward.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The CIO frowns slightly. She asked because it's her priority—deferring feels like you're avoiding the question. The VP Analytics exchanges a glance with the CIO.",
+                                    healthChange: -15,
+                                    moodChange: "unhappy",
+                                    tip: "Never defer a direct question from the decision-maker. It signals you're either unprepared or hiding something."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "We have 50+ connectors including Oracle, SQL Server, MySQL, PostgreSQL, MongoDB, Kafka, and many other enterprise sources.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The CIO's eyes glaze over as you list connectors. 'Yes, but specifically Oracle—does it work?' She's now skeptical you understand her concern.",
+                                    healthChange: -10,
+                                    moodChange: "neutral",
+                                    tip: "Feature dumping doesn't answer the question. She asked about Oracle specifically—answer that specifically."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "Oracle is our most common source. Let me pivot and show you our Oracle CDC connector working live right now.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The CIO nods appreciatively. 'That's exactly what I needed to see.' The data engineers lean in, interested in the technical details.",
+                                    healthChange: 15,
+                                    moodChange: "happy",
+                                    tip: "Pivoting immediately shows you're prepared and customer-focused. You answered her real question, not your prepared script."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "I understand your concern about past vendors. What specific integration challenges did you face with your previous solution?",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The CIO appreciates the empathy but wants to see proof, not more conversation. 'We can discuss that later—can you show me Oracle integration or not?'",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Discovery questions are great early on, but mid-demo, executives want answers. Show, don't ask."
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        narrator: "After showing the Oracle integration, the VP Analytics speaks up.",
+                        dialogue: {
+                            speaker: "VP Analytics",
+                            speech: "Our data science team uses Python and Jupyter. They won't adopt anything that disrupts their workflow. How do your AI models work with their existing tools?"
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "Tantor's AI agents are pre-built and require no coding. Your team won't need Python—everything is point-and-click.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The VP Analytics looks concerned. 'We've invested heavily in our data science capabilities. We're not looking to replace our team.' This feels threatening to him.",
+                                    healthChange: -15,
+                                    moodChange: "unhappy",
+                                    tip: "Never position your solution as replacing the prospect's team. It creates fear and resistance. Position as augmenting, not replacing."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "Tantor augments your team—they can export predictions via API to Jupyter, or customize agents with our SDK.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The VP Analytics relaxes. 'That makes sense. So my team can still do custom analysis while Tantor handles the operational predictions?' 'Exactly,' you confirm.",
+                                    healthChange: 10,
+                                    moodChange: "happy",
+                                    tip: "Position as augmentation, not replacement. Technical buyers need to see how you fit into their existing ecosystem."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "Let me show you a quick demo of how our Python SDK integrates with Jupyter notebooks in their existing workflow.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The CIO glances at her watch—you're now 25 minutes in and starting another demo tangent. The VP Analytics is interested, but you're losing the executive.",
+                                    healthChange: 0,
+                                    moodChange: "neutral",
+                                    tip: "Know when to demo and when to explain. Sometimes a verbal answer + 'I can show you in a follow-up' is better than derailing the meeting."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "What specific Python libraries and workflows does your data science team use today? I want to ensure compatibility.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The VP nods but the CIO interjects: 'We can cover technical details later. What's the bottom line on compatibility?' You've lost momentum.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Discovery has its place, but mid-demo with executives present, give direct answers first, then dive deeper."
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        narrator: "The demo is wrapping up. The CIO checks her calendar.",
+                        dialogue: {
+                            speaker: "CIO",
+                            speech: "I have another meeting in 5 minutes. What's the bottom line here? What should I remember from this conversation?"
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "One thing: Tantor predicts NPAs 6 months early. That's ₹10-15 Cr in savings annually for your portfolio size.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The CIO pauses. '₹10-15 Cr? Let's schedule that follow-up. VP, make sure the CFO joins.' You've created urgency and a clear next step.",
+                                    healthChange: 15,
+                                    moodChange: "happy",
+                                    tip: "The bottom line must be: quantified business impact + clear next step. This is what executives remember and act on."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "Tantor offers NPA prediction, fraud detection, churn analysis, and regulatory automation with 50+ data connectors.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The CIO is already standing up, half-listening. You've given her a feature list, not a memorable takeaway. She'll forget this by her next meeting.",
+                                    healthChange: -10,
+                                    moodChange: "neutral",
+                                    tip: "When an executive asks for the bottom line, give them ONE memorable statement, not a feature dump."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "Thank you for your time. I'll send the presentation and documentation. Please reach out if you have questions.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The CIO nods politely and leaves. No commitment, no urgency, no next step. The deal will likely stall in 'we'll get back to you' limbo.",
+                                    healthChange: -10,
+                                    moodChange: "neutral",
+                                    tip: "Never end a meeting without a concrete next step. 'Let me know if you have questions' is a deal killer."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "I'd love to schedule a technical deep-dive with your data engineering team to explore the platform capabilities.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The CIO shrugs. 'Sure, have your team reach out to the VP.' It's a next step, but you didn't give her a reason to care. She's not personally invested.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Next steps without business impact don't create executive urgency. Lead with the value, then propose the action."
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            // SCENARIO 2: KONG - Demo Crashes
+            {
+                id: 2,
+                title: "Scenario 2: The Demo Disaster",
+                product: "Kong API Gateway",
+                context: {
+                    prospect: "Large E-commerce Company",
+                    attendees: "CTO, 3 Senior Architects, DevOps Lead",
+                    stage: "Technical Deep-Dive Demo",
+                    situation: "You're showing Kong's rate limiting when the demo environment freezes."
+                },
+                steps: [
+                    {
+                        narrator: "You're demonstrating Kong's rate limiting feature to a technical audience. The CTO is engaged, the architects are taking notes. Suddenly, the demo environment freezes completely.",
+                        dialogue: {
+                            speaker: "CTO",
+                            speech: "[Silence. Everyone is looking at the frozen screen. The CTO raises an eyebrow.] 'Technical difficulties?'"
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "Let me try refreshing... one moment... let me check my connection and restart the service. This should just take a minute.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "Three minutes pass. The architects start checking their phones. The CTO says, 'We've all seen demos fail. Do you have a backup?' You don't. Credibility is dropping.",
+                                    healthChange: -20,
+                                    moodChange: "unhappy",
+                                    tip: "Never troubleshoot live for more than 30 seconds. Every second of fumbling erodes credibility. Pivot immediately."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "I apologize for this. Our demo environment is usually reliable. Let me reschedule for next week when we can ensure stability.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "'We cleared 5 schedules for this meeting,' the CTO says flatly. 'Let's make the most of the time we have.' You've wasted their time and lost momentum.",
+                                    healthChange: -15,
+                                    moodChange: "unhappy",
+                                    tip: "Never reschedule a meeting you can salvage. Executives don't give second chances easily. Use what you have."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "These things happen with cloud services. Let me switch to explaining the architecture while our IT team investigates this.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The CTO says, 'We came to see a demo, not slides. What else can you show us?' The deflection isn't working—they want proof.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Don't make excuses. Technical audiences expect problems—they judge you on how you handle them, not on having a perfect environment."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "No problem—I have a recorded demo ready. Let me show you that, then schedule a live hands-on session with your team.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The CTO nods approvingly. 'That's professional. I like that you came prepared.' The recorded demo plays smoothly, and you've created a natural follow-up meeting.",
+                                    healthChange: 10,
+                                    moodChange: "happy",
+                                    tip: "Having a fallback ready shows professionalism. Using the failure to create a hands-on follow-up turns a negative into a positive."
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        narrator: "After the recovery, the DevOps Lead has a pointed question.",
+                        dialogue: {
+                            speaker: "DevOps Lead",
+                            speech: "I've read about Kong, but some community forums say the enterprise version has significantly more latency than the open-source version. Is that true? We can't afford extra milliseconds."
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "I'm not sure where you read that. Our enterprise version is actually faster due to the optimizations we've built in.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The DevOps Lead looks skeptical. 'That's not what the benchmarks show. Can you prove it?' You've made a claim you can't immediately back up.",
+                                    healthChange: -10,
+                                    moodChange: "neutral",
+                                    tip: "Never dismiss concerns as misinformation without evidence. Technical audiences do their homework—respect that."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "You've done your homework. Enterprise adds 2-5ms for the plugin ecosystem—that's the cost of security and observability.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The DevOps Lead nods. 'Honest answer. 2-5ms is acceptable for what we'd gain. Let's do those benchmarks.' The CTO appreciates your transparency.",
+                                    healthChange: 10,
+                                    moodChange: "happy",
+                                    tip: "Honesty about limitations builds trust. Technical buyers respect you more for acknowledging trade-offs than for overselling."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "That's really a question for our engineering team. I can connect you with them for a detailed technical discussion.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "'You're the sales engineer, aren't you?' the CTO interjects. 'If you don't know your product's performance characteristics, that's concerning.' You've lost credibility.",
+                                    healthChange: -15,
+                                    moodChange: "unhappy",
+                                    tip: "Know your product's limitations before the demo. Deferring basic technical questions to engineering makes you look unprepared."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "The latency difference is negligible in production. Most customers see sub-millisecond overhead with proper configuration.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The DevOps Lead pushes back: 'Negligible isn't a number. What's the actual overhead?' You're being evasive and they notice.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Technical audiences want specific numbers, not vague reassurances. If you don't know, admit it and offer to find out."
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        narrator: "The meeting is ending. The CTO stands up to leave.",
+                        dialogue: {
+                            speaker: "CTO",
+                            speech: "Interesting session. We're also evaluating AWS API Gateway and Apigee. What makes Kong worth the extra complexity of self-managing?"
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "Kong has more features than AWS API Gateway and Apigee—better rate limiting, more plugins, and a larger community.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The CTO shrugs. 'They all say that. Features aren't our constraint—we need to justify the operational overhead.' You haven't addressed his real concern.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Don't compete on features—compete on fit. The CTO asked about 'extra complexity'—address that specific concern."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "I'd recommend a full technical comparison. I can send you analyst reports comparing Kong vs AWS vs Apigee in detail.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "'We've read the analyst reports,' the DevOps Lead says. 'We wanted your perspective.' You've missed the chance to differentiate.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Analyst reports don't close deals—your ability to articulate fit does. Answer the question directly."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "You mentioned multi-cloud. Kong runs anywhere—AWS, Azure, GCP, on-prem. One gateway, one policy set, everywhere.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "'Multi-cloud is exactly our direction,' the CTO confirms. 'That portability matters. Let's schedule a POC.' You've differentiated on their specific need.",
+                                    healthChange: 15,
+                                    moodChange: "happy",
+                                    tip: "Differentiate on THEIR criteria, not generic features. Listen for their strategic direction and align your value there."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "AWS API Gateway locks you into their ecosystem. With Kong, you maintain vendor independence and avoid cloud lock-in.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The CTO nods but looks unconvinced. 'Vendor lock-in is a concern, but we're already deep in AWS. Is that the only differentiator?' You've given a generic answer.",
+                                    healthChange: 0,
+                                    moodChange: "neutral",
+                                    tip: "Generic positioning like 'avoid lock-in' doesn't resonate. Tie differentiation to THEIR specific situation."
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            // SCENARIO 3: HASHICORP - Technical Challenge
+            {
+                id: 3,
+                title: "Scenario 3: The Skeptical Architect",
+                product: "HashiCorp Terraform",
+                context: {
+                    prospect: "Insurance Company (Hybrid Cloud)",
+                    attendees: "VP Infrastructure, Lead Architect, 2 Senior DevOps",
+                    stage: "Second Meeting - Technical Validation",
+                    situation: "The Lead Architect is known for being skeptical of vendor claims."
+                },
+                steps: [
+                    {
+                        narrator: "You're presenting Terraform for multi-cloud infrastructure management. The Lead Architect has been quiet, arms crossed. Suddenly, he interrupts.",
+                        dialogue: {
+                            speaker: "Lead Architect",
+                            speech: "We tried Terraform two years ago. State management was a nightmare. State file got corrupted twice, and we had to rebuild environments manually. Why should we trust it now?"
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "That shouldn't happen if Terraform is configured correctly. Were you using remote state with proper locking mechanisms?",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The Lead Architect's eyes narrow. 'So you're saying it was our fault?' The VP Infrastructure shifts uncomfortably. You've made him defensive.",
+                                    healthChange: -15,
+                                    moodChange: "unhappy",
+                                    tip: "Never blame the customer for past failures. Even if it was misconfiguration, saying so sounds defensive and dismissive."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "State management was painful in older versions. Terraform Cloud now handles state with versioning, locking, and backups.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The Lead Architect uncrosses his arms slightly. 'Okay, show me.' You demonstrate Terraform Cloud's state management, and he starts asking engaged questions.",
+                                    healthChange: 15,
+                                    moodChange: "happy",
+                                    tip: "Acknowledge the pain, then show how it's been solved. Turning objections into demo opportunities builds credibility."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "That was two years ago—a lot has changed since then. Let me walk you through all the new features in the latest version.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "'I don't care about all the features,' the architect says. 'I care about state management. Do you have a specific answer or not?' You've deflected instead of addressing.",
+                                    healthChange: -10,
+                                    moodChange: "neutral",
+                                    tip: "When someone raises a specific concern, address THAT concern specifically. Feature tours don't resolve objections."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "State corruption is unusual. Can you tell me more about what happened so I can understand the root cause?",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The architect sighs. 'I don't want to relitigate the past. I want to know if you've fixed it.' Your discovery question feels like stalling.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Discovery has its place, but mid-objection, the prospect wants answers, not more questions."
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        narrator: "After demonstrating Terraform Cloud, one of the Senior DevOps engineers speaks up.",
+                        dialogue: {
+                            speaker: "Senior DevOps",
+                            speech: "We're heavy Ansible users. Our entire configuration management is in Ansible playbooks. Does Terraform replace Ansible, or can they work together? I don't want to throw away 2 years of automation work."
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "They serve different purposes—Terraform for provisioning, Ansible for configuration. Most customers use both together.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The Senior DevOps looks relieved. 'So we can keep our Ansible playbooks and add Terraform for the infra layer?' 'Exactly,' you confirm. The team visibly relaxes.",
+                                    healthChange: 10,
+                                    moodChange: "happy",
+                                    tip: "Position as complementary, not competitive. Protecting existing investments builds trust and reduces perceived risk."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "Terraform can do configuration management too with provisioners. You could consolidate everything and simplify your toolchain.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "'So throw away our Ansible work?' the DevOps engineer says skeptically. The Lead Architect adds, 'That sounds like vendor lock-in.' You've triggered resistance.",
+                                    healthChange: -15,
+                                    moodChange: "unhappy",
+                                    tip: "Don't suggest throwing away the customer's existing work—it creates fear and resistance. Always position as augmentation."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "Good question. Let me show you a quick demo of how Terraform and Ansible integrate together in a typical deployment pipeline.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The VP Infrastructure glances at her watch. 'We have 10 minutes left. Can you just explain it?' Another demo tangent isn't what they need right now.",
+                                    healthChange: 0,
+                                    moodChange: "neutral",
+                                    tip: "Read the room on demo vs. explain. Sometimes a clear verbal answer is faster and more effective."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "What specific Ansible playbooks are most critical to your workflow? I want to ensure we address your exact integration needs.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The DevOps engineer starts listing playbooks, but the VP cuts in: 'Can they work together or not?' You've delayed the direct answer.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Answer the direct question first, then go deeper. Technical audiences appreciate directness over excessive discovery."
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        narrator: "The VP Infrastructure is preparing to wrap up.",
+                        dialogue: {
+                            speaker: "VP Infrastructure",
+                            speech: "I need to justify this to our CFO. Our current process works—it's slow, but it works. Why should we invest in Terraform now versus using that budget elsewhere?"
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "Infrastructure automation is the future. Every modern company is adopting IaC. You don't want to fall behind competitors.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The VP looks unimpressed. 'Fear of falling behind isn't a business case I can take to finance. Do you have actual numbers?' You've given fluff, not substance.",
+                                    healthChange: -10,
+                                    moodChange: "neutral",
+                                    tip: "FOMO doesn't work with finance. They need quantified ROI: time saved, cost reduced, risk mitigated."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "I can send you case studies from similar insurance companies who saw significant ROI from Terraform adoption.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "'Case studies are helpful for validation,' the VP says, 'but I need numbers specific to our situation for the CFO. Can you help with that?' You've deferred when you should have calculated.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Case studies support, but don't replace, a custom ROI calculation. Help them build THEIR business case on the spot."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "The real question is: what's the cost of NOT automating? Every manual error and delayed deployment has a price tag.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The VP nods thoughtfully but says, 'That's conceptually true, but I need specific numbers for my CFO presentation.' You're close but not concrete enough.",
+                                    healthChange: 0,
+                                    moodChange: "neutral",
+                                    tip: "Rhetorical questions create awareness but don't build business cases. Follow up with specific calculations."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "You said provisioning takes 3 weeks. With Terraform, that's 1 day. At 20 environments yearly, you're saving ₹60-100L.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The VP pulls out her notepad. 'Walk me through that math again—I want to include it in my business case.' You've given her the ammunition she needs.",
+                                    healthChange: 15,
+                                    moodChange: "happy",
+                                    tip: "Build the business case WITH them using THEIR numbers. This becomes their proposal, not yours—much harder to reject."
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            // SCENARIO 4: TANTOR DATA - Multiple Stakeholders
+            {
+                id: 4,
+                title: "Scenario 4: The Crowded Room",
+                product: "Tantor Data Platform",
+                context: {
+                    prospect: "Regional Bank",
+                    attendees: "CFO, CTO, Head of Compliance, VP Operations, 2 Business Analysts",
+                    stage: "Executive Presentation + Demo",
+                    situation: "Six stakeholders with different priorities. The CFO joined late and is checking emails."
+                },
+                steps: [
+                    {
+                        narrator: "You're 10 minutes into the presentation when the CFO arrives late and sits down, checking her phone. The CTO was engaged, but now everyone is looking at the CFO. She glances up.",
+                        dialogue: {
+                            speaker: "CFO",
+                            speech: "Sorry I'm late. Can someone catch me up quickly? What are we looking at here?"
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "Of course! Let me restart from the beginning so you have the full context of what we've covered so far.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The CTO sighs—he's heard this already. The Compliance Head checks her watch. You're losing the people who were engaged to catch up someone who was late.",
+                                    healthChange: -15,
+                                    moodChange: "neutral",
+                                    tip: "Never restart a presentation for late arrivals. It punishes the people who showed up on time and wastes everyone's time."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "We're covering Tantor's data integration capabilities and how they connect to your core banking systems.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The CFO looks confused and disengaged. She goes back to her phone. You've lost the decision-maker because you didn't take 30 seconds to loop her in.",
+                                    healthChange: -10,
+                                    moodChange: "unhappy",
+                                    tip: "Always acknowledge late-arriving executives. They're often the decision-maker. A quick summary keeps them engaged."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "Quick summary: Tantor cuts Basel III reporting from 10 days to same-day—₹2Cr annual savings. Now showing integration.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The CFO puts down her phone. '₹2Cr in compliance costs? Okay, I'm listening.' The CTO nods—you've kept his momentum and hooked the CFO.",
+                                    healthChange: 15,
+                                    moodChange: "happy",
+                                    tip: "Late arrivals get a 30-second headline summary with the ONE number they care about. Then continue where you were."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "Perhaps the CTO can catch you up while I prepare the next section? He's been very engaged with the technical details.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The CTO gives a brief summary, but it's not the message you'd have chosen. He focuses on technical aspects, missing the CFO's ROI angle.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Don't delegate your messaging to the client. You control the narrative—summarize it yourself with the right emphasis."
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        narrator: "The Head of Compliance has been waiting to ask a question. She finally speaks up.",
+                        dialogue: {
+                            speaker: "Head of Compliance",
+                            speech: "All this data integration is fine, but I need to know about audit trails. RBI is getting stricter. Can you show me exactly how Tantor tracks data lineage and access logs?"
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "Great question! Tantor has comprehensive audit capabilities. Let me show you our data lineage feature in detail now.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The Compliance Head is satisfied, but the CFO and VP Operations are disengaging—this is too detailed for them. The room has fragmented.",
+                                    healthChange: 0,
+                                    moodChange: "neutral",
+                                    tip: "In mixed audiences, deep dives for one person bore everyone else. Give a short answer and offer a follow-up session."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "Tantor logs every data access and transformation with full audit trails. Let's schedule a 30-minute compliance deep-dive.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The Compliance Head nods—her concern is acknowledged and she has a dedicated session. The CFO stays engaged because you kept it brief. Win-win.",
+                                    healthChange: 10,
+                                    moodChange: "happy",
+                                    tip: "In mixed audiences: brief answer + offer dedicated follow-up. This respects everyone's time and creates natural next steps."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "I can send you our compliance documentation after the meeting. It covers all the audit capabilities in comprehensive detail.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "The Compliance Head frowns. 'I've read documentation before. I needed to see it.' She's now uncertain about the compliance capabilities.",
+                                    healthChange: -10,
+                                    moodChange: "unhappy",
+                                    tip: "Compliance is a dealbreaker. Never defer compliance questions completely—give enough proof now to build confidence."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "Absolutely. What specific RBI requirements are you most concerned about? I want to make sure I address your exact needs.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The Compliance Head lists three requirements, but the CFO looks impatient. 'We're running over. Can you just confirm you meet RBI standards?'",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "Discovery is good, but in time-pressed meetings with mixed audiences, give a confident answer first, then dig deeper offline."
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        narrator: "The meeting is running over. The VP Operations hasn't said much. As people start gathering their things, she finally speaks.",
+                        dialogue: {
+                            speaker: "VP Operations",
+                            speech: "I have concerns about implementation. We've had three failed implementations in the last two years. Our team is exhausted. How is this different?"
+                        },
+                        choices: [
+                            {
+                                label: "A",
+                                text: "Three failed implementations is painful. Can you share what went wrong? I want to make sure we don't repeat those mistakes.",
+                                consequence: {
+                                    type: "positive",
+                                    text: "The VP pauses, then opens up about past vendor issues. The CFO leans in—this is real talk. Your honesty about potential risk builds trust.",
+                                    healthChange: 10,
+                                    moodChange: "happy",
+                                    tip: "When someone shares pain, acknowledge it and ask about their specific experience. This builds trust and surfaces real objections."
+                                }
+                            },
+                            {
+                                label: "B",
+                                text: "Tantor implementations typically take 8-12 weeks. We have a proven methodology and a dedicated implementation team.",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The VP looks unconvinced. '8-12 weeks is what the last vendor said too. It took 9 months.' Generic promises don't address her specific fear.",
+                                    healthChange: -5,
+                                    moodChange: "neutral",
+                                    tip: "When someone has been burned before, generic timelines don't reassure. Address the specific fear: why YOU will be different."
+                                }
+                            },
+                            {
+                                label: "C",
+                                text: "I understand, but Tantor is different. We have a 95% success rate. Let me show you some case studies from similar banks.",
+                                consequence: {
+                                    type: "negative",
+                                    text: "'Every vendor says they're different,' the VP says flatly. The CFO is packing up. You've given statistics instead of empathy.",
+                                    healthChange: -10,
+                                    moodChange: "unhappy",
+                                    tip: "Statistics don't heal implementation trauma. Empathy + specific understanding of their past failures does."
+                                }
+                            },
+                            {
+                                label: "D",
+                                text: "Valid concern. Why don't we start with a smaller pilot project to prove value before a full rollout commitment?",
+                                consequence: {
+                                    type: "neutral",
+                                    text: "The VP considers this. 'A pilot could work, but I'm still worried about repeating past mistakes.' You've offered a path forward but haven't addressed her core fear.",
+                                    healthChange: 0,
+                                    moodChange: "neutral",
+                                    tip: "Pilots reduce risk but don't address past trauma. First acknowledge the pain, then propose the solution."
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // ============================================
+        // GAME FUNCTIONS
+        // ============================================
+        function startSimulation() {
+            document.getElementById('introScreen').classList.remove('active');
+            document.getElementById('statusBar').style.display = 'flex';
+            document.getElementById('scenarioScreen').classList.add('active');
+            
+            dealHealth = 100;
+            currentScenario = 0;
+            currentStep = 0;
+            decisions = [];
+            stakeholderMood = 'happy';
+            
+            updateStatusBar();
+            renderScenario();
+        }
+
+        function updateStatusBar() {
+            // Update health
+            const healthFill = document.getElementById('healthFill');
+            const healthPercent = document.getElementById('healthPercent');
+            
+            healthFill.style.width = dealHealth + '%';
+            healthPercent.textContent = dealHealth + '%';
+            
+            healthFill.classList.remove('high', 'medium', 'low');
+            if (dealHealth >= 70) healthFill.classList.add('high');
+            else if (dealHealth >= 50) healthFill.classList.add('medium');
+            else healthFill.classList.add('low');
+            
+            // Update mood
+            const moodElement = document.getElementById('stakeholderMood');
+            if (stakeholderMood === 'happy') moodElement.textContent = '😊';
+            else if (stakeholderMood === 'neutral') moodElement.textContent = '😐';
+            else moodElement.textContent = '😒';
+            
+            // Update counter
+            document.getElementById('scenarioCounter').textContent = 
+                `Scenario ${currentScenario + 1} of ${scenarios.length}`;
+        }
+
+        // Store shuffled choices for current step
+        let currentShuffledChoices = [];
+
+        function renderScenario() {
+            const scenario = scenarios[currentScenario];
+            const step = scenario.steps[currentStep];
+            
+            // Shuffle choices and assign new labels
+            currentShuffledChoices = shuffleArray(step.choices.map((choice, origIndex) => ({
+                ...choice,
+                originalIndex: origIndex
+            })));
+            
+            // Assign new labels A, B, C, D based on shuffled order
+            currentShuffledChoices.forEach((choice, newIndex) => {
+                choice.displayLabel = String.fromCharCode(65 + newIndex);
+            });
+            
+            let html = `
+                <div class="scenario-header">
+                    <h2>${scenario.title}</h2>
+                    <div class="scenario-context">
+                        <strong>Product:</strong> ${scenario.product}<br>
+                        <strong>Prospect:</strong> ${scenario.context.prospect}<br>
+                        <strong>In the Room:</strong> ${scenario.context.attendees}<br>
+                        <strong>Stage:</strong> ${scenario.context.stage}
+                    </div>
+                </div>
+                
+                <div class="situation-box">
+                    <p class="narrator">${step.narrator}</p>
+                    <div class="dialogue">
+                        <p class="speaker">${step.dialogue.speaker}:</p>
+                        <p class="speech">"${step.dialogue.speech}"</p>
+                    </div>
+                </div>
+                
+                <div class="choices-container">
+                    <h3>What do you do?</h3>
+                    ${currentShuffledChoices.map((choice, index) => `
+                        <div class="choice-card" id="choice${index}" onclick="selectChoice(${index})">
+                            <span class="choice-label">${choice.displayLabel}</span>
+                            <span class="choice-text">${choice.text}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="consequence-box" id="consequenceBox">
+                    <div class="consequence-header">
+                        <span class="icon" id="consequenceIcon"></span>
+                        <h4 id="consequenceTitle"></h4>
+                    </div>
+                    <p class="consequence-text" id="consequenceText"></p>
+                    <div class="consequence-impact" id="consequenceImpact"></div>
+                    <div class="pro-tip" id="proTip">
+                        <h5>💡 Pro Tip</h5>
+                        <p id="proTipText"></p>
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="tryAgainBtn" onclick="tryAgainStep()" style="display: none;">
+                        🔄 Try Again
+                    </button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextStep()" style="display: none;">
+                        Continue →
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('scenarioContent').innerHTML = html;
+        }
+
+        function selectChoice(choiceIndex) {
+            const scenario = scenarios[currentScenario];
+            const step = scenario.steps[currentStep];
+            const choice = currentShuffledChoices[choiceIndex];
+            
+            // Disable all choices
+            currentShuffledChoices.forEach((_, idx) => {
+                const card = document.getElementById('choice' + idx);
+                card.classList.add('disabled');
+                if (idx === choiceIndex) {
+                    card.classList.add(choice.consequence.type === 'positive' ? 'correct' : 
+                                       choice.consequence.type === 'negative' ? 'wrong' : 'selected');
+                }
+            });
+            
+            // Update game state
+            dealHealth = Math.max(0, Math.min(100, dealHealth + choice.consequence.healthChange));
+            stakeholderMood = choice.consequence.moodChange;
+            
+            decisions.push({
+                scenario: currentScenario + 1,
+                step: currentStep + 1,
+                choice: choice.displayLabel,
+                result: choice.consequence.type,
+                healthChange: choice.consequence.healthChange
+            });
+            
+            updateStatusBar();
+            
+            // Show consequence
+            const consequenceBox = document.getElementById('consequenceBox');
+            consequenceBox.classList.add('show', choice.consequence.type);
+            
+            document.getElementById('consequenceIcon').textContent = 
+                choice.consequence.type === 'positive' ? '✅' : 
+                choice.consequence.type === 'negative' ? '❌' : '⚠️';
+            
+            document.getElementById('consequenceTitle').textContent = 
+                choice.consequence.type === 'positive' ? 'Good Move!' : 
+                choice.consequence.type === 'negative' ? 'Not Ideal...' : 'Acceptable';
+            
+            document.getElementById('consequenceText').textContent = choice.consequence.text;
+            
+            document.getElementById('consequenceImpact').innerHTML = `
+                <div class="impact-item ${choice.consequence.healthChange >= 0 ? 'positive' : 'negative'}">
+                    ${choice.consequence.healthChange >= 0 ? '↑' : '↓'} Deal Health: ${choice.consequence.healthChange > 0 ? '+' : ''}${choice.consequence.healthChange}%
+                </div>
+                <div class="impact-item">
+                    Stakeholder: ${choice.consequence.moodChange === 'happy' ? '😊 Engaged' : 
+                                  choice.consequence.moodChange === 'unhappy' ? '😒 Disengaged' : '😐 Neutral'}
+                </div>
+            `;
+            
+            document.getElementById('proTipText').textContent = choice.consequence.tip;
+            
+            // Show buttons
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            // Show Try Again only if not a positive result
+            if (choice.consequence.type !== 'positive') {
+                document.getElementById('tryAgainBtn').style.display = 'inline-block';
+            }
+        }
+
+        function tryAgainStep() {
+            // Undo the last decision
+            const lastDecision = decisions.pop();
+            if (lastDecision) {
+                dealHealth = Math.max(0, Math.min(100, dealHealth - lastDecision.healthChange));
+                stakeholderMood = 'neutral'; // Reset to neutral
+            }
+            updateStatusBar();
+            renderScenario();
+        }
+
+        function nextStep() {
+            currentStep++;
+            
+            if (currentStep >= scenarios[currentScenario].steps.length) {
+                // Move to next scenario
+                currentScenario++;
+                currentStep = 0;
+                
+                if (currentScenario >= scenarios.length) {
+                    // Game complete
+                    showResults();
+                    return;
+                }
+            }
+            
+            renderScenario();
+        }
+
+        function showResults() {
+            document.getElementById('scenarioScreen').classList.remove('active');
+            document.getElementById('statusBar').style.display = 'none';
+            document.getElementById('resultsScreen').classList.add('active');
+            
+            // Calculate stats
+            const positiveDecisions = decisions.filter(d => d.result === 'positive').length;
+            const negativeDecisions = decisions.filter(d => d.result === 'negative').length;
+            const totalDecisions = decisions.length;
+            
+            let resultIcon, resultTitle, resultMessage, titleClass;
+            
+            if (dealHealth >= 70) {
+                resultIcon = '🎉';
+                resultTitle = 'Deal Closed!';
+                resultMessage = 'Excellent work! You navigated tough situations with skill and closed the deal. Your customers trust you, and your pipeline is healthy.';
+                titleClass = 'win';
+            } else if (dealHealth >= 50) {
+                resultIcon = '🤝';
+                resultTitle = 'Deal Alive, But Fragile';
+                resultMessage = 'The deal is still in play, but you\'ve lost some momentum. A few better decisions could have sealed it. Review the scenarios below.';
+                titleClass = 'partial';
+            } else {
+                resultIcon = '📉';
+                resultTitle = 'Deal Lost';
+                resultMessage = 'Unfortunately, this deal slipped away. The good news? You can learn from these scenarios and do better next time.';
+                titleClass = 'lose';
+            }
+            
+            let scenarioSummary = '';
+            scenarios.forEach((scenario, idx) => {
+                const scenarioDecisions = decisions.filter(d => d.scenario === idx + 1);
+                scenarioSummary += `
+                    <div class="scenario-summary">
+                        <h4>${scenario.title} (${scenario.product})</h4>
+                        <ul class="decision-list">
+                            ${scenarioDecisions.map(d => `
+                                <li class="${d.result === 'positive' ? 'good' : d.result === 'negative' ? 'bad' : ''}">
+                                    Decision ${d.step}: ${d.result === 'positive' ? '✅' : d.result === 'negative' ? '❌' : '⚠️'} 
+                                    Option ${d.choice} (${d.healthChange > 0 ? '+' : ''}${d.healthChange}%)
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('resultsContent').innerHTML = `
+                <div class="results-icon">${resultIcon}</div>
+                <h2 class="results-title ${titleClass}">${resultTitle}</h2>
+                <p class="results-message">${resultMessage}</p>
+                
+                <div class="final-score">
+                    <h3>Your Performance</h3>
+                    <div class="score-grid">
+                        <div class="score-item">
+                            <div class="label">Final Deal Health</div>
+                            <div class="value ${dealHealth >= 70 ? 'good' : dealHealth >= 50 ? 'medium' : 'bad'}">${dealHealth}%</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="label">Optimal Decisions</div>
+                            <div class="value ${positiveDecisions >= 8 ? 'good' : positiveDecisions >= 5 ? 'medium' : 'bad'}">${positiveDecisions}/${totalDecisions}</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="label">Poor Decisions</div>
+                            <div class="value ${negativeDecisions <= 2 ? 'good' : negativeDecisions <= 4 ? 'medium' : 'bad'}">${negativeDecisions}</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="label">Scenarios Completed</div>
+                            <div class="value good">4/4</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin: 30px 0 15px; color: #a78bfa;">Decision Breakdown</h3>
+                ${scenarioSummary}
+                
+                <div class="nav-buttons" style="justify-content: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="restartSimulation()">🔄 Try Again</button>
+                    <button class="btn btn-secondary" onclick="showReview()">📖 Review All Tips</button>
+                </div>
+            `;
+        }
+
+        function restartSimulation() {
+            document.getElementById('resultsScreen').classList.remove('active');
+            document.getElementById('introScreen').classList.add('active');
+        }
+
+        function showReview() {
+            let reviewHTML = `
+                <h2 style="color: #a78bfa; margin-bottom: 20px;">📖 All Pro Tips</h2>
+            `;
+            
+            scenarios.forEach((scenario, sIdx) => {
+                reviewHTML += `<h3 style="color: #fbbf24; margin: 25px 0 15px;">${scenario.title}</h3>`;
+                scenario.steps.forEach((step, stepIdx) => {
+                    const optimal = step.choices.find(c => c.consequence.type === 'positive');
+                    if (optimal) {
+                        reviewHTML += `
+                            <div class="pro-tip" style="margin: 10px 0;">
+                                <h5>Decision ${stepIdx + 1}: Best Answer (${optimal.label})</h5>
+                                <p>"${optimal.text}"</p>
+                                <p style="margin-top: 10px;"><strong>Why:</strong> ${optimal.consequence.tip}</p>
+                            </div>
+                        `;
+                    }
+                });
+            });
+            
+            reviewHTML += `
+                <div class="nav-buttons" style="justify-content: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="restartSimulation()">🔄 Try Again</button>
+                    <button class="btn btn-secondary" onclick="showResults()">← Back to Results</button>
+                </div>
+            `;
+            
+            document.getElementById('resultsContent').innerHTML = reviewHTML;
+        }
+    </script>
+</body>
+</html>
