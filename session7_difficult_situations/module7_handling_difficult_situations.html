@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<!-- MODULE 7 VERSION: 2024-12-08-FIXED-QUOTES-V3 -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Module 7: Handling Difficult Situations | PM Excellence Program</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: slideIn 0.5s ease-out; }
+        .hidden { display: none; }
+        .timer-pulse {
+            animation: pulse 1s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .option-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .option-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .option-correct {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: white !important;
+            border: 3px solid #047857 !important;
+        }
+        .option-incorrect {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            color: white !important;
+            border: 3px solid #b91c1c !important;
+        }
+        .option-selected {
+            border: 4px solid #3b82f6 !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3) !important;
+            background: #eff6ff !important;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 min-h-screen">
+    
+    <!-- Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-2 bg-gray-200 z-50">
+        <div id="progressBar" class="h-full bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 transition-all duration-500" style="width: 0%"></div>
+    </div>
+
+    <!-- Score Display -->
+    <div class="fixed top-4 right-4 z-40">
+        <div class="bg-white rounded-2xl shadow-2xl p-4 border-4 border-orange-500">
+            <div class="text-center">
+                <div class="text-4xl mb-1">💪</div>
+                <div class="text-sm font-bold text-gray-600">SCORE</div>
+                <div id="scoreDisplay" class="text-3xl font-black text-orange-600">0/4</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Header -->
+        <div class="text-center mb-8 animate-in">
+            <div class="inline-block bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-2 rounded-full text-sm font-black mb-4">
+                SESSION 7 OF 24 • PILLAR #7 • STRENGTH LAYER
+            </div>
+            <h1 class="text-6xl font-black mb-4 bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent">
+                💪 HANDLING DIFFICULT SITUATIONS
+            </h1>
+            <p class="text-2xl text-gray-700 font-bold">Stay Calm When Everything's On Fire</p>
+            <p class="text-lg text-gray-600 mt-2">20-25 minutes • Individual work • Live guided</p>
+        </div>
+
+        <!-- Facilitator Prompt Box -->
+        <div id="facilitatorPrompt" class="bg-red-100 border-l-8 border-red-600 rounded-xl p-6 mb-8 shadow-lg">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">💡</div>
+                <div>
+                    <div class="text-sm font-black text-red-800 uppercase mb-1">Facilitator Prompt</div>
+                    <div id="promptText" class="text-lg text-red-900 font-semibold"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer Display -->
+        <div id="timerDisplay" class="hidden bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl p-6 mb-8 text-center shadow-2xl">
+            <div class="text-sm font-black uppercase mb-2">Time Remaining</div>
+            <div id="timerText" class="text-6xl font-black timer-pulse">60</div>
+            <div class="text-sm mt-2">seconds</div>
+        </div>
+
+        <!-- Section Container -->
+        <div id="sectionContainer" class="mb-8">
+            <!-- Sections will be injected here -->
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between items-center gap-4">
+            <button id="backBtn" class="hidden bg-gray-300 hover:bg-gray-400 text-gray-800 font-black py-4 px-8 rounded-xl text-lg transition-all shadow-lg">
+                ← Back
+            </button>
+            <div class="flex-1"></div>
+            <button id="nextBtn" class="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-black py-4 px-12 rounded-xl text-xl transition-all shadow-2xl">
+                Next Section →
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 text-gray-500 text-sm">
+            <p>© 2026 Translab Technologies • PM Excellence Program</p>
+            <p class="mt-2">Module 7: Handling Difficult Situations</p>
+            <p class="mt-1">GitHub: giriforteen/translab-training-hub</p>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================================
+        // MODULE 7 - HANDLING DIFFICULT SITUATIONS
+        // VERSION: 2024-12-08-FIXED-QUOTES-V3
+        // ============================================================================
+        console.log('%c=== MODULE 7: HANDLING DIFFICULT SITUATIONS ===', 'color: #f97316; font-size: 20px; font-weight: bold;');
+        console.log('%cVersion: 2024-12-08-FIXED-QUOTES-V3', 'color: #10b981; font-size: 14px;');
+        console.log('If you see an old version, press Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac) to hard refresh');
+        console.log('==================================================');
+        
+        // ============================================================================
+        // STATE MANAGEMENT
+        // ============================================================================
+        let currentSection = 0;
+        let score = 0;
+        let totalScenarios = 4;
+        let scenarioResults = [];
+        let timerInterval = null;
+        let selectedTemplates = {
+            money: null,
+            scope: null,
+            people: null,
+            politics: null
+        };
+
+        // ============================================================================
+        // MODULE CONTENT
+        // ============================================================================
+        const sections = [
+            // SECTION 0: WELCOME
+            {
+                id: 'welcome',
+                title: 'Welcome to Strength',
+                facilitatorPrompt: 'Welcome to the Strength layer! Foundation is done. Now we build muscle. Poll: On a scale 1-10, how confident are you handling difficult situations? Type in chat.',
+                timer: 120,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-12 text-center animate-in">
+                        <div class="text-8xl mb-6">💪</div>
+                        <h2 class="text-4xl font-black mb-6 text-gray-800">Welcome to STRENGTH</h2>
+                        
+                        <div class="bg-gradient-to-r from-green-100 to-blue-100 border-4 border-green-400 rounded-2xl p-6 mb-8">
+                            <p class="text-xl text-green-900 font-black">✅ FOUNDATION COMPLETE</p>
+                            <p class="text-lg text-green-800 mt-2">You know WHO you are, HOW to protect Translab & clients, and HOW to do the job daily.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-red-100 to-orange-100 border-4 border-red-400 rounded-2xl p-6 mb-8">
+                            <p class="text-xl text-red-900 font-black">🔥 NOW: BUILD MUSCLE</p>
+                            <p class="text-lg text-red-800 mt-2">Handle the HARD stuff. Difficult conversations. Pressure situations. Crisis moments.</p>
+                        </div>
+
+                        <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                            <p class="text-2xl font-black text-yellow-900 mb-3">TODAY'S REALITY CHECK:</p>
+                            <p class="text-lg text-yellow-800">75% of you asked for this module.</p>
+                            <p class="text-lg text-yellow-800">You're tired of firefighting without frameworks.</p>
+                            <p class="text-lg text-yellow-800 mt-3">Let's fix that. 💪</p>
+                        </div>
+                    </div>
+                `
+            },
+
+            // SECTION 1: FRAMEWORK
+            {
+                id: 'framework',
+                title: 'The Calm → Clarify → Control Framework',
+                facilitatorPrompt: 'Read the framework carefully. This is your anchor when everything goes wrong. Take 2 minutes.',
+                timer: 120,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                        <h2 class="text-4xl font-black mb-6 text-center bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                            🧘 THE FRAMEWORK: CALM → CLARIFY → CONTROL
+                        </h2>
+                        
+                        <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6 mb-8 text-center">
+                            <p class="text-xl text-red-900 font-bold">When everything's on fire, your instinct is to REACT.</p>
+                            <p class="text-xl text-red-900 font-bold">Great PMs RESPOND instead.</p>
+                        </div>
+
+                        <div class="space-y-6 mb-8">
+                            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl p-6 shadow-lg">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-6xl">1️⃣</div>
+                                    <div>
+                                        <h3 class="text-3xl font-black mb-3">CALM (2 minutes)</h3>
+                                        <p class="text-xl mb-3">Before you do ANYTHING - pause and breathe.</p>
+                                        <div class="bg-white/20 rounded-xl p-4 text-lg">
+                                            <p class="font-bold mb-2">Ask yourself:</p>
+                                            <p>• Is anyone in danger RIGHT NOW?</p>
+                                            <p>• What's the ACTUAL deadline?</p>
+                                            <p>• Do I have 5 minutes to think?</p>
+                                        </div>
+                                        <p class="text-sm mt-3 opacity-90">Most "urgent" situations give you 5 minutes. Use them.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl p-6 shadow-lg">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-6xl">2️⃣</div>
+                                    <div>
+                                        <h3 class="text-3xl font-black mb-3">CLARIFY (5 minutes)</h3>
+                                        <p class="text-xl mb-3">Get the FACTS, not the emotions.</p>
+                                        <div class="bg-white/20 rounded-xl p-4 text-lg">
+                                            <p class="font-bold mb-2">The 3 Questions:</p>
+                                            <p>• What EXACTLY happened?</p>
+                                            <p>• What's the REAL impact?</p>
+                                            <p>• What do I CONTROL?</p>
+                                        </div>
+                                        <p class="text-sm mt-3 opacity-90">Separate the drama from the data.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-2xl p-6 shadow-lg">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-6xl">3️⃣</div>
+                                    <div>
+                                        <h3 class="text-3xl font-black mb-3">CONTROL (Action time)</h3>
+                                        <p class="text-xl mb-3">Act on what you can control. Let go of what you can't.</p>
+                                        <div class="bg-white/20 rounded-xl p-4 text-lg">
+                                            <p class="font-bold mb-2">Your options:</p>
+                                            <p>• Fix it yourself (within your authority)</p>
+                                            <p>• Escalate it (with full context)</p>
+                                            <p>• Negotiate new terms</p>
+                                            <p>• Accept and adapt</p>
+                                        </div>
+                                        <p class="text-sm mt-3 opacity-90">Pick ONE action. Commit. Execute.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6 mb-8">
+                            <h3 class="text-2xl font-black text-yellow-900 mb-4">THE 4 TYPES OF DIFFICULT SITUATIONS</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="text-xl font-black text-red-600">💰 MONEY</p>
+                                    <p class="text-gray-700">Payment issues, budget cuts, scope creep without budget</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="text-xl font-black text-orange-600">📊 SCOPE</p>
+                                    <p class="text-gray-700">Massive additions, unrealistic expectations, moving targets</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="text-xl font-black text-purple-600">👥 PEOPLE</p>
+                                    <p class="text-gray-700">Team member quits, conflict, underperformance</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="text-xl font-black text-blue-600">🎭 POLITICS</p>
+                                    <p class="text-gray-700">Stakeholder conflicts, power plays, hidden agendas</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-red-100 to-orange-100 border-4 border-red-400 rounded-2xl p-6 text-center">
+                            <p class="text-2xl font-black text-red-900">Remember: You can't control the situation.</p>
+                            <p class="text-2xl font-black text-red-900 mt-2">But you CAN control your response.</p>
+                        </div>
+                    </div>
+                `
+            },
+
+            // SECTION 2: KNOWLEDGE CHECK
+            {
+                id: 'knowledge-check',
+                title: 'Quick Knowledge Check',
+                facilitatorPrompt: 'Quick check on the framework. 60 seconds. Make sure everyone gets the Calm → Clarify → Control sequence.',
+                timer: 60,
+                render: () => {
+                    const questions = [
+                        {
+                            q: "What's the FIRST step when a difficult situation hits?",
+                            options: [
+                                { text: "CALM - Pause and breathe, assess true urgency", correct: true },
+                                { text: "CLARIFY - Get the facts immediately", correct: false },
+                                { text: "CONTROL - Take action right away", correct: false },
+                                { text: "ESCALATE - Get your manager involved", correct: false }
+                            ]
+                        },
+                        {
+                            q: "In the CLARIFY step, what are you trying to do?",
+                            options: [
+                                { text: "Separate facts from emotions, understand real impact", correct: true },
+                                { text: "Calm down the stakeholders", correct: false },
+                                { text: "Decide who to blame", correct: false },
+                                { text: "Figure out how to avoid accountability", correct: false }
+                            ]
+                        },
+                        {
+                            q: "What question is NOT part of the CLARIFY step?",
+                            options: [
+                                { text: "Who can I blame for this?", correct: true },
+                                { text: "What exactly happened?", correct: false },
+                                { text: "What's the real impact?", correct: false },
+                                { text: "What do I control?", correct: false }
+                            ]
+                        }
+                    ];
+
+                    questions.forEach(q => {
+                        q.options = q.options.sort(() => Math.random() - 0.5);
+                    });
+
+                    let html = `
+                        <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                            <h2 class="text-4xl font-black mb-6 text-center text-gray-800">✅ Quick Knowledge Check</h2>
+                            <p class="text-center text-xl text-gray-600 mb-8">Make sure you've got the framework down</p>
+                    `;
+
+                    questions.forEach((q, qIndex) => {
+                        html += `
+                            <div class="mb-8">
+                                <p class="text-xl font-bold text-gray-800 mb-4">${qIndex + 1}. ${q.q}</p>
+                                <div class="space-y-3">
+                        `;
+                        q.options.forEach((opt, optIndex) => {
+                            html += `
+                                <div class="option-card bg-gray-50 border-2 border-gray-300 rounded-xl p-4 hover:border-orange-400" 
+                                     onclick="checkKnowledge(${qIndex}, ${optIndex}, ${opt.correct})">
+                                    <p class="text-lg font-semibold text-gray-700">${opt.text}</p>
+                                </div>
+                            `;
+                        });
+                        html += `
+                                </div>
+                                <div id="feedback-${qIndex}" class="hidden mt-4"></div>
+                            </div>
+                        `;
+                    });
+
+                    html += `</div>`;
+                    return html;
+                }
+            },
+
+            // SECTION 3: SCENARIO 1 - MONEY CONFLICT
+            {
+                id: 'scenario1',
+                title: 'Scenario 1: The Money Problem',
+                facilitatorPrompt: 'Money conflicts. Read the scenario. This is real PM pain. 90 seconds.',
+                timer: 90,
+                isScenario: true,
+                scenarioType: 'money',
+                scenarioData: {
+                    emoji: '💰',
+                    title: 'THE MONEY PROBLEM',
+                    setup: `
+                        <div class="bg-red-50 border-4 border-red-300 rounded-2xl p-6 mb-6">
+                            <p class="text-xl text-red-900 mb-4"><strong>THE SITUATION:</strong></p>
+                            <p class="text-lg text-red-800">You're in Week 8 of a 12-week project. Your team has delivered 70% of the work.</p>
+                            <p class="text-2xl font-black text-red-900 my-4">"We can't pay this milestone. Budget got cut. Finish the project anyway."</p>
+                            
+                            <p class="text-lg text-red-800 mt-4"><strong>THE REALITY:</strong></p>
+                            <ul class="list-disc ml-6 text-lg text-red-800 space-y-2">
+                                <li>Contract says: Pay milestone 2 at 70% completion</li>
+                                <li>Your team expects payment (salaries depend on it)</li>
+                                <li>Client casually drops this on a Friday afternoon</li>
+                                <li>Project is 2 weeks from completion</li>
+                                <li>If you stop work, relationship is over</li>
+                            </ul>
+
+                            <div class="bg-white rounded-xl p-4 mt-4 border-2 border-red-400">
+                                <p class="font-black text-red-900 mb-2">YOUR EMOTIONAL STATE:</p>
+                                <p class="text-red-800">Angry (they're breaking the contract), Anxious (team salaries), Pressured (finish or kill relationship?)</p>
+                            </div>
+                        </div>
+                    `,
+                    question: "What do you do?",
+                    options: [
+                        {
+                            text: "Continue work - finish the project, deal with payment later",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ DANGEROUS - SETS BAD PRECEDENT</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this backfires:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>You just taught them: contracts don't matter</li>
+                                        <li>What stops them from not paying the final milestone?</li>
+                                        <li>Your team sees you accepting contract violations</li>
+                                        <li>"Deal with payment later" = legal battle later</li>
+                                        <li>You're gambling your team's salaries on client goodwill</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Never work without payment protection. Period.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Stop all work immediately - contract says pay at 70%, we're at 70%",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-yellow-900 mb-4">⚠️ TOO AGGRESSIVE - KILLS RELATIONSHIP</h4>
+                                    <p class="text-lg text-yellow-800 mb-4"><strong>Why this doesn't work:</strong></p>
+                                    <ul class="list-disc ml-6 text-yellow-800 space-y-2">
+                                        <li>✅ You're protecting your contract (good!)</li>
+                                        <li>❌ But you didn't try negotiating first</li>
+                                        <li>Hard stop = nuclear option = relationship over</li>
+                                        <li>They might have cash flow issues you can work with</li>
+                                        <li>You look inflexible and difficult</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-yellow-900 mt-4">Try negotiation before going nuclear.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Calm → Clarify → Control: Pause, understand WHY, then offer payment plan options",
+                            correct: true,
+                            feedback: `
+                                <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-green-900 mb-4">✅ CORRECT! PROFESSIONAL HANDLING</h4>
+                                    <p class="text-lg text-green-800 mb-4"><strong>Why this works:</strong></p>
+                                    <ul class="list-disc ml-6 text-green-800 space-y-2">
+                                        <li>✅ CALM: You don't react emotionally on Friday afternoon</li>
+                                        <li>✅ CLARIFY: "Help me understand - is this temporary cash flow or permanent budget cut?"</li>
+                                        <li>✅ CONTROL: Offer 2-3 options that protect both sides</li>
+                                        <li>✅ You protect the contract AND the relationship</li>
+                                    </ul>
+                                    <div class="bg-white rounded-xl p-4 mt-4">
+                                        <p class="font-black text-green-900 mb-2">SAMPLE RESPONSE:</p>
+                                        <p class="text-green-800">"I understand budget constraints. Let's find a solution that works for both of us. Here are three options:<br><br>
+                                        1. Pay 50% now, 50% in 2 weeks (before final delivery)<br>
+                                        2. Pay milestone 2 in 2 installments (weekly)<br>
+                                        3. Roll milestone 2 into final payment (with late fee per contract)<br><br>
+                                        Which works best for your cash flow?"</p>
+                                    </div>
+                                </div>
+                            `,
+                            insight: `
+                                <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mt-4">
+                                    <h4 class="text-xl font-black text-purple-900 mb-3">💡 PRO TIP: THE PAYMENT PLAN MOVE</h4>
+                                    <p class="text-lg text-purple-800">When clients can't pay on time, offering structured payment options shows: (1) You're reasonable and flexible, (2) You still protect your team, (3) You're solution-oriented, not rigid. Most clients with genuine cash flow issues will take option 1 or 2. If they refuse ALL options? Red flag - stop work immediately.</p>
+                                </div>
+                            `,
+                            template: `Sample Email Template:
+
+Subject: Re: Milestone 2 Payment - Options for Resolution
+
+Hi [Client],
+
+I understand budget challenges can happen. Let's find a solution that works for both teams.
+
+Current Situation:
+- Contract: Milestone 2 payment due at 70% completion
+- Status: We've delivered 70% (Week 8 of 12)
+- Impact: Team resources allocated based on payment schedule
+
+Proposed Options:
+1. Split Payment: 50% now, 50% in 2 weeks
+2. Weekly Installments: Pay over 2 weeks (2 installments)
+3. Roll into Final: Add to final milestone (with contract late fee)
+
+All options keep the project moving while managing cash flow.
+
+Which option works best for your team?
+
+Best regards,
+[Your Name]`
+                        },
+                        {
+                            text: "Escalate to your manager immediately - let them handle the money issue",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ TOO EARLY TO ESCALATE</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this fails:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>You haven't tried ANYTHING yet</li>
+                                        <li>Your manager will ask: "Did you offer payment options?"</li>
+                                        <li>You look like you can't handle basic PM situations</li>
+                                        <li>Escalating money issues is LAST resort after negotiation fails</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Try negotiating first. Escalate if they refuse all reasonable options.</p>
+                                </div>
+                            `
+                        }
+                    ]
+                }
+            },
+
+            // SECTION 4: SCENARIO 2 - SCOPE BATTLE
+            {
+                id: 'scenario2',
+                title: 'Scenario 2: The Scope Explosion',
+                facilitatorPrompt: "Scope battles. Every PM's nightmare. Read and decide. 90 seconds.",
+                timer: 90,
+                isScenario: true,
+                scenarioType: 'scope',
+                scenarioData: {
+                    emoji: '📊',
+                    title: 'THE SCOPE EXPLOSION',
+                    setup: `
+                        <div class="bg-orange-50 border-4 border-orange-300 rounded-2xl p-6 mb-6">
+                            <p class="text-xl text-orange-900 mb-4"><strong>THE SITUATION:</strong></p>
+                            <p class="text-lg text-orange-800">Mid-project. Client sends "small additions" via email.</p>
+                            <p class="text-2xl font-black text-orange-900 my-4">"Just add these 15 features. They're tiny. Same deadline. Same budget."</p>
+                            
+                            <p class="text-lg text-orange-800 mt-4"><strong>THE REALITY:</strong></p>
+                            <ul class="list-disc ml-6 text-lg text-orange-800 space-y-2">
+                                <li>The "tiny" features = 120 hours of work (3 weeks)</li>
+                                <li>You're already at 80% budget utilization</li>
+                                <li>Deadline is 4 weeks away</li>
+                                <li>If you say yes: team burns out + quality drops</li>
+                                <li>If you say no: client thinks you're difficult</li>
+                            </ul>
+
+                            <div class="bg-white rounded-xl p-4 mt-4 border-2 border-orange-400">
+                                <p class="font-black text-orange-900 mb-2">YOUR EMOTIONAL STATE:</p>
+                                <p class="text-orange-800">Frustrated (scope creep again), Trapped (say yes or look bad?), Overwhelmed (team already at capacity)</p>
+                            </div>
+                        </div>
+                    `,
+                    question: "What's your response?",
+                    options: [
+                        {
+                            text: "Say YES - agree to add features, push team harder to meet deadline",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ WORST OPTION - KILLS YOUR TEAM</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this destroys everything:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>You just taught client: scope doesn't matter, ask for anything</li>
+                                        <li>Team burns out trying impossible timeline</li>
+                                        <li>Quality drops (rushed work = bugs)</li>
+                                        <li>You absorb cost (120 hours unpaid work)</li>
+                                        <li>Next project: client expects same behavior</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Never say yes to scope without budget/timeline adjustment.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Say NO - reject all 15 features, stick to original scope exactly",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-yellow-900 mb-4">⚠️ TOO RIGID - MISSES OPPORTUNITY</h4>
+                                    <p class="text-lg text-yellow-800 mb-4"><strong>Why this doesn't work:</strong></p>
+                                    <ul class="list-disc ml-6 text-yellow-800 space-y-2">
+                                        <li>✅ You're protecting scope (good!)</li>
+                                        <li>❌ But you didn't explore which features matter most</li>
+                                        <li>Some features might be quick wins (2-3 hours)</li>
+                                        <li>Flat "no" makes you look inflexible</li>
+                                        <li>Missed chance to negotiate value</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-yellow-900 mt-4">Better: Prioritize and negotiate.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Calm → Clarify → Control: Break down features, offer prioritized options with tradeoffs",
+                            correct: true,
+                            feedback: `
+                                <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-green-900 mb-4">✅ CORRECT! PROFESSIONAL SCOPE MANAGEMENT</h4>
+                                    <p class="text-lg text-green-800 mb-4"><strong>Why this works:</strong></p>
+                                    <ul class="list-disc ml-6 text-green-800 space-y-2">
+                                        <li>✅ CALM: Don't react to "tiny" - analyze reality</li>
+                                        <li>✅ CLARIFY: Break down 15 features by effort (hours)</li>
+                                        <li>✅ CONTROL: Offer options with clear tradeoffs</li>
+                                        <li>✅ Client chooses what matters most</li>
+                                        <li>✅ You protect team + timeline + budget</li>
+                                    </ul>
+                                    <div class="bg-white rounded-xl p-4 mt-4">
+                                        <p class="font-black text-green-900 mb-2">SAMPLE RESPONSE:</p>
+                                        <p class="text-green-800">"I've analyzed the 15 features. Total effort: 120 hours (3 weeks). Here are your options:<br><br>
+                                        Option 1: Add top 3 features (20 hours) - same timeline, +10% budget<br>
+                                        Option 2: Add all 15 features - extend deadline by 3 weeks<br>
+                                        Option 3: Deliver current scope first, then Phase 2 for these features<br><br>
+                                        Which path makes most sense for your goals?"</p>
+                                    </div>
+                                </div>
+                            `,
+                            insight: `
+                                <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mt-4">
+                                    <h4 class="text-xl font-black text-purple-900 mb-3">💡 PRO TIP: THE PRIORITY MATRIX</h4>
+                                    <p class="text-lg text-purple-800">When clients dump features, break them into: (1) Quick wins (< 5 hours), (2) High value (client really needs), (3) Nice-to-haves (can wait). Offer to do quick wins free (goodwill), negotiate high value (budget/time), and push nice-to-haves to Phase 2. Client gets value, you protect scope.</p>
+                                </div>
+                            `,
+                            template: `Sample Email Template:
+
+Subject: Re: Feature Additions - Effort Analysis & Options
+
+Hi [Client],
+
+Thanks for sharing the additional features! I've broken them down by effort:
+
+Quick Wins (< 5 hours each):
+- Feature 2, 5, 11 (Total: 12 hours)
+
+High Value (client priority):
+- Feature 1, 3, 7, 9 (Total: 65 hours)
+
+Nice-to-Have (can be Phase 2):
+- Remaining features (Total: 43 hours)
+
+Options:
+1. Add Quick Wins (free) + 4 High Value features
+   → Same timeline, +15% budget
+
+2. Current scope first, then Phase 2 with all 15
+   → Same timeline & budget, then new project
+
+3. Add all 15 features
+   → +3 weeks timeline OR +40% budget
+
+Let's discuss which option aligns with your goals.
+
+[Your Name]`
+                        },
+                        {
+                            text: "Add the features quietly, don't tell client about extra hours, absorb the cost",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ MARTYRDOM - UNSUSTAINABLE</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this is terrible:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>You're training client to expect free work</li>
+                                        <li>Translab loses money (120 hours unpaid)</li>
+                                        <li>Team works extra without acknowledgment</li>
+                                        <li>Next project: client assumes same behavior</li>
+                                        <li>You look like a pushover, not a professional</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Never absorb scope silently. Set boundaries.</p>
+                                </div>
+                            `
+                        }
+                    ]
+                }
+            },
+
+            // SECTION 5: SCENARIO 3 - PEOPLE PROBLEM
+            {
+                id: 'scenario3',
+                title: 'Scenario 3: The Vanishing Developer',
+                facilitatorPrompt: 'People problems. Tough one. Read the scenario. 90 seconds.',
+                timer: 90,
+                isScenario: true,
+                scenarioType: 'people',
+                scenarioData: {
+                    emoji: '👥',
+                    title: 'THE VANISHING DEVELOPER',
+                    setup: `
+                        <div class="bg-purple-50 border-4 border-purple-300 rounded-2xl p-6 mb-6">
+                            <p class="text-xl text-purple-900 mb-4"><strong>THE SITUATION:</strong></p>
+                            <p class="text-lg text-purple-800">Monday 9am. Slack message from your lead developer:</p>
+                            <p class="text-2xl font-black text-purple-900 my-4">"I quit. Last day is Friday. Got better offer. Sorry for short notice."</p>
+                            
+                            <p class="text-lg text-purple-800 mt-4"><strong>THE REALITY:</strong></p>
+                            <ul class="list-disc ml-6 text-lg text-purple-800 space-y-2">
+                                <li>She owns 60% of the critical codebase</li>
+                                <li>Project deadline: 3 weeks away</li>
+                                <li>No backup developer with her knowledge</li>
+                                <li>Client demo scheduled in 2 weeks</li>
+                                <li>Replacing her takes 2+ months (hiring + onboarding)</li>
+                            </ul>
+
+                            <div class="bg-white rounded-xl p-4 mt-4 border-2 border-purple-400">
+                                <p class="font-black text-purple-900 mb-2">YOUR EMOTIONAL STATE:</p>
+                                <p class="text-purple-800">Panic (project at risk), Betrayed (she didn't give notice earlier), Angry (timing is terrible)</p>
+                            </div>
+                        </div>
+                    `,
+                    question: "What's your first move?",
+                    options: [
+                        {
+                            text: "Panic mode - immediately tell client project will be delayed, start damage control",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ TOO FAST - CREATES UNNECESSARY PANIC</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this backfires:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>You haven't assessed ACTUAL impact yet</li>
+                                        <li>Maybe she can do handover in 5 days</li>
+                                        <li>Maybe another dev can cover critical pieces</li>
+                                        <li>Client hears "delay" and panics too</li>
+                                        <li>You look reactive, not composed</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Pause. Assess reality first.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Beg her to stay - offer counter-offer, promise improvements, anything to keep her",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-yellow-900 mb-4">⚠️ DESPERATE - USUALLY FAILS</h4>
+                                    <p class="text-lg text-yellow-800 mb-4"><strong>Why this rarely works:</strong></p>
+                                    <ul class="list-disc ml-6 text-yellow-800 space-y-2">
+                                        <li>She already accepted another offer (mentally gone)</li>
+                                        <li>Counter-offers rarely stick long-term</li>
+                                        <li>You look desperate and weak</li>
+                                        <li>Even if she stays, she's disengaged</li>
+                                        <li>You need transition plan, not retention attempt</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-yellow-900 mt-4">Accept her decision. Focus on smooth handover.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Calm → Clarify → Control: Assess impact, negotiate handover, create mitigation plan",
+                            correct: true,
+                            feedback: `
+                                <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-green-900 mb-4">✅ CORRECT! CRISIS MANAGEMENT DONE RIGHT</h4>
+                                    <p class="text-lg text-green-800 mb-4"><strong>Why this works:</strong></p>
+                                    <ul class="list-disc ml-6 text-green-800 space-y-2">
+                                        <li>✅ CALM: Don't panic or react emotionally</li>
+                                        <li>✅ CLARIFY: What's critical? What can wait? Who can cover?</li>
+                                        <li>✅ CONTROL: Negotiate structured handover (knowledge transfer)</li>
+                                        <li>✅ Build contingency plan for critical gaps</li>
+                                        <li>✅ Communicate to client AFTER you have plan</li>
+                                    </ul>
+                                    <div class="bg-white rounded-xl p-4 mt-4">
+                                        <p class="font-black text-green-900 mb-2">ACTION PLAN:</p>
+                                        <p class="text-green-800">Step 1: Meet with her - "Let's make this smooth. What handover do you need?"<br>
+                                        Step 2: Document critical items (2 days)<br>
+                                        Step 3: Pair remaining dev with her (3 days)<br>
+                                        Step 4: Communicate to client with mitigation plan<br>
+                                        Step 5: Hire replacement (parallel track)</p>
+                                    </div>
+                                </div>
+                            `,
+                            insight: `
+                                <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mt-4">
+                                    <h4 class="text-xl font-black text-purple-900 mb-3">💡 PRO TIP: THE STRUCTURED EXIT</h4>
+                                    <p class="text-lg text-purple-800">When key people quit mid-project: (1) Accept it gracefully (arguing wastes time), (2) Negotiate structured handover (documentation + pairing), (3) Assess what's truly at risk vs what's manageable, (4) Communicate to client AFTER you have a plan. Most clients respect transparent communication when you show you're handling it.</p>
+                                </div>
+                            `,
+                            template: `Sample 1-on-1 Script:
+
+"[Developer], I understand you're moving on - congratulations on the new opportunity. Let's make this transition smooth for everyone.
+
+Here's what I'd like to propose:
+
+This week:
+- Document critical components (2 days)
+- Pair with [Backup Dev] on key modules (3 days)
+- Record walkthrough videos for complex pieces
+
+I'll handle:
+- Client communication
+- Workload redistribution
+- Finding coverage for critical gaps
+
+Questions:
+1. What worries you most about the handover?
+2. Which pieces absolutely need documentation?
+3. Can we schedule 1 hour daily for knowledge transfer?
+
+Let's make your last week count."
+
+---
+
+Sample Client Communication:
+
+"Update on Project Timeline:
+
+Our lead developer is transitioning out (last day Friday). Here's our mitigation plan:
+
+Completed This Week:
+- Critical documentation (done)
+- Knowledge transfer to [Backup Dev]
+- Code review and testing complete
+
+Impact Assessment:
+- Core features: On track (no change)
+- Advanced features: May need +1 week
+
+Next Steps:
+- Continue development with current team
+- Bring in contractor for specialized pieces
+- Demo on [original date] with core features
+
+Questions? Let's discuss."`
+                        },
+                        {
+                            text: "Accept her resignation, let her leave Friday, figure it out after she's gone",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ PASSIVE - MAXIMIZES DAMAGE</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this is terrible:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>You waste 5 precious days of her knowledge</li>
+                                        <li>No documentation = months of pain</li>
+                                        <li>No handover = remaining dev struggles</li>
+                                        <li>Client finds out AFTER it's too late</li>
+                                        <li>Small crisis becomes big crisis</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Use her last week strategically. Don't waste it.</p>
+                                </div>
+                            `
+                        }
+                    ]
+                }
+            },
+
+            // SECTION 6: SCENARIO 4 - POLITICAL NIGHTMARE
+            {
+                id: 'scenario4',
+                title: 'Scenario 4: The Stakeholder War',
+                facilitatorPrompt: 'Politics. The ugliest type. Read carefully. This requires serious PM skill. 90 seconds.',
+                timer: 90,
+                isScenario: true,
+                scenarioType: 'politics',
+                scenarioData: {
+                    emoji: '🎭',
+                    title: 'THE STAKEHOLDER WAR',
+                    setup: `
+                        <div class="bg-blue-50 border-4 border-blue-300 rounded-2xl p-6 mb-6">
+                            <p class="text-xl text-blue-900 mb-4"><strong>THE SITUATION:</strong></p>
+                            <p class="text-lg text-blue-800">You're managing a project for a client. Two stakeholders, both powerful:</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4 my-4">
+                                <div class="bg-white rounded-xl p-4 border-2 border-blue-400">
+                                    <p class="font-black text-blue-900">VP PRODUCT (Your main contact)</p>
+                                    <p class="text-blue-800">"Build Feature X first. It's critical for Q1 launch."</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-2 border-red-400">
+                                    <p class="font-black text-red-900">CTO (Also approves budget)</p>
+                                    <p class="text-red-800">"Feature X is wrong. Build Feature Y instead. Don't listen to Product."</p>
+                                </div>
+                            </div>
+
+                            <p class="text-lg text-blue-800 mt-4"><strong>THE REALITY:</strong></p>
+                            <ul class="list-disc ml-6 text-lg text-blue-800 space-y-2">
+                                <li>They're fighting internally (power struggle)</li>
+                                <li>You're caught in the middle</li>
+                                <li>If you pick VP Product: CTO might block payment</li>
+                                <li>If you pick CTO: VP Product says you're ignoring contract</li>
+                                <li>Both are emailing you separately, asking you to "handle" the other</li>
+                            </ul>
+
+                            <div class="bg-white rounded-xl p-4 mt-4 border-2 border-blue-400">
+                                <p class="font-black text-blue-900 mb-2">YOUR EMOTIONAL STATE:</p>
+                                <p class="text-blue-800">Trapped (can't win), Anxious (one will be angry), Confused (who's actually in charge?)</p>
+                            </div>
+                        </div>
+                    `,
+                    question: "How do you handle this?",
+                    options: [
+                        {
+                            text: "Pick VP Product (your contract contact) - build Feature X as originally agreed",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ TAKING SIDES - CREATES ENEMY</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this backfires:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>CTO now sees you as "Product's vendor"</li>
+                                        <li>CTO has budget approval power (can block payment)</li>
+                                        <li>You're forcing them to resolve conflict (they won't)</li>
+                                        <li>Project gets caught in political crossfire</li>
+                                        <li>You look like you're not managing stakeholders</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Don't pick sides. Force alignment.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Pick CTO (has budget power) - build Feature Y to keep money flowing",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ FOLLOWING POWER - VIOLATES CONTRACT</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this fails:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>VP Product is your contract signatory</li>
+                                        <li>You're ignoring actual contract scope</li>
+                                        <li>VP Product can claim contract violation</li>
+                                        <li>You're letting internal politics override agreement</li>
+                                        <li>Still doesn't resolve their conflict</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Don't let politics override contract.</p>
+                                </div>
+                            `
+                        },
+                        {
+                            text: "Calm → Clarify → Control: Stop work, force them into one room to align",
+                            correct: true,
+                            feedback: `
+                                <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-green-900 mb-4">✅ CORRECT! PROFESSIONAL BOUNDARY SETTING</h4>
+                                    <p class="text-lg text-green-800 mb-4"><strong>Why this works:</strong></p>
+                                    <ul class="list-disc ml-6 text-green-800 space-y-2">
+                                        <li>✅ CALM: Don't pick sides or react to pressure</li>
+                                        <li>✅ CLARIFY: "I need aligned direction before continuing"</li>
+                                        <li>✅ CONTROL: Pause work until they align (forces resolution)</li>
+                                        <li>✅ You protect Translab from building wrong thing</li>
+                                        <li>✅ You look professional, not political</li>
+                                    </ul>
+                                    <div class="bg-white rounded-xl p-4 mt-4">
+                                        <p class="font-black text-green-900 mb-2">SAMPLE COMMUNICATION:</p>
+                                        <p class="text-green-800">"I'm hearing conflicting priorities from VP Product (Feature X) and CTO (Feature Y). To ensure we build the right solution, I need aligned direction from both stakeholders.<br><br>
+                                        I've paused development until we have alignment. Can we schedule a 30-minute call with both of you to clarify priority?<br><br>
+                                        I want to deliver value, and I need clear direction to do that."</p>
+                                    </div>
+                                </div>
+                            `,
+                            insight: `
+                                <div class="bg-purple-100 border-4 border-purple-400 rounded-2xl p-6 mt-4">
+                                    <h4 class="text-xl font-black text-purple-900 mb-3">💡 PRO TIP: THE ALIGNMENT FORCING MOVE</h4>
+                                    <p class="text-lg text-purple-800">When stakeholders conflict, DON'T pick sides. Pause work and force them to align. Say: "I can't build two different things. Please align on priority, then I'll execute." Most organizations will resolve conflict when vendor stops working. You look professional, not political. Never absorb their internal dysfunction.</p>
+                                </div>
+                            `,
+                            template: `Sample Email Template:
+
+To: VP Product, CTO
+Subject: Priority Alignment Needed - Development Paused
+
+Hi [VP Product] and [CTO],
+
+I'm reaching out because I'm receiving conflicting direction on project priorities:
+
+VP Product: Feature X priority (per original scope)
+CTO: Feature Y priority (technical preference)
+
+Current Status:
+I've paused development as of today to ensure we're building the right solution.
+
+What I Need:
+30-minute alignment call with both stakeholders to clarify:
+1. Which feature has priority?
+2. What happens to the other feature?
+3. Any timeline/budget impact?
+
+Once aligned, I can resume development immediately.
+
+Proposed times:
+- [Option 1]
+- [Option 2]
+- [Option 3]
+
+Looking forward to getting clarity so we can deliver value.
+
+Best regards,
+[Your Name]`
+                        },
+                        {
+                            text: "Build both Feature X and Y simultaneously - keep everyone happy",
+                            correct: false,
+                            feedback: `
+                                <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6">
+                                    <h4 class="text-2xl font-black text-red-900 mb-4">❌ PEOPLE-PLEASING - IMPOSSIBLE EXECUTION</h4>
+                                    <p class="text-lg text-red-800 mb-4"><strong>Why this destroys you:</strong></p>
+                                    <ul class="list-disc ml-6 text-red-800 space-y-2">
+                                        <li>Double the work = double the cost (who pays?)</li>
+                                        <li>Team capacity can't handle both</li>
+                                        <li>Quality drops trying to do too much</li>
+                                        <li>You're absorbing their conflict instead of resolving it</li>
+                                        <li>Both stakeholders get sub-par results</li>
+                                    </ul>
+                                    <p class="text-lg font-black text-red-900 mt-4">Don't be a martyr. Force them to choose.</p>
+                                </div>
+                            `
+                        }
+                    ]
+                }
+            },
+
+            // SECTION 7: TEMPLATES & TOOLS
+            {
+                id: 'templates',
+                title: 'Your Difficult Situation Toolkit',
+                facilitatorPrompt: 'Review the templates. These are your tools for real situations this week. Take 2 minutes.',
+                timer: 120,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                        <h2 class="text-4xl font-black mb-6 text-center bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                            🛠️ YOUR TOOLKIT FOR DIFFICULT SITUATIONS
+                        </h2>
+
+                        <div class="bg-orange-100 border-4 border-orange-400 rounded-2xl p-6 mb-8 text-center">
+                            <p class="text-xl text-orange-900 font-bold">You now have sample responses for all 4 situation types.</p>
+                            <p class="text-lg text-orange-800 mt-2">Use these templates. Adapt them to your reality. They work.</p>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-red-50 border-l-8 border-red-600 rounded-xl p-6">
+                                <h3 class="text-2xl font-black text-red-900 mb-3">💰 MONEY CONFLICTS</h3>
+                                <p class="text-red-800 mb-3"><strong>Framework:</strong> Acknowledge issue → Offer structured options → Ask them to choose</p>
+                                <div class="bg-white rounded-xl p-4 text-sm text-gray-700">
+                                    <p><strong>Template:</strong></p>
+                                    <p>"I understand budget constraints. Let's find a solution that works for both teams. Here are three payment options: [Option 1], [Option 2], [Option 3]. Which works best for your cash flow?"</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-orange-50 border-l-8 border-orange-600 rounded-xl p-6">
+                                <h3 class="text-2xl font-black text-orange-900 mb-3">📊 SCOPE BATTLES</h3>
+                                <p class="text-orange-800 mb-3"><strong>Framework:</strong> Break down by effort → Show tradeoffs → Offer prioritized choices</p>
+                                <div class="bg-white rounded-xl p-4 text-sm text-gray-700">
+                                    <p><strong>Template:</strong></p>
+                                    <p>"I've analyzed the features. Total effort: X hours. Here are your options: [Same timeline + budget increase], [Extended timeline], [Phase 2 approach]. Which aligns with your goals?"</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-purple-50 border-l-8 border-purple-600 rounded-xl p-6">
+                                <h3 class="text-2xl font-black text-purple-900 mb-3">👥 PEOPLE PROBLEMS</h3>
+                                <p class="text-purple-800 mb-3"><strong>Framework:</strong> Accept gracefully → Negotiate handover → Build mitigation plan</p>
+                                <div class="bg-white rounded-xl p-4 text-sm text-gray-700">
+                                    <p><strong>Template:</strong></p>
+                                    <p>"Congratulations on the new opportunity. Let's make this transition smooth. This week: [documentation], [pairing], [knowledge transfer]. I'll handle client communication and coverage."</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-50 border-l-8 border-blue-600 rounded-xl p-6">
+                                <h3 class="text-2xl font-black text-blue-900 mb-3">🎭 POLITICAL CONFLICTS</h3>
+                                <p class="text-blue-800 mb-3"><strong>Framework:</strong> Don't pick sides → Pause work → Force alignment</p>
+                                <div class="bg-white rounded-xl p-4 text-sm text-gray-700">
+                                    <p><strong>Template:</strong></p>
+                                    <p>"I'm hearing conflicting priorities. I've paused development until we have aligned direction. Can we schedule a call with all stakeholders to clarify?"</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-yellow-100 to-orange-100 border-4 border-yellow-400 rounded-2xl p-6 mt-8">
+                            <h3 class="text-2xl font-black text-yellow-900 mb-4 text-center">⚡ QUICK REFERENCE: CALM → CLARIFY → CONTROL</h3>
+                            <div class="grid md:grid-cols-3 gap-4 text-center">
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="text-3xl mb-2">🧘</p>
+                                    <p class="font-black text-blue-900">CALM</p>
+                                    <p class="text-sm text-gray-700">Pause. Breathe. Assess true urgency.</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="text-3xl mb-2">🔍</p>
+                                    <p class="font-black text-purple-900">CLARIFY</p>
+                                    <p class="text-sm text-gray-700">Facts not emotions. What happened? What's impact?</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="text-3xl mb-2">🎯</p>
+                                    <p class="font-black text-orange-900">CONTROL</p>
+                                    <p class="text-sm text-gray-700">Act on what you control. Let go of what you can't.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+
+            // SECTION 8: COMMITMENT
+            {
+                id: 'commitment',
+                title: 'Your Weekly Commitment',
+                facilitatorPrompt: 'Pick ONE situation type you expect to face this week. Write your commitment. Share in chat. 90 seconds.',
+                timer: 90,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                        <h2 class="text-4xl font-black mb-6 text-center text-gray-800">📝 YOUR COMMITMENT THIS WEEK</h2>
+                        
+                        <div class="bg-red-100 border-4 border-red-400 rounded-2xl p-6 mb-8 text-center">
+                            <p class="text-2xl font-black text-red-900">Pick ONE difficult situation you'll face.</p>
+                            <p class="text-lg text-red-800 mt-2">Use the Calm → Clarify → Control framework when it hits.</p>
+                        </div>
+
+                        <div class="bg-gray-50 border-4 border-gray-300 rounded-2xl p-6 mb-6">
+                            <label class="block text-lg font-bold text-gray-700 mb-3">Which situation type will you likely face?</label>
+                            <div class="space-y-3 mb-4">
+                                <label class="flex items-center gap-3 p-4 bg-white rounded-xl cursor-pointer hover:bg-red-50">
+                                    <input type="radio" name="situation" value="money" class="w-5 h-5">
+                                    <span class="text-lg">💰 Money conflict (payment, budget)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white rounded-xl cursor-pointer hover:bg-orange-50">
+                                    <input type="radio" name="situation" value="scope" class="w-5 h-5">
+                                    <span class="text-lg">📊 Scope battle (additions, creep)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white rounded-xl cursor-pointer hover:bg-purple-50">
+                                    <input type="radio" name="situation" value="people" class="w-5 h-5">
+                                    <span class="text-lg">👥 People problem (quit, conflict)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 bg-white rounded-xl cursor-pointer hover:bg-blue-50">
+                                    <input type="radio" name="situation" value="politics" class="w-5 h-5">
+                                    <span class="text-lg">🎭 Political conflict (stakeholders)</span>
+                                </label>
+                            </div>
+                            
+                            <label class="block text-lg font-bold text-gray-700 mb-3 mt-6">How will you apply Calm → Clarify → Control?</label>
+                            <textarea id="commitment" rows="4" 
+                                      class="w-full border-2 border-gray-300 rounded-xl p-4 text-lg focus:border-orange-500 focus:outline-none"
+                                      placeholder="Example: When scope creep hits, I'll pause, break down effort, and offer 3 prioritized options instead of saying yes/no..."></textarea>
+                            <p class="text-sm text-gray-600 mt-2">Type your specific plan. Auto-saves as you type.</p>
+                        </div>
+
+                        <div class="bg-orange-100 border-4 border-orange-400 rounded-2xl p-6 mb-6">
+                            <p class="text-lg font-bold text-orange-900 mb-2">Your Accountability Buddy:</p>
+                            <p id="buddyName" class="text-2xl font-black text-orange-900"></p>
+                            <p class="text-sm text-orange-800 mt-2">Check in Friday. Share how you handled your difficult situation.</p>
+                        </div>
+
+                        <div class="text-center">
+                            <button onclick="saveCommitment()" class="bg-gradient-to-r from-red-500 to-orange-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg hover:shadow-2xl transition-all">
+                                💾 Save My Commitment
+                            </button>
+                        </div>
+
+                        <div id="commitmentSaved" class="hidden mt-6 bg-green-100 border-4 border-green-400 rounded-2xl p-6 text-center">
+                            <p class="text-2xl font-black text-green-900">✅ Commitment Saved!</p>
+                            <p class="text-lg text-green-800 mt-2">Now type it in chat so everyone sees your commitment.</p>
+                        </div>
+                    </div>
+                `
+            },
+
+            // SECTION 9: COMPLETION
+            {
+                id: 'completion',
+                title: 'Module Complete',
+                facilitatorPrompt: 'Strength starts here! Download your action plan. Next week: Assertiveness & Aggression. Great work everyone!',
+                timer: 0,
+                render: () => `
+                    <div class="bg-white rounded-3xl shadow-2xl p-12 text-center animate-in">
+                        <div class="text-8xl mb-6">🎉</div>
+                        <h2 class="text-5xl font-black mb-6 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                            MODULE 7 COMPLETE!
+                        </h2>
+                        
+                        <div class="bg-green-100 border-4 border-green-400 rounded-2xl p-8 mb-8">
+                            <p class="text-3xl font-black text-green-900 mb-4">Your Final Score:</p>
+                            <p id="finalScore" class="text-6xl font-black text-green-900 mb-4">-</p>
+                            <p class="text-xl text-green-800">out of 4 difficult situations</p>
+                        </div>
+
+                        <div class="bg-orange-100 border-4 border-orange-400 rounded-2xl p-8 mb-8">
+                            <h3 class="text-3xl font-black text-orange-900 mb-4">💪 STRENGTH LAYER BEGINS</h3>
+                            <p class="text-xl text-orange-800 mb-4">You just learned how to handle:</p>
+                            <div class="grid md:grid-cols-2 gap-4 text-left">
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-red-600">✅ Money conflicts</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-orange-600">✅ Scope battles</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-purple-600">✅ People problems</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="font-black text-blue-600">✅ Political conflicts</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <button onclick="downloadActionPlan()" class="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg hover:shadow-2xl transition-all">
+                                📥 Download Your Action Plan
+                            </button>
+                        </div>
+
+                        <div class="bg-yellow-100 border-4 border-yellow-400 rounded-2xl p-6">
+                            <p class="text-2xl font-black text-yellow-900 mb-2">NEXT WEEK:</p>
+                            <p class="text-xl text-yellow-800">Module 8: Assertiveness & Aggression</p>
+                            <p class="text-lg text-yellow-800 mt-2">How to say NO without burning bridges. Setting boundaries confidently.</p>
+                        </div>
+
+                        <p class="text-gray-500 mt-8">© 2026 Translab Technologies • PM Excellence Program</p>
+                        <p class="text-gray-500 mt-1">GitHub: giriforteen/translab-training-hub</p>
+                    </div>
+                `
+            }
+        ];
+
+        // ============================================================================
+        // SCENARIO FUNCTIONS - DEFINE EARLY FOR GLOBAL ACCESS
+        // ============================================================================
+        let selectedOptionIndex = null;
+
+        function selectOption(displayIndex, originalIndex, isCorrect) {
+            console.log('selectOption called:', displayIndex, originalIndex, isCorrect);
+            
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Found', options.length, 'options to highlight');
+            options.forEach(opt => opt.classList.remove('option-selected'));
+            if (options[displayIndex]) {
+                options[displayIndex].classList.add('option-selected');
+                console.log('Highlighted option', displayIndex);
+            }
+
+            selectedOptionIndex = displayIndex;
+            window.selectedCorrect = isCorrect;
+
+            document.getElementById('revealBtn').classList.remove('hidden');
+        }
+
+        function revealAnswer() {
+            if (selectedOptionIndex === null) return;
+
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Revealing answer for', options.length, 'options');
+            const selectedOption = window.currentScenarioOptions[selectedOptionIndex];
+
+            options.forEach((opt, idx) => {
+                const optionData = window.currentScenarioOptions[idx];
+                if (optionData.correct) {
+                    opt.classList.add('option-correct');
+                } else if (idx === selectedOptionIndex) {
+                    opt.classList.add('option-incorrect');
+                }
+            });
+
+            const feedbackContainer = document.getElementById('answerFeedback');
+            feedbackContainer.innerHTML = selectedOption.feedback;
+            feedbackContainer.classList.remove('hidden');
+
+            if (selectedOption.correct && selectedOption.insight) {
+                const insightContainer = document.getElementById('insightBox');
+                insightContainer.innerHTML = selectedOption.insight;
+                insightContainer.classList.remove('hidden');
+            }
+
+            // Show template if available and correct
+            if (selectedOption.correct && selectedOption.template) {
+                const templateContainer = document.getElementById('templateBox');
+                templateContainer.innerHTML = `
+                    <div class="bg-blue-100 border-4 border-blue-400 rounded-2xl p-6 mt-4">
+                        <h4 class="text-xl font-black text-blue-900 mb-3">📧 TEMPLATE YOU CAN USE</h4>
+                        <pre class="bg-white rounded-xl p-4 text-sm text-gray-700 whitespace-pre-wrap overflow-x-auto">${selectedOption.template}</pre>
+                        <button onclick="copyTemplate('${sections[currentSection].scenarioType}')" class="mt-3 bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600">
+                            📋 Copy Template
+                        </button>
+                    </div>
+                `;
+                templateContainer.classList.remove('hidden');
+                
+                // Store template for this scenario type
+                selectedTemplates[sections[currentSection].scenarioType] = selectedOption.template;
+            }
+
+            if (selectedOption.correct) {
+                score++;
+                updateScore();
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                document.getElementById('tryAgainBtn').classList.remove('hidden');
+            }
+
+            document.getElementById('revealBtn').classList.add('hidden');
+
+            scenarioResults.push({
+                scenario: currentSection,
+                correct: selectedOption.correct
+            });
+        }
+
+        function tryAgain() {
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Try again - resetting', options.length, 'options');
+            options.forEach(opt => {
+                opt.classList.remove('option-selected', 'option-correct', 'option-incorrect');
+            });
+
+            document.getElementById('answerFeedback').classList.add('hidden');
+            document.getElementById('insightBox').classList.add('hidden');
+            document.getElementById('templateBox').classList.add('hidden');
+            document.getElementById('tryAgainBtn').classList.add('hidden');
+            selectedOptionIndex = null;
+        }
+
+        window.selectOption = selectOption;
+        window.revealAnswer = revealAnswer;
+        window.tryAgain = tryAgain;
+
+        // ============================================================================
+        // SCENARIO RENDERING
+        // ============================================================================
+        function renderScenario(data) {
+            const randomized = data.options
+                .map((opt, index) => ({ ...opt, originalIndex: index }))
+                .sort(() => Math.random() - 0.5);
+
+            let html = `
+                <div class="bg-white rounded-3xl shadow-2xl p-10 animate-in">
+                    <div class="text-center mb-8">
+                        <div class="text-7xl mb-4">${data.emoji}</div>
+                        <h2 class="text-4xl font-black text-gray-800">${data.title}</h2>
+                    </div>
+                    ${data.setup}
+                    <div class="bg-gray-100 border-4 border-gray-400 rounded-2xl p-6 mb-6 text-center">
+                        <p class="text-2xl font-black text-gray-800">${data.question}</p>
+                    </div>
+                    <div class="space-y-4 mb-6" id="optionsContainer">
+            `;
+
+            randomized.forEach((opt, displayIndex) => {
+                html += `
+                    <div class="option-card bg-white border-4 border-gray-300 rounded-2xl p-6 shadow-lg" 
+                         data-display-index="${displayIndex}"
+                         data-original-index="${opt.originalIndex}"
+                         data-correct="${opt.correct}">
+                        <p class="text-xl font-bold text-gray-800">${opt.text}</p>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                    <div id="answerFeedback" class="hidden mb-6"></div>
+                    <div id="insightBox" class="hidden"></div>
+                    <div id="templateBox" class="hidden"></div>
+                    <div class="text-center">
+                        <button id="revealBtn" class="hidden bg-gradient-to-r from-blue-500 to-purple-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg">
+                            👀 Reveal Answer
+                        </button>
+                        <button id="tryAgainBtn" class="hidden bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-black py-4 px-12 rounded-2xl text-xl shadow-lg">
+                            🔄 Try Again
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            window.currentScenarioOptions = randomized;
+            return html;
+        }
+
+        function attachScenarioListeners() {
+            const options = document.querySelectorAll('#sectionContainer .option-card[data-display-index]');
+            console.log('Attaching listeners to', options.length, 'options');
+            options.forEach((opt, idx) => {
+                console.log('Option', idx, ':', opt.getAttribute('data-display-index'), opt.getAttribute('data-correct'));
+                opt.addEventListener('click', function(e) {
+                    console.log('Click detected on option', this.getAttribute('data-display-index'));
+                    const displayIndex = parseInt(this.getAttribute('data-display-index'));
+                    const originalIndex = parseInt(this.getAttribute('data-original-index'));
+                    const isCorrect = this.getAttribute('data-correct') === 'true';
+                    selectOption(displayIndex, originalIndex, isCorrect);
+                });
+            });
+        }
+
+        // ============================================================================
+        // NAVIGATION FUNCTIONS
+        // ============================================================================
+        function updateProgress() {
+            const progress = ((currentSection + 1) / sections.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `${score}/${totalScenarios}`;
+        }
+
+        function showSection(index) {
+            console.log('=== showSection called ===');
+            console.log('Index:', index);
+            console.log('Current section:', currentSection);
+            console.log('Total sections:', sections.length);
+            
+            try {
+                const section = sections[index];
+                console.log('Section object:', section);
+                console.log('Section ID:', section.id);
+                console.log('Is scenario?', section.isScenario);
+                
+                const container = document.getElementById('sectionContainer');
+                
+                if (section.isScenario) {
+                    console.log('Rendering scenario...');
+                    container.innerHTML = renderScenario(section.scenarioData);
+                    setTimeout(() => attachScenarioListeners(), 200);
+                } else {
+                    console.log('Rendering regular section...');
+                    const html = section.render();
+                    console.log('HTML length:', html.length);
+                    container.innerHTML = html;
+                }
+
+                document.getElementById('promptText').textContent = section.facilitatorPrompt;
+
+                if (section.timer > 0) {
+                    showTimer(section.timer);
+                } else {
+                    document.getElementById('timerDisplay').classList.add('hidden');
+                }
+
+                document.getElementById('backBtn').classList.toggle('hidden', index === 0);
+                
+                const nextBtn = document.getElementById('nextBtn');
+                if (index === sections.length - 1) {
+                    nextBtn.textContent = 'Finish';
+                } else {
+                    nextBtn.textContent = 'Next Section →';
+                }
+
+                updateProgress();
+                window.scrollTo(0, 0);
+                console.log('=== showSection complete ===');
+            } catch (error) {
+                console.error('ERROR in showSection:', error);
+                console.error('Error details:', error.message);
+                console.error('Stack trace:', error.stack);
+                alert('Error loading section. Check console for details.');
+            }
+        }
+
+        function nextSection() {
+            console.log('=== nextSection called ===');
+            console.log('Current section before:', currentSection);
+            console.log('Sections length:', sections.length);
+            
+            if (currentSection < sections.length - 1) {
+                currentSection++;
+                console.log('Moving to section:', currentSection);
+                showSection(currentSection);
+            } else {
+                console.log('Already at last section');
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 0) {
+                currentSection--;
+                showSection(currentSection);
+            }
+        }
+
+        function showTimer(seconds) {
+            clearInterval(timerInterval);
+            const timerDisplay = document.getElementById('timerDisplay');
+            const timerText = document.getElementById('timerText');
+            
+            timerDisplay.classList.remove('hidden');
+            timerText.textContent = seconds;
+            
+            let remaining = seconds;
+            timerInterval = setInterval(() => {
+                remaining--;
+                timerText.textContent = remaining;
+                
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.classList.add('hidden');
+                }
+            }, 1000);
+        }
+
+        // ============================================================================
+        // KNOWLEDGE CHECK
+        // ============================================================================
+        window.checkKnowledge = function(qIndex, optIndex, isCorrect) {
+            const feedback = document.getElementById(`feedback-${qIndex}`);
+            if (isCorrect) {
+                feedback.innerHTML = `
+                    <div class="bg-green-100 border-4 border-green-400 rounded-xl p-4">
+                        <p class="text-lg font-black text-green-900">✅ Correct!</p>
+                    </div>
+                `;
+                feedback.classList.remove('hidden');
+            } else {
+                feedback.innerHTML = `
+                    <div class="bg-red-100 border-4 border-red-400 rounded-xl p-4">
+                        <p class="text-lg font-black text-red-900">❌ Not quite. Try again!</p>
+                    </div>
+                `;
+                feedback.classList.remove('hidden');
+            }
+        };
+
+        // ============================================================================
+        // COMMITMENT
+        // ============================================================================
+        window.saveCommitment = function() {
+            const situation = document.querySelector('input[name="situation"]:checked');
+            const commitment = document.getElementById('commitment').value;
+            
+            if (situation && commitment.trim()) {
+                const fullCommitment = `${situation.value}: ${commitment}`;
+                localStorage.setItem('module7_commitment', fullCommitment);
+                localStorage.setItem('module7_situation_type', situation.value);
+                document.getElementById('commitmentSaved').classList.remove('hidden');
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } else {
+                alert('Please select a situation type and describe your plan!');
+            }
+        };
+
+        window.copyTemplate = function(situationType) {
+            const template = selectedTemplates[situationType];
+            if (template) {
+                navigator.clipboard.writeText(template).then(() => {
+                    alert('Template copied to clipboard!');
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const commitmentField = document.getElementById('commitment');
+            if (commitmentField) {
+                commitmentField.addEventListener('input', (e) => {
+                    localStorage.setItem('module7_commitment_draft', e.target.value);
+                });
+
+                const draft = localStorage.getItem('module7_commitment_draft');
+                if (draft) {
+                    commitmentField.value = draft;
+                }
+            }
+
+            const buddyName = localStorage.getItem('accountabilityBuddy') || 'Your Buddy';
+            const buddyDisplay = document.getElementById('buddyName');
+            if (buddyDisplay) {
+                buddyDisplay.textContent = buddyName;
+            }
+        });
+
+        // ============================================================================
+        // DOWNLOAD ACTION PLAN
+        // ============================================================================
+        window.downloadActionPlan = function() {
+            const situationType = localStorage.getItem('module7_situation_type') || 'general';
+            const commitment = localStorage.getItem('module7_commitment') || 'Handle difficult situations with Calm → Clarify → Control';
+            
+            const actionPlan = `
+PM EXCELLENCE PROGRAM - MODULE 7 ACTION PLAN
+=============================================
+
+SESSION: Handling Difficult Situations
+PILLAR: #7 - Handling Difficult Situations (STRENGTH LAYER)
+DATE: ${new Date().toLocaleDateString()}
+YOUR SCORE: ${score}/${totalScenarios}
+
+THE FRAMEWORK: CALM → CLARIFY → CONTROL
+----------------------------------------
+1. CALM (2 minutes)
+   - Pause and breathe
+   - Is anyone in danger RIGHT NOW?
+   - What's the ACTUAL deadline?
+   - Do I have 5 minutes to think?
+
+2. CLARIFY (5 minutes)
+   - What EXACTLY happened?
+   - What's the REAL impact?
+   - What do I CONTROL?
+
+3. CONTROL (Action time)
+   - Fix it yourself (within authority)
+   - Escalate with full context
+   - Negotiate new terms
+   - Accept and adapt
+
+THE 4 SITUATION TYPES
+----------------------
+💰 MONEY: Payment issues, budget cuts, scope without budget
+📊 SCOPE: Additions, unrealistic expectations, moving targets
+👥 PEOPLE: Team quits, conflicts, underperformance
+🎭 POLITICS: Stakeholder conflicts, power plays, agendas
+
+YOUR TEMPLATES
+--------------
+💰 MONEY TEMPLATE:
+"I understand budget constraints. Let's find a solution that works for both teams. 
+Here are three payment options: [1], [2], [3]. Which works best for your cash flow?"
+
+📊 SCOPE TEMPLATE:
+"I've analyzed the features. Total effort: X hours. Here are your options:
+[Same timeline + budget increase], [Extended timeline], [Phase 2 approach]. 
+Which aligns with your goals?"
+
+👥 PEOPLE TEMPLATE:
+"Congratulations on the new opportunity. Let's make this transition smooth.
+This week: [documentation], [pairing], [knowledge transfer]. 
+I'll handle client communication and coverage."
+
+🎭 POLITICS TEMPLATE:
+"I'm hearing conflicting priorities. I've paused development until we have aligned 
+direction. Can we schedule a call with all stakeholders to clarify?"
+
+YOUR COMMITMENT THIS WEEK
+--------------------------
+${commitment}
+
+ACCOUNTABILITY BUDDY
+--------------------
+${localStorage.getItem('accountabilityBuddy') || 'Your Buddy'}
+Check-in: Friday
+
+NEXT STEPS
+----------
+1. When difficult situation hits this week:
+   - STOP. Don't react immediately.
+   - Apply Calm → Clarify → Control
+   - Use your template
+
+2. Friday check-in with buddy:
+   - What situation did you face?
+   - Did you use the framework?
+   - What worked? What didn't?
+
+3. Next week: Module 8 - Assertiveness & Aggression
+   - How to say NO without burning bridges
+   - Setting boundaries confidently
+
+REMEMBER
+--------
+You can't control the situation.
+But you CAN control your response.
+
+© 2026 Translab Technologies • PM Excellence Program
+GitHub: giriforteen/translab-training-hub
+            `;
+
+            const blob = new Blob([actionPlan], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Module7_Difficult_Situations_Action_Plan.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        };
+
+        // ============================================================================
+        // EVENT LISTENERS
+        // ============================================================================
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            console.log('=== NEXT BUTTON CLICKED ===');
+            console.log('Current section:', currentSection);
+            console.log('Is last section?', currentSection === sections.length - 1);
+            
+            if (currentSection === sections.length - 1) {
+                console.log('Setting final score...');
+                document.getElementById('finalScore').textContent = `${score}/${totalScenarios}`;
+            }
+            nextSection();
+        });
+
+        document.getElementById('backBtn').addEventListener('click', previousSection);
+
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'revealBtn') {
+                revealAnswer();
+            }
+            if (e.target.id === 'tryAgainBtn') {
+                tryAgain();
+            }
+        });
+
+        // ============================================================================
+        // INITIALIZE
+        // ============================================================================
+        console.log('=== MODULE INITIALIZATION ===');
+        console.log('Total sections:', sections.length);
+        console.log('Starting section:', currentSection);
+        console.log('Next button exists?', document.getElementById('nextBtn') !== null);
+        showSection(0);
+        console.log('=== INITIALIZATION COMPLETE ===');
+    </script>
+</body>
+</html>
