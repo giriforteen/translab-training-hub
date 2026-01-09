@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 5: Advanced Growth Skills | CSP Foundation Training</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --accent: #f472b6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e1b4b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(244, 114, 182, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(244, 114, 182, 0.8); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .animate-slideUp { animation: slideUp 0.6s ease-out; }
+        .animate-pulse-slow { animation: pulse 2s infinite; }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-glow { animation: glow 2s infinite; }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
+        /* Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+            height: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #a855f7, var(--primary));
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+            transition: width 0.5s ease;
+        }
+
+        /* Badge Styles */
+        .badge {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .badge.locked {
+            background: rgba(255, 255, 255, 0.1);
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
+        .badge.unlocked {
+            background: linear-gradient(135deg, var(--accent), #a855f7);
+            box-shadow: 0 0 30px rgba(244, 114, 182, 0.5);
+        }
+
+        .badge.unlocked::after {
+            content: '✓';
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: var(--success);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #a855f7);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(244, 114, 182, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 500;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--accent);
+        }
+
+        /* Card Styles */
+        .game-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .game-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(244, 114, 182, 0.3);
+        }
+
+        /* Option Cards */
+        .option-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(244, 114, 182, 0.5);
+            transform: translateX(5px);
+        }
+
+        .option-card.selected {
+            background: rgba(244, 114, 182, 0.2);
+            border-color: var(--accent);
+        }
+
+        .option-card.correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--success);
+        }
+
+        .option-card.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--danger);
+        }
+
+        /* Pro Tip Box */
+        .pro-tip {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(244, 114, 182, 0.2));
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+
+        /* Level Indicator */
+        .level-indicator {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .level-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .level-dot.active {
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .level-dot.completed {
+            background: var(--success);
+        }
+
+        /* Points Display */
+        .points-display {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(79, 70, 229, 0.3));
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .points-add {
+            color: var(--success);
+            font-size: 16px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        /* Screen Transitions */
+        .screen {
+            display: none;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Scenario Box */
+        .scenario-box {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.3), rgba(124, 58, 237, 0.3));
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        /* Framework Card */
+        .framework-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .framework-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .framework-card.completed {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        /* Hint Box */
+        .hint-box {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        /* Sample Answer */
+        .sample-answer {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        /* Timer */
+        .timer {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+
+        /* Confetti */
+        .confetti-piece {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confetti 3s linear forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER BAR - Always Visible -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                    MODULE 5
+                </div>
+                <div class="hidden md:block text-sm text-white/60">Advanced Growth Skills</div>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div class="points-display" id="pointsDisplay">
+                    <span>⭐</span>
+                    <span id="totalPoints">0</span>
+                    <span class="text-white/60">/1000</span>
+                </div>
+                <div class="timer" id="timer">⏱️ 00:00</div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="px-4 pb-3">
+            <div class="max-w-6xl mx-auto">
+                <div class="progress-container">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="pt-28 pb-12 px-4">
+        <div class="max-w-4xl mx-auto">
+
+            <!-- ==================== WELCOME SCREEN ==================== -->
+            <div class="screen active" id="welcomeScreen">
+                <div class="text-center animate-slideUp">
+                    <div class="text-8xl mb-6 animate-float">🚀</div>
+                    <h1 class="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                        ADVANCED GROWTH SKILLS
+                    </h1>
+                    <p class="text-xl text-white/70 mb-8 max-w-2xl mx-auto">
+                        Transform from Account Manager to Growth Driver. Master the skills that turn satisfied customers into expanding partnerships.
+                    </p>
+
+                    <!-- Badges Preview -->
+                    <div class="game-card mb-8">
+                        <h3 class="text-lg font-semibold mb-4 text-white/80">🎖️ BADGES TO UNLOCK</h3>
+                        <div class="flex justify-center gap-4 flex-wrap" id="badgesPreview">
+                            <div class="badge locked tooltip" data-tooltip="Growth Mindset" data-badge="mindset">🧠</div>
+                            <div class="badge locked tooltip" data-tooltip="Strategic Planner" data-badge="planner">📋</div>
+                            <div class="badge locked tooltip" data-tooltip="Signal Spotter" data-badge="signal">🎯</div>
+                            <div class="badge locked tooltip" data-tooltip="Conversation Master" data-badge="conversation">💬</div>
+                            <div class="badge locked tooltip" data-tooltip="QBR Champion" data-badge="qbr">👑</div>
+                            <div class="badge locked tooltip" data-tooltip="Growth Driver" data-badge="final">🏆</div>
+                        </div>
+                    </div>
+
+                    <!-- Level Preview -->
+                    <div class="game-card mb-8">
+                        <h3 class="text-lg font-semibold mb-4 text-white/80">📍 YOUR JOURNEY</h3>
+                        <div class="grid md:grid-cols-5 gap-3 text-sm">
+                            <div class="p-3 rounded-lg bg-white/5">
+                                <div class="text-2xl mb-1">🧠</div>
+                                <div class="text-white/60">Level 1</div>
+                                <div class="font-medium">Growth Mindset</div>
+                            </div>
+                            <div class="p-3 rounded-lg bg-white/5">
+                                <div class="text-2xl mb-1">📋</div>
+                                <div class="text-white/60">Level 2</div>
+                                <div class="font-medium">Essential 5</div>
+                            </div>
+                            <div class="p-3 rounded-lg bg-white/5">
+                                <div class="text-2xl mb-1">🎯</div>
+                                <div class="text-white/60">Level 3</div>
+                                <div class="font-medium">Signal Detection</div>
+                            </div>
+                            <div class="p-3 rounded-lg bg-white/5">
+                                <div class="text-2xl mb-1">💬</div>
+                                <div class="text-white/60">Level 4</div>
+                                <div class="font-medium">Expansion Talks</div>
+                            </div>
+                            <div class="p-3 rounded-lg bg-white/5">
+                                <div class="text-2xl mb-1">👑</div>
+                                <div class="text-white/60">Level 5</div>
+                                <div class="font-medium">QBR Mastery</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-white/50 text-sm mb-6">⏱️ Estimated time: 45 minutes | 🎮 Fully interactive | 📱 Works on all devices</div>
+
+                    <button class="btn-primary animate-pulse-slow" onclick="startGame()">
+                        🎮 START YOUR JOURNEY
+                    </button>
+                </div>
+            </div>
+
+            <!-- ==================== LEVEL 1: GROWTH MINDSET ==================== -->
+            <div class="screen" id="level1Screen">
+                <div class="animate-slideUp">
+                    <!-- Level Header -->
+                    <div class="text-center mb-8">
+                        <div class="inline-block px-4 py-2 rounded-full bg-pink-500/20 text-pink-300 text-sm font-semibold mb-4">
+                            LEVEL 1 OF 5
+                        </div>
+                        <h2 class="text-4xl font-bold mb-2">🧠 Growth Mindset Unlock</h2>
+                        <p class="text-white/60">Are you an Account Manager or a Growth Driver?</p>
+                    </div>
+
+                    <!-- Level Dots -->
+                    <div class="level-indicator">
+                        <div class="level-dot active"></div>
+                        <div class="level-dot"></div>
+                        <div class="level-dot"></div>
+                        <div class="level-dot"></div>
+                        <div class="level-dot"></div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="game-card mt-8">
+                        <h3 class="text-2xl font-bold mb-4">The Two Types of CSPs</h3>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mb-8">
+                            <div class="p-6 rounded-xl bg-red-500/10 border border-red-500/30">
+                                <div class="text-3xl mb-3">😰</div>
+                                <h4 class="font-bold text-red-300 mb-2">Account Manager Mode</h4>
+                                <ul class="text-sm text-white/70 space-y-2">
+                                    <li>• Waits for renewal to think about growth</li>
+                                    <li>• Reacts to client requests</li>
+                                    <li>• Focuses on keeping clients "happy"</li>
+                                    <li>• Sees expansion as Sales' job</li>
+                                    <li>• Runs QBRs as status updates</li>
+                                </ul>
+                            </div>
+                            <div class="p-6 rounded-xl bg-green-500/10 border border-green-500/30">
+                                <div class="text-3xl mb-3">🚀</div>
+                                <h4 class="font-bold text-green-300 mb-2">Growth Driver Mode</h4>
+                                <ul class="text-sm text-white/70 space-y-2">
+                                    <li>• Plans expansion from day one</li>
+                                    <li>• Proactively identifies opportunities</li>
+                                    <li>• Focuses on delivering business value</li>
+                                    <li>• Owns revenue conversations</li>
+                                    <li>• Runs QBRs as strategic sessions</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="pro-tip">
+                            <div class="font-bold text-yellow-300 mb-2">💡 PRO TIP</div>
+                            <p class="text-white/80">The industry is shifting. In 2025, 40% of SaaS revenue comes from renewals and expansion. CSPs who can't drive growth will be replaced by those who can.</p>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Section -->
+                    <div class="game-card mt-6" id="level1Quiz">
+                        <h3 class="text-xl font-bold mb-4">🎯 Quick Check: What Would You Do?</h3>
+                        
+                        <div class="scenario-box mb-6">
+                            <p class="text-white/90">Your client just completed a successful implementation. They're happy with the results. The next renewal is in 10 months. What's your move?</p>
+                        </div>
+
+                        <div class="space-y-3" id="level1Options">
+                            <div class="option-card" onclick="selectOption(1, 'a', this)">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl">A</span>
+                                    <div>
+                                        <p class="font-medium">Focus on support tickets and make sure nothing breaks</p>
+                                        <p class="text-sm text-white/50 mt-1">Keep the client happy until renewal</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="option-card" onclick="selectOption(1, 'b', this)">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl">B</span>
+                                    <div>
+                                        <p class="font-medium">Immediately pitch more products</p>
+                                        <p class="text-sm text-white/50 mt-1">Strike while the iron is hot</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="option-card" onclick="selectOption(1, 'c', this)">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl">C</span>
+                                    <div>
+                                        <p class="font-medium">Map their organization and identify white space for future growth</p>
+                                        <p class="text-sm text-white/50 mt-1">Start strategic account planning now</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="option-card" onclick="selectOption(1, 'd', this)">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-2xl">D</span>
+                                    <div>
+                                        <p class="font-medium">Wait for them to ask for more services</p>
+                                        <p class="text-sm text-white/50 mt-1">Don't be pushy</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="level1Feedback" class="hidden mt-6"></div>
+                        
+                        <div class="mt-6 flex justify-end">
+                            <button class="btn-primary hidden" id="level1Next" onclick="goToLevel(2)">
+                                CONTINUE TO LEVEL 2 →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== LEVEL 2: ESSENTIAL 5 FRAMEWORK ==================== -->
+            <div class="screen" id="level2Screen">
+                <div class="animate-slideUp">
+                    <div class="text-center mb-8">
+                        <div class="inline-block px-4 py-2 rounded-full bg-purple-500/20 text-purple-300 text-sm font-semibold mb-4">
+                            LEVEL 2 OF 5
+                        </div>
+                        <h2 class="text-4xl font-bold mb-2">📋 The Essential 5 Framework</h2>
+                        <p class="text-white/60">Master the account planning fundamentals that drive growth</p>
+                    </div>
+
+                    <div class="level-indicator">
+                        <div class="level-dot completed"></div>
+                        <div class="level-dot active"></div>
+                        <div class="level-dot"></div>
+                        <div class="level-dot"></div>
+                        <div class="level-dot"></div>
+                    </div>
+
+                    <!-- Interactive Framework Cards -->
+                    <div class="game-card mt-8">
+                        <h3 class="text-2xl font-bold mb-2">Build Your Account Plan</h3>
+                        <p class="text-white/60 mb-6">Click each card to learn the framework, then complete the challenge.</p>
+
+                        <div class="grid md:grid-cols-5 gap-4 mb-8" id="frameworkCards">
+                            <div class="framework-card" onclick="showFramework(1)" id="fw1">
+                                <div class="text-3xl mb-2">❤️</div>
+                                <div class="text-sm font-bold">1. Health Score</div>
+                                <div class="text-xs text-white/50 mt-1">Current state</div>
+                            </div>
+                            <div class="framework-card" onclick="showFramework(2)" id="fw2">
+                                <div class="text-3xl mb-2">👥</div>
+                                <div class="text-sm font-bold">2. Stakeholders</div>
+                                <div class="text-xs text-white/50 mt-1">Power mapping</div>
+                            </div>
+                            <div class="framework-card" onclick="showFramework(3)" id="fw3">
+                                <div class="text-3xl mb-2">🔍</div>
+                                <div class="text-sm font-bold">3. White Space</div>
+                                <div class="text-xs text-white/50 mt-1">Growth gaps</div>
+                            </div>
+                            <div class="framework-card" onclick="showFramework(4)" id="fw4">
+                                <div class="text-3xl mb-2">⚠️</div>
+                                <div class="text-sm font-bold">4. Risk/Opp</div>
+                                <div class="text-xs text-white/50 mt-1">Assessment</div>
+                            </div>
+                            <div class="framework-card" onclick="showFramework(5)" id="fw5">
+                                <div class="text-3xl mb-2">📅</div>
+                                <div class="text-sm font-bold">5. 90-Day Plan</div>
+                                <div class="text-xs text-white/50 mt-1">Action items</div>
+                            </div>
+                        </div>
+
+                        <!-- Framework Detail Panel -->
+                        <div id="frameworkDetail" class="hidden">
+                            <div class="p-6 rounded-xl bg-indigo-500/10 border border-indigo-500/30 mb-6">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="text-4xl" id="fwEmoji"></span>
+                                    <div>
+                                        <h4 class="text-xl font-bold" id="fwTitle"></h4>
+                                        <p class="text-white/60 text-sm" id="fwSubtitle"></p>
+                                    </div>
+                                </div>
+                                <div id="fwContent" class="text-white/80"></div>
+                                
+                                <button class="btn-secondary mt-4" onclick="markFrameworkComplete()">
+                                    ✓ Got It!
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="level2Progress" class="text-center text-white/60 mb-4">
+                            Frameworks explored: <span id="fwCount">0</span>/5
+                        </div>
+                    </div>
+
+                    <!-- Level 2 Quiz -->
+                    <div class="game-card mt-6 hidden" id="level2Quiz">
+                        <h3 class="text-xl font-bold mb-4">🧪 Framework Challenge</h3>
+                        
+                        <div class="scenario-box mb-6">
+                            <p class="font-medium mb-2">📍 SCENARIO: Agilus Diagnostics</p>
+                            <p class="text-white/80 text-sm">You've been managing Agilus for 6 months. They started with your Data Infra product for their lab management system. The CFO mentioned they're "looking at digital transformation" in the last call. Currently, only the IT team uses your platform.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-xl bg-white/5">
+                                <p class="font-medium mb-3">What white space opportunity exists here?</p>
+                                <div class="space-y-2" id="level2Q1">
+                                    <div class="option-card" onclick="selectOption('2a', 'a', this)">
+                                        <span>A) Sell them more IT infrastructure</span>
+                                    </div>
+                                    <div class="option-card" onclick="selectOption('2a', 'b', this)">
+                                        <span>B) Expand to Operations, Finance, and Clinical teams with Data Apps</span>
+                                    </div>
+                                    <div class="option-card" onclick="selectOption('2a', 'c', this)">
+                                        <span>C) Wait for the CFO to request a proposal</span>
+                                    </div>
+                                    <div class="option-card" onclick="selectOption('2a', 'd', this)">
+                                        <span>D) Reduce their current contract to make them happy</span>
+                                    </div>
+                                </div>
+                                <div id="level2Q1Feedback" class="hidden"></div>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-white/5">
+                                <p class="font-medium mb-3">Who should you build a relationship with next?</p>
+                                <div class="space-y-2" id="level2Q2">
+                                    <div class="option-card" onclick="selectOption('2b', 'a', this)">
+                                        <span>A) Only the IT Director (your current champion)</span>
+                                    </div>
+                                    <div class="option-card" onclick="selectOption('2b', 'b', this)">
+                                        <span>B) The CFO and COO (economic buyers for transformation)</span>
+                                    </div>
+                                    <div class="option-card" onclick="selectOption('2b', 'c', this)">
+                                        <span>C) The procurement team (they handle renewals)</span>
+                                    </div>
+                                    <div class="option-card" onclick="selectOption('2b', 'd', this)">
+                                        <span>D) The CEO only (go straight to the top)</span>
+                                    </div>
+                                </div>
+                                <div id="level2Q2Feedback" class="hidden"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex justify-end">
+                            <button class="btn-primary hidden" id="level2Next" onclick="goToLevel(3)">
+                                CONTINUE TO LEVEL 3 →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== LEVEL 3: SIGNAL DETECTION ==================== -->
+            <div class="screen" id="level3Screen">
+                <div class="animate-slideUp">
+                    <div class="text-center mb-8">
+                        <div class="inline-block px-4 py-2 rounded-full bg-emerald-500/20 text-emerald-300 text-sm font-semibold mb-4">
+                            LEVEL 3 OF 5
+                        </div>
+                        <h2 class="text-4xl font-bold mb-2">🎯 Signal Detection</h2>
+                        <p class="text-white/60">Spot the trigger events that create expansion opportunities</p>
+                    </div>
+
+                    <div class="level-indicator">
+                        <div class="level-dot completed"></div>
+                        <div class="level-dot completed"></div>
+                        <div class="level-dot active"></div>
+                        <div class="level-dot"></div>
+                        <div class="level-dot"></div>
+                    </div>
+
+                    <div class="game-card mt-8">
+                        <h3 class="text-2xl font-bold mb-4">The 7 Expansion Triggers</h3>
+                        <p class="text-white/60 mb-6">These are the "meaningful moments" when clients are most likely to expand. Learn to spot them!</p>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="p-4 rounded-xl bg-white/5 border-l-4 border-pink-500">
+                                <span class="text-2xl">📈</span>
+                                <p class="font-medium mt-2">1. Success Milestone</p>
+                                <p class="text-sm text-white/60">They hit their goals with your product</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border-l-4 border-purple-500">
+                                <span class="text-2xl">👔</span>
+                                <p class="font-medium mt-2">2. Leadership Change</p>
+                                <p class="text-sm text-white/60">New CxO wants to make their mark</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border-l-4 border-indigo-500">
+                                <span class="text-2xl">🏢</span>
+                                <p class="font-medium mt-2">3. Org Expansion</p>
+                                <p class="text-sm text-white/60">New departments, acquisitions, regions</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border-l-4 border-blue-500">
+                                <span class="text-2xl">💰</span>
+                                <p class="font-medium mt-2">4. Budget Cycle</p>
+                                <p class="text-sm text-white/60">New fiscal year, use-it-or-lose-it funds</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border-l-4 border-teal-500">
+                                <span class="text-2xl">⚡</span>
+                                <p class="font-medium mt-2">5. Strategic Initiative</p>
+                                <p class="text-sm text-white/60">Digital transformation, compliance push</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border-l-4 border-emerald-500">
+                                <span class="text-2xl">🆘</span>
+                                <p class="font-medium mt-2">6. Pain Point</p>
+                                <p class="text-sm text-white/60">New problem they need to solve</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border-l-4 border-yellow-500 md:col-span-2">
+                                <span class="text-2xl">🎉</span>
+                                <p class="font-medium mt-2">7. Competitor Failure</p>
+                                <p class="text-sm text-white/60">Their other vendor disappoints them</p>
+                            </div>
+                        </div>
+
+                        <div class="pro-tip">
+                            <div class="font-bold text-yellow-300 mb-2">💡 PRO TIP</div>
+                            <p class="text-white/80">Set up Google Alerts for your key accounts. LinkedIn changes, funding announcements, and press releases often signal expansion opportunities.</p>
+                        </div>
+                    </div>
+
+                    <!-- Signal Detection Game -->
+                    <div class="game-card mt-6">
+                        <h3 class="text-xl font-bold mb-4">🎮 SIGNAL DETECTION GAME</h3>
+                        <p class="text-white/60 mb-4">Read each scenario and identify the trigger type. Score points for speed and accuracy!</p>
+
+                        <div id="signalGame">
+                            <div class="signal-scenario" id="signal1">
+                                <div class="scenario-box">
+                                    <p class="font-medium mb-2">📧 Email from your champion at Federal Bank:</p>
+                                    <p class="text-white/80 italic">"Hey, just FYI - we got approval for the data analytics project. The new CDO wants to present quick wins to the board in Q2. Can we set up a call?"</p>
+                                </div>
+                                <p class="font-medium mt-4 mb-3">What trigger type is this?</p>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2" id="signal1Options">
+                                    <div class="option-card text-center py-3" onclick="checkSignal(1, 'success', this)">📈 Success</div>
+                                    <div class="option-card text-center py-3" onclick="checkSignal(1, 'leadership', this)">👔 Leadership</div>
+                                    <div class="option-card text-center py-3" onclick="checkSignal(1, 'initiative', this)">⚡ Initiative</div>
+                                    <div class="option-card text-center py-3" onclick="checkSignal(1, 'budget', this)">💰 Budget</div>
+                                </div>
+                                <div id="signal1Feedback" class="hidden"></div>
+                            </div>
+
+                            <div class="signal-scenario hidden mt-6" id="signal2">
+                                <div class="scenario-box">
+                                    <p class="font-medium mb-2">📰 LinkedIn notification:</p>
+                                    <p class="text-white/80 italic">"Yes Bank announces acquisition of regional fintech. Integration expected over 18 months."</p>
+                                </div>
+                                <p class="font-medium mt-4 mb-3">What trigger type is this?</p>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2" id="signal2Options">
+                                    <div class="option-card text-center py-3" onclick="checkSignal(2, 'expansion', this)">🏢 Expansion</div>
+                                    <div class="option-card text-center py-3" onclick="checkSignal(2, 'pain', this)">🆘 Pain Point</div>
+                                    <div class="option-card text-center py-3" onclick="checkSignal(2, 'competitor', this)">🎉 Competitor</div>
+                                    <div class="option-card text-center py-3" onclick="checkSignal(2, 'budget', this)">💰 Budget</div>
+                                </div>
+                                <div id="signal2Feedback" class="hidden"></div>
+                            </div>
+
+                            <div class="signal-scenario hidden mt-6" id="signal3">
+                                <div class="scenario-box">
+                                    <p class="font-medium mb-2">📞 Call notes from Axis Bank QBR:</p>
+                                    <p class="text-white/80 italic">"Client mentioned their current BI tool is 'frustrating' and their vendor hasn't addressed issues for months. They asked if Tantor can handle reporting."</p>
+                                </div>
+                                <p class="font-medium mt-4 mb-3">What trigger type is this?</p>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2" id="signal3Options">
+                                    <div class="option-card text-center py-3" onclick="checkSignal(3, 'leadership', this)">👔 Leadership</div>
+                                    <div class="option-card text-center py-3" onclick="checkSignal(3, 'initiative', this)">⚡ Initiative</div>
+                                    <div class="option-card text-center py-3" onclick="checkSignal(3, 'competitor', this)">🎉 Competitor</div>
+                                    <div class="option-card text-center py-3" onclick="checkSignal(3, 'success', this)">📈 Success</div>
+                                </div>
+                                <div id="signal3Feedback" class="hidden"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex justify-end">
+                            <button class="btn-primary hidden" id="level3Next" onclick="goToLevel(4)">
+                                CONTINUE TO LEVEL 4 →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== LEVEL 4: EXPANSION CONVERSATIONS ==================== -->
+            <div class="screen" id="level4Screen">
+                <div class="animate-slideUp">
+                    <div class="text-center mb-8">
+                        <div class="inline-block px-4 py-2 rounded-full bg-amber-500/20 text-amber-300 text-sm font-semibold mb-4">
+                            LEVEL 4 OF 5
+                        </div>
+                        <h2 class="text-4xl font-bold mb-2">💬 Expansion Conversations</h2>
+                        <p class="text-white/60">Master the art of turning signals into revenue</p>
+                    </div>
+
+                    <div class="level-indicator">
+                        <div class="level-dot completed"></div>
+                        <div class="level-dot completed"></div>
+                        <div class="level-dot completed"></div>
+                        <div class="level-dot active"></div>
+                        <div class="level-dot"></div>
+                    </div>
+
+                    <div class="game-card mt-8">
+                        <h3 class="text-2xl font-bold mb-4">The VALUE Framework</h3>
+                        <p class="text-white/60 mb-6">Use this framework when having expansion conversations:</p>
+
+                        <div class="space-y-3">
+                            <div class="p-4 rounded-xl bg-gradient-to-r from-pink-500/20 to-transparent border-l-4 border-pink-500">
+                                <span class="font-bold text-pink-300">V</span><span class="font-bold"> - Validate</span>
+                                <p class="text-sm text-white/60 mt-1">"I noticed [trigger]. Tell me more about what's driving this."</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gradient-to-r from-purple-500/20 to-transparent border-l-4 border-purple-500">
+                                <span class="font-bold text-purple-300">A</span><span class="font-bold"> - Articulate Impact</span>
+                                <p class="text-sm text-white/60 mt-1">"What happens if this isn't solved? What's the cost of inaction?"</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gradient-to-r from-indigo-500/20 to-transparent border-l-4 border-indigo-500">
+                                <span class="font-bold text-indigo-300">L</span><span class="font-bold"> - Link to Success</span>
+                                <p class="text-sm text-white/60 mt-1">"Here's how we've helped [similar client] achieve [outcome]."</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gradient-to-r from-blue-500/20 to-transparent border-l-4 border-blue-500">
+                                <span class="font-bold text-blue-300">U</span><span class="font-bold"> - Understand Stakeholders</span>
+                                <p class="text-sm text-white/60 mt-1">"Who else needs to be involved in this decision?"</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gradient-to-r from-emerald-500/20 to-transparent border-l-4 border-emerald-500">
+                                <span class="font-bold text-emerald-300">E</span><span class="font-bold"> - Establish Next Steps</span>
+                                <p class="text-sm text-white/60 mt-1">"Let's schedule a discovery session with [stakeholder] next week."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conversation Simulator -->
+                    <div class="game-card mt-6">
+                        <h3 class="text-xl font-bold mb-4">🎭 CONVERSATION SIMULATOR</h3>
+                        
+                        <div class="scenario-box">
+                            <p class="font-medium mb-2">📍 SCENARIO: Airtel Payments Bank</p>
+                            <p class="text-white/80 text-sm">You just learned their new CTO wants to "modernize their data infrastructure." They currently use your Data Ops product for basic monitoring. This is clearly a leadership change trigger.</p>
+                        </div>
+
+                        <div id="conversationFlow">
+                            <div class="mt-6 p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30">
+                                <p class="text-sm text-indigo-300 mb-2">🤖 CLIENT (CTO):</p>
+                                <p class="text-white/90">"We've been using your monitoring tool, but I want to do more with our data. I'm thinking about a complete data platform overhaul."</p>
+                            </div>
+
+                            <div class="mt-4">
+                                <p class="font-medium mb-3">Your response using VALUE framework:</p>
+                                <div class="space-y-2" id="conv1Options">
+                                    <div class="option-card" onclick="checkConversation(1, 'a', this)">
+                                        <p><strong>A:</strong> "Great! Let me tell you about our full platform suite. We have Data Infra, Data Apps, and Gen AI products."</p>
+                                    </div>
+                                    <div class="option-card" onclick="checkConversation(1, 'b', this)">
+                                        <p><strong>B:</strong> "That's exciting to hear. What's driving the push for modernization? What specific outcomes are you hoping to achieve?"</p>
+                                    </div>
+                                    <div class="option-card" onclick="checkConversation(1, 'c', this)">
+                                        <p><strong>C:</strong> "I'll have our sales team reach out to discuss pricing."</p>
+                                    </div>
+                                    <div class="option-card" onclick="checkConversation(1, 'd', this)">
+                                        <p><strong>D:</strong> "Sure, I can set up a demo next week."</p>
+                                    </div>
+                                </div>
+                                <div id="conv1Feedback" class="hidden"></div>
+                            </div>
+
+                            <div id="conv2" class="hidden mt-6">
+                                <div class="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30">
+                                    <p class="text-sm text-indigo-300 mb-2">🤖 CLIENT (CTO):</p>
+                                    <p class="text-white/90">"Well, our current setup is fragmented. Different teams use different tools. I want a unified view of our data. The board is also pushing for better analytics for regulatory reporting."</p>
+                                </div>
+
+                                <div class="mt-4">
+                                    <p class="font-medium mb-3">What's your next move? (Articulate Impact)</p>
+                                    <div class="space-y-2" id="conv2Options">
+                                        <div class="option-card" onclick="checkConversation(2, 'a', this)">
+                                            <p><strong>A:</strong> "Our platform can definitely unify your data. Want to see a demo?"</p>
+                                        </div>
+                                        <div class="option-card" onclick="checkConversation(2, 'b', this)">
+                                            <p><strong>B:</strong> "What's the cost of this fragmentation right now? How much time does your team spend reconciling data across systems?"</p>
+                                        </div>
+                                        <div class="option-card" onclick="checkConversation(2, 'c', this)">
+                                            <p><strong>C:</strong> "Regulatory reporting is definitely important. We have a compliance module."</p>
+                                        </div>
+                                        <div class="option-card" onclick="checkConversation(2, 'd', this)">
+                                            <p><strong>D:</strong> "How many teams are involved?"</p>
+                                        </div>
+                                    </div>
+                                    <div id="conv2Feedback" class="hidden"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex justify-end">
+                            <button class="btn-primary hidden" id="level4Next" onclick="goToLevel(5)">
+                                CONTINUE TO LEVEL 5 →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== LEVEL 5: QBR MASTERY ==================== -->
+            <div class="screen" id="level5Screen">
+                <div class="animate-slideUp">
+                    <div class="text-center mb-8">
+                        <div class="inline-block px-4 py-2 rounded-full bg-cyan-500/20 text-cyan-300 text-sm font-semibold mb-4">
+                            LEVEL 5 OF 5
+                        </div>
+                        <h2 class="text-4xl font-bold mb-2">👑 QBR Mastery</h2>
+                        <p class="text-white/60">Transform quarterly reviews into strategic growth sessions</p>
+                    </div>
+
+                    <div class="level-indicator">
+                        <div class="level-dot completed"></div>
+                        <div class="level-dot completed"></div>
+                        <div class="level-dot completed"></div>
+                        <div class="level-dot completed"></div>
+                        <div class="level-dot active"></div>
+                    </div>
+
+                    <div class="game-card mt-8">
+                        <h3 class="text-2xl font-bold mb-4">QBR: Two Approaches</h3>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="p-6 rounded-xl bg-red-500/10 border border-red-500/30">
+                                <h4 class="font-bold text-red-300 mb-3">❌ Status Update QBR</h4>
+                                <ul class="text-sm text-white/70 space-y-2">
+                                    <li>• 45 min of ticket metrics</li>
+                                    <li>• "Everything is going well"</li>
+                                    <li>• Client checks email during call</li>
+                                    <li>• No executives attend</li>
+                                    <li>• Ends with "talk next quarter"</li>
+                                </ul>
+                                <div class="mt-4 p-3 rounded-lg bg-red-500/20">
+                                    <p class="text-xs text-red-200">Result: No growth, client sees you as a vendor</p>
+                                </div>
+                            </div>
+                            <div class="p-6 rounded-xl bg-green-500/10 border border-green-500/30">
+                                <h4 class="font-bold text-green-300 mb-3">✅ Strategic QBR</h4>
+                                <ul class="text-sm text-white/70 space-y-2">
+                                    <li>• 15 min value delivered vs. goals</li>
+                                    <li>• Discussion of their business priorities</li>
+                                    <li>• CxO level engagement</li>
+                                    <li>• Future roadmap alignment</li>
+                                    <li>• Ends with action items & next steps</li>
+                                </ul>
+                                <div class="mt-4 p-3 rounded-lg bg-green-500/20">
+                                    <p class="text-xs text-green-200">Result: Strategic partner, expansion conversations</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pro-tip">
+                            <div class="font-bold text-yellow-300 mb-2">💡 PRO TIP: The 70/30 Rule</div>
+                            <p class="text-white/80">In a strategic QBR, the client should talk 70% of the time. Your job is to ask questions, not present slides. If you're talking more than them, you're doing it wrong.</p>
+                        </div>
+                    </div>
+
+                    <!-- QBR Builder -->
+                    <div class="game-card mt-6">
+                        <h3 class="text-xl font-bold mb-4">🏗️ BUILD YOUR QBR AGENDA</h3>
+                        <p class="text-white/60 mb-4">Arrange these elements in the correct order for a strategic QBR:</p>
+
+                        <div id="qbrBuilder">
+                            <div class="space-y-3 mb-6" id="qbrItems">
+                                <div class="qbr-item p-4 rounded-xl bg-white/5 border-2 border-white/10 cursor-pointer" onclick="selectQBRItem(this, 1)" data-order="0">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-2xl">📊</span>
+                                        <div>
+                                            <p class="font-medium">Value Delivered Review</p>
+                                            <p class="text-sm text-white/50">Show ROI and outcomes achieved</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="qbr-item p-4 rounded-xl bg-white/5 border-2 border-white/10 cursor-pointer" onclick="selectQBRItem(this, 2)" data-order="0">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-2xl">🎯</span>
+                                        <div>
+                                            <p class="font-medium">Client Goals Check-in</p>
+                                            <p class="text-sm text-white/50">What are their priorities for next quarter?</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="qbr-item p-4 rounded-xl bg-white/5 border-2 border-white/10 cursor-pointer" onclick="selectQBRItem(this, 3)" data-order="0">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-2xl">🚀</span>
+                                        <div>
+                                            <p class="font-medium">Growth Opportunities</p>
+                                            <p class="text-sm text-white/50">Present expansion possibilities aligned to their goals</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="qbr-item p-4 rounded-xl bg-white/5 border-2 border-white/10 cursor-pointer" onclick="selectQBRItem(this, 4)" data-order="0">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-2xl">📅</span>
+                                        <div>
+                                            <p class="font-medium">Next Steps & Actions</p>
+                                            <p class="text-sm text-white/50">Concrete commitments with owners and dates</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center mb-4">
+                                <p class="text-white/60 text-sm">Click items in the correct order (1-4)</p>
+                                <p class="font-medium mt-2">Your order: <span id="qbrOrder">-</span></p>
+                            </div>
+
+                            <div class="flex justify-center gap-4">
+                                <button class="btn-secondary" onclick="resetQBR()">🔄 Reset</button>
+                                <button class="btn-primary" onclick="checkQBR()" id="checkQBRBtn" disabled>Check Order</button>
+                            </div>
+
+                            <div id="qbrFeedback" class="hidden mt-6"></div>
+                        </div>
+
+                        <div class="mt-6 flex justify-end">
+                            <button class="btn-primary hidden" id="level5Next" onclick="showFinalScreen()">
+                                🏆 COMPLETE MODULE →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== FINAL SCREEN ==================== -->
+            <div class="screen" id="finalScreen">
+                <div class="animate-slideUp text-center">
+                    <div class="text-8xl mb-6 animate-float">🏆</div>
+                    <h2 class="text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                        CONGRATULATIONS!
+                    </h2>
+                    <p class="text-xl text-white/70 mb-8">You've completed Module 5: Advanced Growth Skills</p>
+
+                    <!-- Final Score -->
+                    <div class="game-card mb-8">
+                        <h3 class="text-2xl font-bold mb-6">📊 YOUR FINAL SCORE</h3>
+                        
+                        <div class="text-6xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent mb-4">
+                            <span id="finalScore">0</span>/1000
+                        </div>
+
+                        <div class="flex justify-center gap-4 mb-6" id="finalBadges">
+                            <!-- Badges will be populated -->
+                        </div>
+
+                        <div id="scoreMessage" class="p-4 rounded-xl bg-white/5 text-white/80"></div>
+                    </div>
+
+                    <!-- Key Takeaways -->
+                    <div class="game-card mb-8 text-left">
+                        <h3 class="text-2xl font-bold mb-4 text-center">📋 KEY TAKEAWAYS</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-xl bg-pink-500/10 border-l-4 border-pink-500">
+                                <p class="font-bold text-pink-300">🧠 Growth Mindset</p>
+                                <p class="text-sm text-white/70 mt-1">Be proactive, not reactive. Plan for expansion from day one, not at renewal time.</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-purple-500/10 border-l-4 border-purple-500">
+                                <p class="font-bold text-purple-300">📋 Essential 5 Framework</p>
+                                <p class="text-sm text-white/70 mt-1">Health Score → Stakeholders → White Space → Risk/Opportunity → 90-Day Plan</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-indigo-500/10 border-l-4 border-indigo-500">
+                                <p class="font-bold text-indigo-300">🎯 7 Trigger Events</p>
+                                <p class="text-sm text-white/70 mt-1">Success, Leadership Change, Expansion, Budget, Initiative, Pain Point, Competitor Failure</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-blue-500/10 border-l-4 border-blue-500">
+                                <p class="font-bold text-blue-300">💬 VALUE Framework</p>
+                                <p class="text-sm text-white/70 mt-1">Validate → Articulate Impact → Link to Success → Understand Stakeholders → Establish Next Steps</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-emerald-500/10 border-l-4 border-emerald-500">
+                                <p class="font-bold text-emerald-300">👑 Strategic QBRs</p>
+                                <p class="text-sm text-white/70 mt-1">70/30 rule: Client talks 70%. Focus on value, goals, growth, and action items.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Steps -->
+                    <div class="game-card mb-8">
+                        <h3 class="text-xl font-bold mb-4">🎯 YOUR NEXT STEPS</h3>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="p-4 rounded-xl bg-white/5">
+                                <div class="text-2xl mb-2">1️⃣</div>
+                                <p class="font-medium">This Week</p>
+                                <p class="text-sm text-white/60">Create an account plan for your top account using Essential 5</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5">
+                                <div class="text-2xl mb-2">2️⃣</div>
+                                <p class="font-medium">Next QBR</p>
+                                <p class="text-sm text-white/60">Use the strategic QBR format instead of status update</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5">
+                                <div class="text-2xl mb-2">3️⃣</div>
+                                <p class="font-medium">Ongoing</p>
+                                <p class="text-sm text-white/60">Set up alerts for trigger events in your accounts</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center">
+                        <button class="btn-secondary" onclick="location.reload()">🔄 Replay Module</button>
+                    </div>
+
+                    <p class="text-white/40 text-sm mt-8">🎓 Module 6: Capstone Challenge — Complete the program and earn your CSP Certification!</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="glass py-6 text-center text-white/50 text-sm">
+        <p>CSP Foundation Training | Module 5: Advanced Growth Skills</p>
+        <p class="mt-1">© 2025 Translab Technologies | translab.io</p>
+    </footer>
+
+    <script>
+        // ==================== GAME STATE ====================
+        let gameState = {
+            currentLevel: 0,
+            totalPoints: 0,
+            badges: {
+                mindset: false,
+                planner: false,
+                signal: false,
+                conversation: false,
+                qbr: false,
+                final: false
+            },
+            frameworksCompleted: [],
+            level2Answers: { q1: false, q2: false },
+            signalsCorrect: 0,
+            conversationsCorrect: 0,
+            qbrOrder: [],
+            startTime: null,
+            attempts: {}
+        };
+
+        // ==================== TIMER ====================
+        function startTimer() {
+            gameState.startTime = Date.now();
+            setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            if (!gameState.startTime) return;
+            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+            const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const secs = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `⏱️ ${mins}:${secs}`;
+        }
+
+        // ==================== POINTS & PROGRESS ====================
+        function addPoints(points, reason = '') {
+            gameState.totalPoints += points;
+            document.getElementById('totalPoints').textContent = gameState.totalPoints;
+            
+            // Animate points addition
+            const display = document.getElementById('pointsDisplay');
+            display.classList.add('animate-pulse-slow');
+            setTimeout(() => display.classList.remove('animate-pulse-slow'), 500);
+        }
+
+        function updateProgress() {
+            const progress = (gameState.currentLevel / 5) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function unlockBadge(badgeId) {
+            gameState.badges[badgeId] = true;
+            const badge = document.querySelector(`[data-badge="${badgeId}"]`);
+            if (badge) {
+                badge.classList.remove('locked');
+                badge.classList.add('unlocked');
+            }
+            triggerConfetti();
+        }
+
+        // ==================== NAVIGATION ====================
+        function startGame() {
+            startTimer();
+            goToLevel(1);
+        }
+
+        function goToLevel(level) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            
+            // Show target screen
+            const screenId = `level${level}Screen`;
+            document.getElementById(screenId).classList.add('active');
+            
+            gameState.currentLevel = level;
+            updateProgress();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==================== LEVEL 1 LOGIC ====================
+        function selectOption(level, answer, element) {
+            const container = element.parentElement;
+            container.querySelectorAll('.option-card').forEach(opt => {
+                opt.classList.remove('selected');
+                opt.style.pointerEvents = 'none';
+            });
+            element.classList.add('selected');
+
+            if (level === 1) {
+                checkLevel1Answer(answer, element);
+            } else if (level === '2a') {
+                checkLevel2Q1(answer, element);
+            } else if (level === '2b') {
+                checkLevel2Q2(answer, element);
+            }
+        }
+
+        function checkLevel1Answer(answer, element) {
+            const feedbackEl = document.getElementById('level1Feedback');
+            const nextBtn = document.getElementById('level1Next');
+            
+            if (answer === 'c') {
+                element.classList.add('correct');
+                addPoints(100);
+                unlockBadge('mindset');
+                feedbackEl.innerHTML = `
+                    <div class="sample-answer">
+                        <p class="font-bold text-green-400 mb-2">✅ CORRECT! +100 points</p>
+                        <p class="text-white/80">Strategic account planning starts immediately after success, not at renewal. Growth Drivers map opportunities while the relationship is strong.</p>
+                    </div>
+                `;
+            } else {
+                element.classList.add('incorrect');
+                addPoints(25);
+                
+                let feedback = '';
+                if (answer === 'a') {
+                    feedback = "This is Account Manager mode - reactive, not proactive. You'll miss growth opportunities.";
+                } else if (answer === 'b') {
+                    feedback = "Too aggressive! You haven't mapped the opportunity yet. This comes across as pushy.";
+                } else if (answer === 'd') {
+                    feedback = "Waiting is passive. Clients rarely ask for more - you need to identify opportunities proactively.";
+                }
+                
+                feedbackEl.innerHTML = `
+                    <div class="hint-box">
+                        <p class="font-bold text-yellow-400 mb-2">⚠️ Not quite. +25 points for trying</p>
+                        <p class="text-white/80">${feedback}</p>
+                        <p class="text-white/60 mt-2 text-sm">✅ Best answer: Map their organization and identify white space for future growth</p>
+                    </div>
+                `;
+            }
+            
+            feedbackEl.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        // ==================== LEVEL 2 LOGIC ====================
+        const frameworkData = {
+            1: {
+                emoji: '❤️',
+                title: 'Health Score Assessment',
+                subtitle: 'Understand your account\'s current state',
+                content: `
+                    <p class="mb-3">Health Score = weighted combination of:</p>
+                    <ul class="space-y-2 text-sm">
+                        <li><span class="text-pink-400 font-bold">Product (40%):</span> Adoption rate, feature usage, active users</li>
+                        <li><span class="text-purple-400 font-bold">Relationship (35%):</span> NPS, executive access, engagement frequency</li>
+                        <li><span class="text-indigo-400 font-bold">Business Value (25%):</span> ROI delivered, goals achieved, expansion potential</li>
+                    </ul>
+                    <div class="mt-4 p-3 rounded-lg bg-white/5">
+                        <p class="text-xs text-white/60">🎯 Traffic Light System: Green (80%+), Yellow (50-79%), Red (<50%)</p>
+                    </div>
+                `
+            },
+            2: {
+                emoji: '👥',
+                title: 'Stakeholder Mapping',
+                subtitle: 'Know who has the power',
+                content: `
+                    <p class="mb-3">Map every contact on the Power-Interest Grid:</p>
+                    <div class="grid grid-cols-2 gap-2 text-sm mb-4">
+                        <div class="p-2 rounded bg-green-500/20">👑 Champions<br><span class="text-xs text-white/60">High power, high interest</span></div>
+                        <div class="p-2 rounded bg-yellow-500/20">🎯 Keep Informed<br><span class="text-xs text-white/60">Low power, high interest</span></div>
+                        <div class="p-2 rounded bg-red-500/20">⚠️ Manage Closely<br><span class="text-xs text-white/60">High power, low interest</span></div>
+                        <div class="p-2 rounded bg-gray-500/20">👀 Monitor<br><span class="text-xs text-white/60">Low power, low interest</span></div>
+                    </div>
+                    <p class="text-xs text-white/60">🎯 Goal: Multi-thread across the organization. Never depend on one champion.</p>
+                `
+            },
+            3: {
+                emoji: '🔍',
+                title: 'White Space Analysis',
+                subtitle: 'Find the growth gaps',
+                content: `
+                    <p class="mb-3">White space = untapped opportunity. Look for:</p>
+                    <ul class="space-y-2 text-sm">
+                        <li><span class="font-bold">Products not used:</span> Which of your offerings aren't they using yet?</li>
+                        <li><span class="font-bold">Departments not engaged:</span> Are you only in IT? What about Finance, Ops, Clinical?</li>
+                        <li><span class="font-bold">Problems not solved:</span> What challenges do they have that you could address?</li>
+                        <li><span class="font-bold">Regions not covered:</span> Are they in multiple locations?</li>
+                    </ul>
+                    <div class="mt-4 p-3 rounded-lg bg-white/5">
+                        <p class="text-xs text-white/60">🎯 Translab example: Client using Data Infra only → White space in Data Apps, Data Ops, Gen AI</p>
+                    </div>
+                `
+            },
+            4: {
+                emoji: '⚠️',
+                title: 'Risk & Opportunity Assessment',
+                subtitle: 'What could go wrong? What could go right?',
+                content: `
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <p class="font-bold text-red-400 mb-2">🚨 Risk Indicators:</p>
+                            <ul class="space-y-1 text-white/70">
+                                <li>• Declining usage</li>
+                                <li>• Champion leaving</li>
+                                <li>• Budget cuts</li>
+                                <li>• Competitor activity</li>
+                                <li>• Poor support experience</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="font-bold text-green-400 mb-2">🚀 Opportunity Signals:</p>
+                            <ul class="space-y-1 text-white/70">
+                                <li>• New leadership</li>
+                                <li>• Budget approval</li>
+                                <li>• Expansion plans</li>
+                                <li>• Success milestone</li>
+                                <li>• Strategic initiative</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            5: {
+                emoji: '📅',
+                title: '90-Day Action Plan',
+                subtitle: 'Turn insights into action',
+                content: `
+                    <p class="mb-3">Every account plan needs concrete next steps:</p>
+                    <div class="space-y-2 text-sm">
+                        <div class="p-2 rounded bg-white/5">
+                            <span class="font-bold">Week 1-2:</span> Schedule stakeholder meetings, gather intelligence
+                        </div>
+                        <div class="p-2 rounded bg-white/5">
+                            <span class="font-bold">Week 3-4:</span> Present initial findings, identify quick wins
+                        </div>
+                        <div class="p-2 rounded bg-white/5">
+                            <span class="font-bold">Week 5-8:</span> Execute on opportunities, build relationships
+                        </div>
+                        <div class="p-2 rounded bg-white/5">
+                            <span class="font-bold">Week 9-12:</span> Review progress, adjust plan, prepare QBR
+                        </div>
+                    </div>
+                    <p class="text-xs text-white/60 mt-4">🎯 Each action item needs: Owner, Due Date, Success Criteria</p>
+                `
+            }
+        };
+
+        let currentFrameworkId = null;
+        
+        function showFramework(id) {
+            currentFrameworkId = id;
+            const data = frameworkData[id];
+            document.getElementById('fwEmoji').textContent = data.emoji;
+            document.getElementById('fwTitle').textContent = data.title;
+            document.getElementById('fwSubtitle').textContent = data.subtitle;
+            document.getElementById('fwContent').innerHTML = data.content;
+            document.getElementById('frameworkDetail').classList.remove('hidden');
+            
+            // Scroll to detail
+            document.getElementById('frameworkDetail').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function markFrameworkComplete() {
+            if (currentFrameworkId && !gameState.frameworksCompleted.includes(currentFrameworkId)) {
+                gameState.frameworksCompleted.push(currentFrameworkId);
+                document.getElementById(`fw${currentFrameworkId}`).classList.add('completed');
+                addPoints(20);
+                document.getElementById('fwCount').textContent = gameState.frameworksCompleted.length;
+            }
+            
+            document.getElementById('frameworkDetail').classList.add('hidden');
+            
+            if (gameState.frameworksCompleted.length === 5) {
+                unlockBadge('planner');
+                document.getElementById('level2Quiz').classList.remove('hidden');
+                document.getElementById('level2Quiz').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function checkLevel2Q1(answer, element) {
+            const feedbackEl = document.getElementById('level2Q1Feedback');
+            
+            if (answer === 'b') {
+                element.classList.add('correct');
+                addPoints(75);
+                gameState.level2Answers.q1 = true;
+                feedbackEl.innerHTML = `<div class="sample-answer"><p class="text-green-400 font-bold">✅ Correct! +75 points</p><p class="text-sm text-white/70">The CFO's "digital transformation" comment signals opportunity beyond IT. Data Apps can serve Operations, Finance, and Clinical teams.</p></div>`;
+            } else {
+                element.classList.add('incorrect');
+                addPoints(15);
+                feedbackEl.innerHTML = `<div class="hint-box"><p class="text-yellow-400 font-bold">⚠️ Not quite. +15 points</p><p class="text-sm text-white/70">Think broader! The CFO mentioned digital transformation - that means multiple departments, not just IT. White space = departments not currently engaged.</p></div>`;
+            }
+            feedbackEl.classList.remove('hidden');
+            checkLevel2Complete();
+        }
+
+        function checkLevel2Q2(answer, element) {
+            const feedbackEl = document.getElementById('level2Q2Feedback');
+            
+            if (answer === 'b') {
+                element.classList.add('correct');
+                addPoints(75);
+                gameState.level2Answers.q2 = true;
+                feedbackEl.innerHTML = `<div class="sample-answer"><p class="text-green-400 font-bold">✅ Correct! +75 points</p><p class="text-sm text-white/70">The CFO mentioned transformation and economic buyers make budget decisions. Multi-threading to economic buyers while maintaining IT champion relationship is key.</p></div>`;
+            } else {
+                element.classList.add('incorrect');
+                addPoints(15);
+                feedbackEl.innerHTML = `<div class="hint-box"><p class="text-yellow-400 font-bold">⚠️ Not quite. +15 points</p><p class="text-sm text-white/70">The CFO (who mentioned transformation) and COO (operations leader) are economic buyers. They control budgets for digital initiatives.</p></div>`;
+            }
+            feedbackEl.classList.remove('hidden');
+            checkLevel2Complete();
+        }
+
+        function checkLevel2Complete() {
+            if (gameState.level2Answers.q1 && gameState.level2Answers.q2) {
+                document.getElementById('level2Next').classList.remove('hidden');
+            } else if (document.getElementById('level2Q1Feedback').classList.contains('hidden') === false && 
+                       document.getElementById('level2Q2Feedback').classList.contains('hidden') === false) {
+                document.getElementById('level2Next').classList.remove('hidden');
+            }
+        }
+
+        // ==================== LEVEL 3 LOGIC ====================
+        const signalAnswers = {
+            1: 'initiative',
+            2: 'expansion',
+            3: 'competitor'
+        };
+
+        function checkSignal(signalNum, answer, element) {
+            const container = document.getElementById(`signal${signalNum}Options`);
+            const feedbackEl = document.getElementById(`signal${signalNum}Feedback`);
+            
+            container.querySelectorAll('.option-card').forEach(opt => {
+                opt.classList.remove('selected');
+                opt.style.pointerEvents = 'none';
+            });
+            element.classList.add('selected');
+
+            if (answer === signalAnswers[signalNum]) {
+                element.classList.add('correct');
+                addPoints(60);
+                gameState.signalsCorrect++;
+                
+                let explanation = '';
+                if (signalNum === 1) explanation = "The new CDO with a strategic initiative (data analytics project) and board presentation deadline = Strategic Initiative trigger!";
+                if (signalNum === 2) explanation = "Acquisition = organizational expansion. This creates opportunity to expand your footprint to the acquired company.";
+                if (signalNum === 3) explanation = "Client frustrated with another vendor = Competitor Failure trigger. They're actively looking for alternatives!";
+                
+                feedbackEl.innerHTML = `<div class="sample-answer"><p class="text-green-400 font-bold">✅ Correct! +60 points</p><p class="text-sm text-white/70">${explanation}</p></div>`;
+            } else {
+                element.classList.add('incorrect');
+                addPoints(15);
+                feedbackEl.innerHTML = `<div class="hint-box"><p class="text-yellow-400 font-bold">⚠️ Not quite. +15 points</p><p class="text-sm text-white/70">The correct answer was: ${signalAnswers[signalNum].charAt(0).toUpperCase() + signalAnswers[signalNum].slice(1)}</p></div>`;
+            }
+            
+            feedbackEl.classList.remove('hidden');
+            
+            // Show next signal or complete level
+            if (signalNum < 3) {
+                setTimeout(() => {
+                    document.getElementById(`signal${signalNum + 1}`).classList.remove('hidden');
+                    document.getElementById(`signal${signalNum + 1}`).scrollIntoView({ behavior: 'smooth' });
+                }, 1000);
+            } else {
+                unlockBadge('signal');
+                document.getElementById('level3Next').classList.remove('hidden');
+            }
+        }
+
+        // ==================== LEVEL 4 LOGIC ====================
+        const conversationAnswers = {
+            1: 'b',
+            2: 'b'
+        };
+
+        function checkConversation(convNum, answer, element) {
+            const container = document.getElementById(`conv${convNum}Options`);
+            const feedbackEl = document.getElementById(`conv${convNum}Feedback`);
+            
+            container.querySelectorAll('.option-card').forEach(opt => {
+                opt.classList.remove('selected');
+                opt.style.pointerEvents = 'none';
+            });
+            element.classList.add('selected');
+
+            if (answer === conversationAnswers[convNum]) {
+                element.classList.add('correct');
+                addPoints(80);
+                gameState.conversationsCorrect++;
+                
+                let explanation = '';
+                if (convNum === 1) {
+                    explanation = "Perfect! You're using 'V' - Validate. Understanding their motivations before pitching is key.";
+                } else {
+                    explanation = "Excellent! You're using 'A' - Articulate Impact. Quantifying the cost of the problem creates urgency.";
+                }
+                
+                feedbackEl.innerHTML = `<div class="sample-answer"><p class="text-green-400 font-bold">✅ Correct! +80 points</p><p class="text-sm text-white/70">${explanation}</p></div>`;
+            } else {
+                element.classList.add('incorrect');
+                addPoints(20);
+                
+                let hint = '';
+                if (convNum === 1) {
+                    hint = "Remember VALUE: start with Validate. Understand their 'why' before presenting solutions.";
+                } else {
+                    hint = "Articulate Impact means quantifying the problem. 'How much time/money is this costing you?'";
+                }
+                
+                feedbackEl.innerHTML = `<div class="hint-box"><p class="text-yellow-400 font-bold">⚠️ Not quite. +20 points</p><p class="text-sm text-white/70">${hint}</p></div>`;
+            }
+            
+            feedbackEl.classList.remove('hidden');
+            
+            if (convNum === 1) {
+                setTimeout(() => {
+                    document.getElementById('conv2').classList.remove('hidden');
+                    document.getElementById('conv2').scrollIntoView({ behavior: 'smooth' });
+                }, 1000);
+            } else {
+                unlockBadge('conversation');
+                document.getElementById('level4Next').classList.remove('hidden');
+            }
+        }
+
+        // ==================== LEVEL 5 LOGIC ====================
+        const correctQBROrder = [1, 2, 3, 4]; // Value → Goals → Growth → Next Steps
+
+        function selectQBRItem(element, itemNum) {
+            if (gameState.qbrOrder.includes(itemNum)) return;
+            
+            gameState.qbrOrder.push(itemNum);
+            element.classList.add('selected');
+            element.style.order = gameState.qbrOrder.length;
+            element.querySelector('.text-2xl').textContent = `${gameState.qbrOrder.length}️⃣`;
+            
+            document.getElementById('qbrOrder').textContent = gameState.qbrOrder.join(' → ');
+            
+            if (gameState.qbrOrder.length === 4) {
+                document.getElementById('checkQBRBtn').disabled = false;
+            }
+        }
+
+        function resetQBR() {
+            gameState.qbrOrder = [];
+            document.querySelectorAll('.qbr-item').forEach((item, i) => {
+                item.classList.remove('selected', 'correct', 'incorrect');
+                item.style.order = 0;
+                const emojis = ['📊', '🎯', '🚀', '📅'];
+                item.querySelector('.text-2xl').textContent = emojis[i];
+            });
+            document.getElementById('qbrOrder').textContent = '-';
+            document.getElementById('checkQBRBtn').disabled = true;
+            document.getElementById('qbrFeedback').classList.add('hidden');
+        }
+
+        function checkQBR() {
+            const feedbackEl = document.getElementById('qbrFeedback');
+            const isCorrect = JSON.stringify(gameState.qbrOrder) === JSON.stringify(correctQBROrder);
+            
+            if (isCorrect) {
+                addPoints(100);
+                unlockBadge('qbr');
+                feedbackEl.innerHTML = `
+                    <div class="sample-answer">
+                        <p class="font-bold text-green-400 mb-2">🎉 PERFECT! +100 points</p>
+                        <p class="text-white/80">The strategic QBR flow: Start with value delivered (credibility), then understand their goals (relevance), present growth aligned to those goals (opportunity), and end with concrete next steps (action).</p>
+                    </div>
+                `;
+                document.getElementById('level5Next').classList.remove('hidden');
+            } else {
+                addPoints(25);
+                feedbackEl.innerHTML = `
+                    <div class="hint-box">
+                        <p class="font-bold text-yellow-400 mb-2">⚠️ Close! +25 points</p>
+                        <p class="text-white/80 mb-2">The correct order is:</p>
+                        <ol class="text-sm text-white/70 space-y-1">
+                            <li>1. 📊 Value Delivered (establish credibility first)</li>
+                            <li>2. 🎯 Client Goals (understand their priorities)</li>
+                            <li>3. 🚀 Growth Opportunities (aligned to their goals)</li>
+                            <li>4. 📅 Next Steps (concrete actions)</li>
+                        </ol>
+                        <button class="btn-secondary mt-4" onclick="resetQBR()">Try Again</button>
+                    </div>
+                `;
+                
+                // Allow retry but also show continue button
+                setTimeout(() => {
+                    document.getElementById('level5Next').classList.remove('hidden');
+                }, 2000);
+            }
+            
+            feedbackEl.classList.remove('hidden');
+        }
+
+        // ==================== FINAL SCREEN ====================
+        function showFinalScreen() {
+            unlockBadge('final');
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('finalScreen').classList.add('active');
+            
+            // Update final score
+            document.getElementById('finalScore').textContent = gameState.totalPoints;
+            
+            // Display badges
+            const badgesHtml = Object.entries(gameState.badges)
+                .filter(([_, unlocked]) => unlocked)
+                .map(([badge, _]) => {
+                    const emojis = { mindset: '🧠', planner: '📋', signal: '🎯', conversation: '💬', qbr: '👑', final: '🏆' };
+                    return `<div class="badge unlocked">${emojis[badge]}</div>`;
+                }).join('');
+            document.getElementById('finalBadges').innerHTML = badgesHtml;
+            
+            // Score message
+            let message = '';
+            const score = gameState.totalPoints;
+            if (score >= 900) {
+                message = "🌟 OUTSTANDING! You're ready to be a Growth Driver. Go find that next expansion opportunity!";
+            } else if (score >= 700) {
+                message = "💪 GREAT JOB! You've mastered the fundamentals. Practice the VALUE framework in your next client conversation.";
+            } else if (score >= 500) {
+                message = "👍 SOLID PROGRESS! Review the Essential 5 Framework and try the module again to boost your score.";
+            } else {
+                message = "📚 KEEP LEARNING! The concepts take time to master. Try the module again and focus on the frameworks.";
+            }
+            document.getElementById('scoreMessage').innerHTML = `<p>${message}</p>`;
+            
+            triggerConfetti();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==================== CONFETTI ====================
+        function triggerConfetti() {
+            const colors = ['#f472b6', '#a855f7', '#4f46e5', '#10b981', '#f59e0b'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        // Initialize badges display
+        document.querySelectorAll('.badge').forEach(badge => {
+            badge.classList.add('locked');
+        });
+    </script>
+</body>
+</html>
