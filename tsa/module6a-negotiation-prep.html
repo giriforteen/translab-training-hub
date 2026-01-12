@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSA Module 6A: Negotiation Preparation & Value Strategy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        .header .meta {
+            margin-top: 20px;
+            font-size: 0.9em;
+            opacity: 0.85;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #666;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        .navigation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .nav-button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: #e9ecef;
+            color: #495057;
+            font-size: 0.9em;
+        }
+        
+        .nav-button:hover {
+            background: #dee2e6;
+        }
+        
+        .nav-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 5px solid #f39c12;
+            margin-bottom: 25px;
+        }
+        
+        .section-header h3 {
+            font-size: 1.8em;
+            color: #d35400;
+            margin-bottom: 5px;
+        }
+        
+        .section-header p {
+            color: #8b5a00;
+            font-size: 1.05em;
+        }
+        
+        .content-box {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .content-box h4 {
+            color: #667eea;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        
+        .buyer-card {
+            background: white;
+            border: 3px solid;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .buyer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .buyer-card.analyst {
+            border-color: #3498db;
+            background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+        }
+        
+        .buyer-card.collaborator {
+            border-color: #27ae60;
+            background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
+        }
+        
+        .buyer-card.competitor {
+            border-color: #e67e22;
+            background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%);
+        }
+        
+        .buyer-card h5 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        
+        .buyer-card .traits {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(0,0,0,0.1);
+        }
+        
+        .buyer-card.expanded .traits {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 500px; }
+        }
+        
+        .buyer-card .expand-hint {
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        .buyer-card.expanded .expand-hint {
+            display: none;
+        }
+        
+        .pro-tip {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .pro-tip h5 {
+            color: #155724;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .pro-tip p {
+            color: #155724;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .warning-box h5 {
+            color: #856404;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .danger-box {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .danger-box h5 {
+            color: #721c24;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .info-box h5 {
+            color: #0c5460;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .interactive-worksheet {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+        
+        .worksheet-field {
+            margin: 20px 0;
+        }
+        
+        .worksheet-field label {
+            display: block;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .worksheet-field textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .worksheet-field textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .value-builder {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+        
+        .value-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .value-item.added {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #ffffff 100%);
+        }
+        
+        .value-item-content {
+            flex: 1;
+        }
+        
+        .value-item-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .value-item-desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .value-item-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .add-button {
+            background: #28a745;
+            color: white;
+        }
+        
+        .add-button:hover {
+            background: #218838;
+        }
+        
+        .remove-button {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .remove-button:hover {
+            background: #c82333;
+        }
+        
+        .value-stack-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .value-stack-summary h5 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .scenario-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .scenario-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .scenario-card .question {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .scenario-card .answer {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e0e0e0;
+            color: #155724;
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .scenario-card.revealed .answer {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+        
+        .quiz-question {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .quiz-question h4 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .quiz-options {
+            list-style: none;
+        }
+        
+        .quiz-option {
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background: #f5f5f5;
+            border-color: #667eea;
+        }
+        
+        .quiz-option.selected {
+            background: #e8eaf6;
+            border-color: #667eea;
+            font-weight: 600;
+        }
+        
+        .quiz-option input[type="radio"] {
+            margin-top: 3px;
+            cursor: pointer;
+        }
+        
+        .quiz-result {
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .quiz-result.pass {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 3px solid #28a745;
+        }
+        
+        .quiz-result.fail {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 3px solid #dc3545;
+        }
+        
+        .quiz-result h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        
+        .quiz-feedback {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .quiz-feedback.correct {
+            background: linear-gradient(135deg, #d4edda 0%, #ffffff 100%);
+            border-color: #28a745;
+        }
+        
+        .quiz-feedback.incorrect {
+            background: linear-gradient(135deg, #f8d7da 0%, #ffffff 100%);
+            border-color: #dc3545;
+        }
+        
+        .quiz-feedback h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .button-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .button-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .button-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .button-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .button-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .button-success:hover {
+            background: #218838;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 10px;
+        }
+        
+        .download-section {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .download-section h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .download-section p {
+            color: #856404;
+            margin-bottom: 20px;
+        }
+        
+        .completion-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .completion-banner h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+        }
+        
+        table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        table tr:nth-child(even) {
+            background: #fafafa;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .nav-button {
+                font-size: 0.8em;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 Module 6A: Negotiation Preparation & Value Strategy</h1>
+            <div class="subtitle">"Master the Setup Before You Enter the Room"</div>
+            <div class="meta">Duration: 35-40 minutes | TransLab Sales Academy</div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 25%"></div>
+        </div>
+        <div class="progress-text" id="progressText">Part 1 of 4</div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-button active" onclick="showPart(1)">Part 1: Psychology</button>
+            <button class="nav-button" onclick="showPart(2)">Part 2: BATNA</button>
+            <button class="nav-button" onclick="showPart(3)">Part 3: Value & Pricing</button>
+            <button class="nav-button" onclick="showPart(4)">Part 4: Quiz</button>
+        </div>
+
+        <!-- Part 1: Negotiation Psychology & Buyer Types -->
+        <div id="part1" class="content-section active">
+            <div class="section-header">
+                <h3>🧠 Part 1: Negotiation Psychology & Buyer Types</h3>
+                <p>Understand the psychological forces and buyer archetypes that shape every negotiation</p>
+            </div>
+
+            <div class="content-box">
+                <h4>The Negotiation Mindset: Collaboration vs. Combat</h4>
+                
+                <div class="danger-box">
+                    <h5>❌ Common Mistake</h5>
+                    <p>Treating negotiation as a confrontation to "win" or "beat" the buyer. Enterprise B2B negotiations are NOT zero-sum games.</p>
+                </div>
+
+                <div class="info-box">
+                    <h5>✅ The Right Approach</h5>
+                    <p><strong>Win-Win Collaboration:</strong> The best negotiators create outcomes where both parties feel they achieved their goals. You build trust, share information transparently, focus on mutual value creation, and prioritize long-term relationships over short-term wins.</p>
+                    <p style="margin-top: 10px;"><strong>Result:</strong> Higher deal values, lower churn, expansion opportunities, and referrals.</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>The 3 Buyer Archetypes You'll Encounter</h4>
+                <p style="margin-bottom: 20px;">Every buyer falls into one of these three categories. Your negotiation approach must adapt to their type:</p>
+
+                <div class="buyer-card analyst" onclick="toggleBuyerCard(this)">
+                    <h5>🔵 The Analyst</h5>
+                    <p><strong>Core Driver:</strong> Data-driven decisions, needs proof and validation</p>
+                    <div class="expand-hint">👆 Click to see characteristics and tactics</div>
+                    <div class="traits">
+                        <p><strong>Characteristics:</strong></p>
+                        <ul>
+                            <li>Requests extensive documentation and case studies</li>
+                            <li>Challenges assumptions with "show me the data"</li>
+                            <li>Slow decision-maker, wants to analyze all options</li>
+                            <li>Risk-averse, needs guarantees and proof points</li>
+                            <li>Values precision, accuracy, and detail</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>Your Strategy:</strong></p>
+                        <ul>
+                            <li>Provide detailed ROI calculations with conservative assumptions</li>
+                            <li>Share multiple customer case studies with similar profiles</li>
+                            <li>Use data visualizations and comparison tables</li>
+                            <li>Be patient—don't rush the decision process</li>
+                            <li>Offer proof-of-concept or pilot programs</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="buyer-card collaborator" onclick="toggleBuyerCard(this)">
+                    <h5>🟢 The Collaborator</h5>
+                    <p><strong>Core Driver:</strong> Partnership mindset, values relationships</p>
+                    <div class="expand-hint">👆 Click to see characteristics and tactics</div>
+                    <div class="traits">
+                        <p><strong>Characteristics:</strong></p>
+                        <ul>
+                            <li>Wants to co-create solutions together</li>
+                            <li>Values transparency and open communication</li>
+                            <li>Seeks long-term partnership, not just a transaction</li>
+                            <li>Willing to share constraints and challenges openly</li>
+                            <li>Appreciates honesty about what you can and can't do</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>Your Strategy:</strong></p>
+                        <ul>
+                            <li>Build the business case together, not AT them</li>
+                            <li>Be transparent about costs, timelines, and trade-offs</li>
+                            <li>Involve them in solution design and customization</li>
+                            <li>Focus on shared success metrics and joint planning</li>
+                            <li>Offer flexible terms and creative concessions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="buyer-card competitor" onclick="toggleBuyerCard(this)">
+                    <h5>🟠 The Competitor</h5>
+                    <p><strong>Core Driver:</strong> Winning the negotiation, getting the best deal</p>
+                    <div class="expand-hint">👆 Click to see characteristics and tactics</div>
+                    <div class="traits">
+                        <p><strong>Characteristics:</strong></p>
+                        <ul>
+                            <li>Aggressive tactics and hardball negotiation</li>
+                            <li>Uses competitor leverage: "Your competitor is cheaper"</li>
+                            <li>Demands steep discounts and last-minute concessions</li>
+                            <li>Views negotiation as a zero-sum game to "win"</li>
+                            <li>May use pressure tactics, deadlines, and ultimatums</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>Your Strategy:</strong></p>
+                        <ul>
+                            <li>Stand firm on value—don't get emotional or defensive</li>
+                            <li>Differentiate clearly from competitors (features they lack)</li>
+                            <li>Stay calm and professional, don't take it personally</li>
+                            <li>Be willing to walk away if deal doesn't make sense</li>
+                            <li>Use your BATNA as leverage (more on this next!)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pro-tip">
+                    <h5>💡 Pro Tip: Spotting Buyer Type in First 5 Minutes</h5>
+                    <p><strong>Listen for these signals:</strong></p>
+                    <ul>
+                        <li><strong>Analyst:</strong> "Can you send me the detailed specs?" / "What's your data source for these claims?"</li>
+                        <li><strong>Collaborator:</strong> "Let's figure this out together" / "What do you need from us to make this work?"</li>
+                        <li><strong>Competitor:</strong> "Your competitor quoted us 40% less" / "We need your best price today or we're going with them"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>The Power of Loss Aversion Psychology</h4>
+                
+                <div class="info-box">
+                    <h5>🧠 Key Insight: Losses Hurt 2X More Than Gains Feel Good</h5>
+                    <p>Research shows people are twice as motivated to avoid loss as they are to achieve equivalent gain. Use this in your messaging.</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Gain Framing (Weaker)</th>
+                            <th>Loss Framing (Stronger)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>"You'll save ₹10 lakhs per year"</td>
+                            <td>"Without this, you're <strong>losing</strong> ₹10 lakhs annually to inefficiency"</td>
+                        </tr>
+                        <tr>
+                            <td>"You'll process 3X more transactions"</td>
+                            <td>"Your competitors are processing 3X more—you're <strong>losing market share</strong> daily"</td>
+                        </tr>
+                        <tr>
+                            <td>"Sign by month-end for early access"</td>
+                            <td>"If you don't sign by month-end, you'll <strong>lose</strong> Q1 ROI and delay your initiative by 90 days"</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <h5>⚠️ Use Loss Framing Ethically</h5>
+                    <p>Loss framing should be based on real, legitimate costs—not manufactured urgency or false scarcity. You're helping them see real consequences, not manipulating them.</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>The Anchoring Effect: Why First Number Matters</h4>
+                
+                <p><strong>Anchoring Effect:</strong> The first number mentioned in a negotiation disproportionately influences the final outcome. The conversation "orbits" around that initial anchor.</p>
+
+                <div class="info-box">
+                    <h5>📊 How to Use Anchoring to Your Advantage</h5>
+                    <ol>
+                        <li><strong>Always anchor high:</strong> Start with a price 20-30% above your target</li>
+                        <li><strong>Anchor before they do:</strong> Don't ask "What's your budget?" first—they'll anchor low</li>
+                        <li><strong>Justify your anchor:</strong> Immediately explain why with value narrative</li>
+                        <li><strong>Negotiate down from YOUR number:</strong> Not up from their low anchor</li>
+                    </ol>
+                </div>
+
+                <div class="scenario-card" onclick="toggleScenario(this)">
+                    <div class="question">
+                        <strong>Scenario:</strong> Buyer says "Our budget is ₹50 lakhs, what can you offer?"
+                        <p style="color: #667eea; margin-top: 5px;">Click to see the right response →</p>
+                    </div>
+                    <div class="answer">
+                        <p><strong>❌ Wrong:</strong> "Let me see what I can do for ₹50 lakhs" (You just anchored at their low number)</p>
+                        <p style="margin-top: 10px;"><strong>✅ Right:</strong> "Let me show you what we recommend for your requirements. Based on your scale [details], the investment is typically ₹75-80 lakhs. Let me walk you through the value breakdown..."</p>
+                        <p style="margin-top: 10px;"><strong>Why it works:</strong> You re-anchored at ₹75-80L. Even if you negotiate down to ₹65L, you've preserved margin better than starting at ₹50L.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pro-tip">
+                <h5>💡 Pro Tip: Master "The Flinch" Response</h5>
+                <p><strong>The Flinch:</strong> Buyer reacts with shock to your price: "Wow, that's way higher than expected!" or "I thought it would be half that!"</p>
+                <p style="margin-top: 10px;"><strong>Your Response (The 3-Step Pause):</strong></p>
+                <ol>
+                    <li><strong>Pause:</strong> Don't react immediately (silence is powerful)</li>
+                    <li><strong>Empathize:</strong> "I understand this is a significant investment..."</li>
+                    <li><strong>Re-anchor on value:</strong> "Let me walk you through why this delivers ₹3 crores in annual value..."</li>
+                </ol>
+                <p style="margin-top: 10px;"><strong>❌ Don't:</strong> Immediately offer a discount or apologize for your price!</p>
+            </div>
+        </div>
+
+        <!-- Part 2: BATNA & Negotiation Leverage -->
+        <div id="part2" class="content-section">
+            <div class="section-header">
+                <h3>⚖️ Part 2: BATNA & Negotiation Leverage</h3>
+                <p>Understand your power position and walk-away point before entering any negotiation</p>
+            </div>
+
+            <div class="content-box">
+                <h4>What is BATNA?</h4>
+                
+                <div class="info-box">
+                    <h5>🎯 Definition</h5>
+                    <p><strong>BATNA = Best Alternative To a Negotiated Agreement</strong></p>
+                    <p style="margin-top: 10px;">It's your best course of action if the current negotiation fails. Your BATNA determines your walk-away point and gives you negotiation power.</p>
+                </div>
+
+                <div class="pro-tip">
+                    <h5>💡 Key Principle</h5>
+                    <p><strong>The party with the stronger BATNA has more leverage in the negotiation.</strong></p>
+                    <p style="margin-top: 10px;">If you have multiple qualified buyers and they have no good alternatives, you control the negotiation. If they have three vendors and you have no other deals in pipeline, they control it.</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>Understanding BATNA Power Dynamics</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Your BATNA</th>
+                            <th>Their BATNA</th>
+                            <th>Who Has Leverage?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #d4edda;">
+                            <td><strong>Strong Position</strong></td>
+                            <td>3 other qualified deals in pipeline, hitting quota without this</td>
+                            <td>No viable alternatives, legacy system failing, budget already approved</td>
+                            <td>✅ <strong>YOU</strong> (can walk away easily, they can't)</td>
+                        </tr>
+                        <tr style="background: #fff3cd;">
+                            <td><strong>Balanced Position</strong></td>
+                            <td>Need this deal to hit quota, but have backup options</td>
+                            <td>Evaluating 2 other vendors, could delay project by a quarter</td>
+                            <td>➖ <strong>BALANCED</strong> (true negotiation required)</td>
+                        </tr>
+                        <tr style="background: #f8d7da;">
+                            <td><strong>Weak Position</strong></td>
+                            <td>Last deal of quarter, need it to save job, no pipeline</td>
+                            <td>3 competing vendors bidding, can build in-house, or delay indefinitely</td>
+                            <td>❌ <strong>THEM</strong> (you're desperate, they have options)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <h5>⚠️ Never Negotiate Without Knowing Your BATNA</h5>
+                    <p>If you don't know your walk-away point, you'll give away too much. If you don't understand THEIR BATNA, you won't know how hard to push.</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>Interactive: Calculate Your BATNA</h4>
+                
+                <div class="interactive-worksheet">
+                    <h5 style="color: #667eea; margin-bottom: 20px;">BATNA Assessment Worksheet</h5>
+                    <p style="margin-bottom: 20px;">Use this framework to assess your BATNA before your next negotiation:</p>
+
+                    <div class="worksheet-field">
+                        <label>1. Your BATNA: What happens if this deal fails?</label>
+                        <textarea placeholder="Example: I have 2 other qualified deals in pipeline worth ₹4CR total. I'm at 80% of quota. I can hit target without this deal, but it would accelerate my commission."></textarea>
+                    </div>
+
+                    <div class="worksheet-field">
+                        <label>2. Their BATNA: What are their alternatives if they don't buy?</label>
+                        <textarea placeholder="Example: They're evaluating Competitor A (lacks real-time processing) and Competitor B (18-month implementation vs our 90 days). Their legacy system is failing—causing ₹2L daily losses. They NEED a solution by Q2."></textarea>
+                    </div>
+
+                    <div class="worksheet-field">
+                        <label>3. BATNA Strength Assessment: Who has more leverage? (Rate 1-5)</label>
+                        <textarea placeholder="Example: Their BATNA is weak (3/5)—alternatives are poor and they're bleeding money. My BATNA is strong (4/5)—I have other deals and don't need this to hit quota. CONCLUSION: I have leverage—stand firm on value."></textarea>
+                    </div>
+
+                    <div class="worksheet-field">
+                        <label>4. Your Walk-Away Point: At what price/terms will you walk away?</label>
+                        <textarea placeholder="Example: Minimum deal value: ₹60L (anything below doesn't justify my time/resources). Maximum discount: 15% (maintains margin thresholds). Must include 3-year contract (not 1-year). If they demand more, I walk."></textarea>
+                    </div>
+
+                    <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                        <p style="color: #667eea; font-weight: 600; margin-bottom: 10px;">💾 Save this assessment!</p>
+                        <p style="font-size: 0.95em; color: #666;">Review your BATNA before every negotiation call. Update it as circumstances change. Never enter a negotiation without this clarity.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>How to Strengthen Your BATNA</h4>
+
+                <div class="info-box">
+                    <h5>🚀 Strategies to Increase Your Leverage</h5>
+                    <ol>
+                        <li><strong>Build pipeline:</strong> More qualified opportunities = stronger BATNA</li>
+                        <li><strong>Create competition:</strong> "We're in final discussions with 2 other clients" (if true)</li>
+                        <li><strong>Demonstrate demand:</strong> Share recent wins, case studies, waitlist</li>
+                        <li><strong>Time constraint:</strong> "Our implementation capacity fills up in Q2" (if true)</li>
+                        <li><strong>Executive endorsement:</strong> "CFO approved our pricing structure—no flexibility below this"</li>
+                    </ol>
+                </div>
+
+                <div class="danger-box">
+                    <h5>⚠️ Ethical Note</h5>
+                    <p>You strengthen buyer BATNA by demonstrating unique value—NOT by lying about competitors or creating false scarcity. Everything you say must be true.</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>How to Weaken Their BATNA (Ethically)</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Their Alternative</th>
+                            <th>How to Weaken It</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Competitor A</strong></td>
+                            <td>"While Competitor A offers basic features, we're the only solution with autonomous AI agents—critical for your scale requirements. They require human approval for every decision; we make 10K+ decisions daily autonomously."</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Build In-House</strong></td>
+                            <td>"Building in-house would take 18 months and ₹5CR in engineering resources. You'd still need to maintain it, hire AI talent, and you'd miss this year's ROI window entirely."</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Do Nothing / Delay</strong></td>
+                            <td>"Every quarter you delay costs ₹2.5CR in lost efficiency and competitive disadvantage. Your competitors are already using AI—delaying puts you further behind."</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Use Legacy System</strong></td>
+                            <td>"Your legacy system processes 50 transactions/minute. At your growth rate, you'll hit capacity limits in 6 months. The migration becomes exponentially harder the longer you wait."</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pro-tip">
+                    <h5>💡 Pro Tip: Research Their Alternatives Before Negotiation</h5>
+                    <p>Ask during discovery: "What other options are you evaluating?" Then prepare specific differentiation for each alternative. Make their BATNA look weak by comparison.</p>
+                </div>
+            </div>
+
+            <div class="scenario-card" onclick="toggleScenario(this)">
+                <div class="question">
+                    <strong>Practice Scenario:</strong> Buyer says "We can just delay this project to next year if pricing doesn't work."
+                    <p style="color: #667eea; margin-top: 5px;">Click to see effective responses →</p>
+                </div>
+                <div class="answer">
+                    <p><strong>Response Strategy: Weaken Their "Do Nothing" BATNA</strong></p>
+                    <p style="margin-top: 10px;"><strong>Option 1 (Loss Framing):</strong> "I understand the budget concern. Let me show you the cost of delay: [pull out ROI calc] If you launch in Q2, you capture ₹4CR in annual value. If you delay to next year, you lose ₹1CR in Q2-Q4 opportunity cost alone—that's more than the solution costs. Can your business afford that?"</p>
+                    <p style="margin-top: 10px;"><strong>Option 2 (Competitive Pressure):</strong> "That's certainly an option. Just be aware that your three main competitors are implementing AI solutions this quarter. Every month you delay, they're processing more transactions, reducing costs, and taking market share. By next year, they'll have a 12-month head start."</p>
+                    <p style="margin-top: 10px;"><strong>Option 3 (Technical Reality):</strong> "Delaying has a hidden cost: your data volume grows 15% per quarter. Migration complexity and risk increase exponentially. A 6-month delay could turn our 90-day implementation into a 6-month implementation just due to data volume and system dependencies."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: Value-Based Pricing & Discount Strategy -->
+        <div id="part3" class="content-section">
+            <div class="section-header">
+                <h3>💰 Part 3: Value-Based Pricing & Discount Strategy</h3>
+                <p>Build bulletproof value narratives and master the art of strategic concessions</p>
+            </div>
+
+            <div class="content-box">
+                <h4>The Value Stacking Framework</h4>
+                
+                <div class="info-box">
+                    <h5>🎯 Core Principle: Price is What They Pay, Value is What They Get</h5>
+                    <p>Your job is to make the value SO obvious and SO much larger than the price that price becomes a non-issue.</p>
+                </div>
+
+                <p style="margin: 20px 0;">Instead of defending your price, stack multiple layers of value until price objections dissolve:</p>
+
+                <div class="value-builder">
+                    <h5 style="color: #667eea; margin-bottom: 20px;">📦 Build Your Value Stack</h5>
+                    <p style="margin-bottom: 15px;">Click "Add to Stack" for each value element that applies to your deal:</p>
+
+                    <div class="value-item" data-value="roi">
+                        <div class="value-item-content">
+                            <div class="value-item-title">1. Hard ROI / Cost Savings</div>
+                            <div class="value-item-desc">Quantified financial return (e.g., "Save ₹3CR annually through automation")</div>
+                        </div>
+                        <button class="value-item-button add-button" onclick="toggleValueItem(this, 'roi')">Add to Stack</button>
+                    </div>
+
+                    <div class="value-item" data-value="efficiency">
+                        <div class="value-item-content">
+                            <div class="value-item-title">2. Efficiency Gains</div>
+                            <div class="value-item-desc">Time savings, productivity increases (e.g., "Process 3X more transactions with same team")</div>
+                        </div>
+                        <button class="value-item-button add-button" onclick="toggleValueItem(this, 'efficiency')">Add to Stack</button>
+                    </div>
+
+                    <div class="value-item" data-value="risk">
+                        <div class="value-item-content">
+                            <div class="value-item-title">3. Risk Mitigation</div>
+                            <div class="value-item-desc">Avoid failures, compliance, security (e.g., "Eliminate manual error risks, ensure SOC2 compliance")</div>
+                        </div>
+                        <button class="value-item-button add-button" onclick="toggleValueItem(this, 'risk')">Add to Stack</button>
+                    </div>
+
+                    <div class="value-item" data-value="competitive">
+                        <div class="value-item-content">
+                            <div class="value-item-title">4. Competitive Advantage</div>
+                            <div class="value-item-desc">Market differentiation (e.g., "First bank in region with real-time AI decisioning")</div>
+                        </div>
+                        <button class="value-item-button add-button" onclick="toggleValueItem(this, 'competitive')">Add to Stack</button>
+                    </div>
+
+                    <div class="value-item" data-value="speed">
+                        <div class="value-item-content">
+                            <div class="value-item-title">5. Speed to Value</div>
+                            <div class="value-item-desc">Fast implementation (e.g., "90-day deployment vs competitor's 18 months")</div>
+                        </div>
+                        <button class="value-item-button add-button" onclick="toggleValueItem(this, 'speed')">Add to Stack</button>
+                    </div>
+
+                    <div class="value-item" data-value="support">
+                        <div class="value-item-content">
+                            <div class="value-item-title">6. Implementation & Support</div>
+                            <div class="value-item-desc">Training, onboarding, dedicated CSM (e.g., "Dedicated architect, 24/7 support, quarterly reviews")</div>
+                        </div>
+                        <button class="value-item-button add-button" onclick="toggleValueItem(this, 'support')">Add to Stack</button>
+                    </div>
+
+                    <div class="value-item" data-value="innovation">
+                        <div class="value-item-content">
+                            <div class="value-item-title">7. Future Innovation</div>
+                            <div class="value-item-desc">Continuous improvements (e.g., "Quarterly model updates, new agent capabilities, free upgrades")</div>
+                        </div>
+                        <button class="value-item-button add-button" onclick="toggleValueItem(this, 'innovation')">Add to Stack</button>
+                    </div>
+
+                    <div id="valueStackSummary" class="value-stack-summary" style="display: none;">
+                        <h5>🎯 Your Value Stack</h5>
+                        <p id="valueStackCount">0 value layers added</p>
+                        <p style="margin-top: 10px; font-size: 0.95em;">The more layers you can articulate, the less price matters. Aim for 5+ strong value points in every negotiation.</p>
+                    </div>
+                </div>
+
+                <div class="pro-tip">
+                    <h5>💡 Pro Tip: The Value Bridge Technique</h5>
+                    <p>When presenting price, always build a "bridge" from price to value:</p>
+                    <p style="margin-top: 10px;"><strong>"The investment is ₹75 lakhs for the first year. Here's the value you're getting:</strong> ₹3CR in annual cost savings, 3X transaction capacity, 90-day implementation, dedicated support, and autonomous AI agents that make 10K+ decisions daily. So for every ₹1 you invest, you're getting ₹4 in return in year one alone. Does that value equation make sense?"</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>The Strategic Discount Framework</h4>
+
+                <div class="warning-box">
+                    <h5>⚠️ Critical Rule: Never Discount Without Getting Something in Return</h5>
+                    <p>Every concession you give should be traded for something you want. Free discounts train buyers to expect them and erode your value positioning.</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>If They Ask For...</th>
+                            <th>You Can Offer... (Trade)</th>
+                            <th>Why It Works</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>10% discount</strong></td>
+                            <td>"I can offer 8% if you sign by Friday and commit to 3-year contract instead of 1-year"</td>
+                            <td>Locks in longer revenue, accelerates close, smaller discount</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lower price</strong></td>
+                            <td>"I can reduce to ₹70L if we remove the advanced analytics module and limit to 5 users initially"</td>
+                            <td>Reduces scope, preserves value-per-unit, creates upsell opportunity</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Extended payment terms</strong></td>
+                            <td>"I can offer quarterly payments instead of upfront if you agree to auto-renewal and provide a case study"</td>
+                            <td>Gets renewal commitment, marketing value, maintains price</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Additional features</strong></td>
+                            <td>"I can include the fraud detection module at no additional cost if you sign by month-end and serve as a reference customer"</td>
+                            <td>Low incremental cost, gets urgency, gains reference</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-box">
+                <h4>The Concession Ladder: What to Give First</h4>
+
+                <div class="info-box">
+                    <h5>🎯 Strategy: Give Low-Cost / High-Value Items First</h5>
+                    <p>Start with concessions that cost you little but the buyer values highly. Save price discounts for last resort.</p>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; margin: 20px 0;">
+                    <h5 style="color: #667eea; margin-bottom: 15px;">The Concession Ladder (Bottom to Top)</h5>
+                    
+                    <div style="background: #d4edda; padding: 15px; border-radius: 6px; margin: 10px 0; border-left: 4px solid #28a745;">
+                        <strong>🟢 Tier 1: Give These First (Low Cost, High Value)</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Additional training sessions</li>
+                            <li>Extended support hours</li>
+                            <li>Flexible payment terms</li>
+                            <li>Faster implementation priority</li>
+                            <li>Free minor feature add-ons</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 6px; margin: 10px 0; border-left: 4px solid #ffc107;">
+                        <strong>🟡 Tier 2: Give These If Needed (Moderate Cost)</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Professional services hours</li>
+                            <li>Custom integrations</li>
+                            <li>Additional user licenses</li>
+                            <li>Extended trial period</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #f8d7da; padding: 15px; border-radius: 6px; margin: 10px 0; border-left: 4px solid #dc3545;">
+                        <strong>🔴 Tier 3: Last Resort Only (High Cost)</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Price discounts (5-15% max)</li>
+                            <li>Major feature upgrades at no cost</li>
+                            <li>Reduced contract term (less than 3 years)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pro-tip">
+                    <h5>💡 Pro Tip: The Salami Technique</h5>
+                    <p><strong>Don't give all concessions at once.</strong> Slice them thin like salami—give one, then wait for reciprocity. If they keep asking, add another small slice. This:</p>
+                    <ul>
+                        <li>Maximizes perceived value of each concession</li>
+                        <li>Trains buyer to give something for each concession</li>
+                        <li>Prevents "is that your final offer?" pressure</li>
+                        <li>Leaves room for final sweetener at close</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>Handling "The Flinch" and Price Shock</h4>
+
+                <div class="scenario-card" onclick="toggleScenario(this)">
+                    <div class="question">
+                        <strong>Scenario:</strong> You quote ₹75 lakhs. Buyer says: "WHAT?! That's way higher than expected! I thought it would be ₹40-45 lakhs!"
+                        <p style="color: #667eea; margin-top: 5px;">Click for the 3-step response framework →</p>
+                    </div>
+                    <div class="answer">
+                        <p><strong>Step 1: The Pause (3-5 seconds of silence)</strong></p>
+                        <p style="margin-top: 10px;">Don't react immediately. Silence is powerful. It shows you're confident and unbothered by their shock. This is a tactic—don't fall for it.</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Step 2: Acknowledge Without Apologizing</strong></p>
+                        <p style="margin-top: 5px;">"I understand this is a significant investment. Let me make sure you understand what you're getting..."</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Step 3: Re-Anchor on Value (Not Price)</strong></p>
+                        <p style="margin-top: 5px;">"For ₹75 lakhs, you're getting ₹3 crores in annual cost savings—that's a 4X return in year one. You're also getting 90-day implementation versus 18 months with alternatives, plus autonomous AI agents processing 10K+ decisions daily with zero human intervention. When you factor in the opportunity cost of delay and the competitive advantage, ₹75L is actually conservative. Does that value equation make sense?"</p>
+                        
+                        <p style="margin-top: 15px;"><strong>❌ Don't Say:</strong> "Let me see what I can do" / "I'll talk to my manager" / "Maybe we can work something out"</p>
+                        <p style="margin-top: 10px;"><strong>✅ Do Say:</strong> Stand on value, walk through ROI slowly, show you're willing to walk if they don't see the value</p>
+                    </div>
+                </div>
+
+                <div class="danger-box">
+                    <h5>❌ The Discount Death Spiral</h5>
+                    <p><strong>Avoid this pattern:</strong> Quote high → buyer flinches → you immediately offer 20% discount → buyer asks for more → you give 30% → buyer still doesn't sign.</p>
+                    <p style="margin-top: 10px;"><strong>Why it fails:</strong> You've trained them that flinching works. You've signaled your initial price was inflated. You've destroyed your value positioning. You've given away margin for nothing.</p>
+                    <p style="margin-top: 10px;"><strong>The fix:</strong> Stand firm, walk through value, give small concessions ONLY in trade for commitments (sign date, contract term, payment terms).</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>When to Walk Away</h4>
+
+                <div class="warning-box">
+                    <h5>🚪 Know Your Walk-Away Point Before the Negotiation</h5>
+                    <p>Sometimes the best deal is the one you DON'T close. If they want:</p>
+                    <ul>
+                        <li>Discounts that destroy your margin</li>
+                        <li>Terms that set bad precedent for other customers</li>
+                        <li>Customizations that aren't in your roadmap</li>
+                        <li>Support commitments you can't deliver</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>Be willing to walk.</strong> A bad deal at low margin with high support costs will hurt you for years. Your BATNA should guide this decision.</p>
+                </div>
+
+                <div class="pro-tip">
+                    <h5>💡 Pro Tip: The Walk-Away Test</h5>
+                    <p>Before saying "yes" to a difficult concession, ask yourself:</p>
+                    <ul>
+                        <li>"Would I be proud to tell my manager about this deal?"</li>
+                        <li>"Does this set a precedent I want with other customers?"</li>
+                        <li>"Can we deliver on these terms profitably and sustainably?"</li>
+                    </ul>
+                    <p style="margin-top: 10px;">If the answer is "no" to any of these, push back or walk away.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: Master Quiz -->
+        <div id="part4" class="content-section">
+            <div class="section-header">
+                <h3>🏆 Part 4: Master Knowledge Check</h3>
+                <p>Test your understanding of negotiation preparation and value strategy (15 questions)</p>
+            </div>
+
+            <div id="quizContent">
+                <div class="info-box">
+                    <h5>📋 Quiz Instructions</h5>
+                    <ul>
+                        <li>15 multiple choice questions covering all three parts</li>
+                        <li>Pass threshold: 67% (10 out of 15 correct)</li>
+                        <li>Unlimited attempts—learn from mistakes and try again</li>
+                        <li>Detailed explanations provided for every answer</li>
+                    </ul>
+                </div>
+
+                <!-- Questions will be inserted here by JavaScript -->
+                <div id="quizQuestions"></div>
+
+                <button class="button button-primary" style="width: 100%; margin-top: 20px;" id="submitBtn" onclick="submitQuiz()" disabled>
+                    Answer all questions (0/15 complete)
+                </button>
+            </div>
+
+            <div id="quizResults" style="display: none;">
+                <!-- Results will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Download Section -->
+            <div class="download-section">
+                <h4>📥 Download Your Pre-Negotiation Checklist</h4>
+                <p>Use this PDF checklist before every negotiation to ensure you're fully prepared</p>
+                <button class="button button-success" onclick="downloadChecklist()">
+                    Download Checklist (PDF)
+                </button>
+                <p style="font-size: 0.9em; margin-top: 15px; color: #666;">
+                    Note: This triggers a browser print dialog. Select "Save as PDF" for a downloadable checklist.
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button class="button button-secondary" onclick="prevPart()" id="prevBtn">← Previous</button>
+            <button class="button button-primary" onclick="nextPart()" id="nextBtn">Next →</button>
+        </div>
+
+        <!-- Footer -->
+        <div style="margin-top: 60px; padding-top: 30px; border-top: 2px solid #e0e0e0; text-align: center; color: #666;">
+            <p style="font-weight: 600; font-size: 1.1em;">© 2026 TransLab | Sales Academy</p>
+            <p style="margin-top: 8px;">Module 6A: Negotiation Preparation & Value Strategy | All Rights Reserved</p>
+            <p style="margin-top: 8px; font-size: 0.9em;">Duration: 35-40 minutes | Interactive Training Module</p>
+        </div>
+    </div>
+
+    <!-- Hidden Print Template for Checklist -->
+    <div id="printChecklist" style="display: none;">
+        <div style="padding: 40px; font-family: Arial, sans-serif;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #667eea; margin-bottom: 10px;">Pre-Negotiation Preparation Checklist</h1>
+                <p style="color: #666;">TransLab Sales Academy | Module 6A</p>
+            </div>
+            
+            <div style="margin: 30px 0;">
+                <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 5px;">Before Every Negotiation</h3>
+                <div style="margin: 15px 0;">
+                    <input type="checkbox"> <strong>Identify buyer type</strong> (Analyst / Collaborator / Competitor)<br>
+                    <input type="checkbox"> <strong>Calculate YOUR BATNA</strong> (what happens if deal fails?)<br>
+                    <input type="checkbox"> <strong>Research THEIR BATNA</strong> (what are their alternatives?)<br>
+                    <input type="checkbox"> <strong>Assess leverage</strong> (who has stronger BATNA?)<br>
+                    <input type="checkbox"> <strong>Define walk-away point</strong> (minimum deal value & terms)<br>
+                </div>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 5px;">Value Preparation</h3>
+                <div style="margin: 15px 0;">
+                    <input type="checkbox"> <strong>Build value stack</strong> (list 5+ value points)<br>
+                    <input type="checkbox"> <strong>Calculate ROI</strong> (specific numbers for their situation)<br>
+                    <input type="checkbox"> <strong>Prepare loss framing</strong> (what they lose by not buying)<br>
+                    <input type="checkbox"> <strong>Set anchor price</strong> (20-30% above target)<br>
+                    <input type="checkbox"> <strong>Gather proof points</strong> (case studies, data, testimonials)<br>
+                </div>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 5px;">Concession Strategy</h3>
+                <div style="margin: 15px 0;">
+                    <input type="checkbox"> <strong>List Tier 1 concessions</strong> (low-cost, high-value: training, support, terms)<br>
+                    <input type="checkbox"> <strong>List Tier 2 concessions</strong> (moderate cost: services, features, licenses)<br>
+                    <input type="checkbox"> <strong>Set discount limit</strong> (max % you'll discount, only as last resort)<br>
+                    <input type="checkbox"> <strong>Plan trades</strong> (for each concession, what do you want in return?)<br>
+                    <input type="checkbox"> <strong>Prepare "Flinch" response</strong> (how you'll handle price shock)<br>
+                </div>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 5px;">Competitive Intelligence</h3>
+                <div style="margin: 15px 0;">
+                    <input type="checkbox"> <strong>Research competitors</strong> (what alternatives are they evaluating?)<br>
+                    <input type="checkbox"> <strong>Prepare differentiation</strong> (specific features/capabilities they lack)<br>
+                    <input type="checkbox"> <strong>Weaken their alternatives</strong> (legitimate drawbacks of each option)<br>
+                    <input type="checkbox"> <strong>Ready objection responses</strong> (common objections + battle-tested responses)<br>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 40px;">
+                <h4 style="color: #667eea;">Remember:</h4>
+                <ul style="margin-top: 10px; line-height: 1.8;">
+                    <li><strong>Never negotiate without your BATNA clarity</strong></li>
+                    <li><strong>Every concession requires a trade</strong></li>
+                    <li><strong>Stand firm on value, be willing to walk</strong></li>
+                    <li><strong>Give Tier 1 concessions first, save price for last</strong></li>
+                    <li><strong>Use loss framing, anchor high, pause during "The Flinch"</strong></li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin-top: 50px; color: #666; font-size: 0.9em;">
+                <p>© 2026 TransLab Sales Academy | Module 6A</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let currentPart = 1;
+        const totalParts = 4;
+        const quizAnswers = {};
+        let valueStackItems = new Set();
+
+        // Quiz data with balanced distribution
+        const quizQuestions = [
+            {
+                q: "What is the most important principle when approaching B2B negotiations?",
+                options: [
+                    "Always aim to win the negotiation and beat the buyer on price",
+                    "Treat it as collaboration to create win-win outcomes where both parties succeed",
+                    "Use aggressive tactics to maximize your commission quickly",
+                    "Give discounts early to build trust and close deals faster"
+                ]
+            },
+            {
+                q: "The Analyst buyer type is characterized by which core behavior?",
+                options: [
+                    "Makes quick emotional decisions and values personal relationships over data",
+                    "Uses aggressive tactics and competitor leverage to demand steep discounts",
+                    "Requests extensive documentation and needs proof through data and case studies",
+                    "Prefers collaborative problem-solving and transparent partnership approaches"
+                ]
+            },
+            {
+                q: "When dealing with The Competitor buyer type, what's the BEST strategy?",
+                options: [
+                    "Immediately offer steep discounts to match competitor pricing quickly",
+                    "Get emotional and defensive when they mention competitor alternatives",
+                    "Give them whatever they demand to avoid losing the deal entirely",
+                    "Stand firm on value, differentiate from competitors, and be willing to walk away"
+                ]
+            },
+            {
+                q: "According to loss aversion psychology, which message is MORE effective?",
+                options: [
+                    "You'll save ten lakhs per year with our solution",
+                    "Without this, you're losing ten lakhs annually to inefficiency right now",
+                    "Both messages are equally effective in B2B sales",
+                    "Gain framing works better because buyers prefer positive messages"
+                ]
+            },
+            {
+                q: "What is the anchoring effect and how should you use it?",
+                options: [
+                    "Always let the buyer state their budget first to anchor the negotiation low",
+                    "Anchoring only works in retail sales not in enterprise B2B negotiations",
+                    "The first number mentioned influences outcomes so anchor high with your opening price",
+                    "Anchoring means staying firm and never moving from your initial quoted price"
+                ]
+            },
+            {
+                q: "What is BATNA and why is it critically important in negotiations?",
+                options: [
+                    "BATNA is your opening price that you present to the buyer initially",
+                    "BATNA is the buyer's budget allocated for their purchase decision",
+                    "BATNA is a framework for handling objections during the sales process",
+                    "BATNA is your Best Alternative if negotiation fails determining your walk-away point"
+                ]
+            },
+            {
+                q: "A buyer reacts with shock saying 'That's way higher than expected!' This is called 'The Flinch.' What's the BEST response?",
+                options: [
+                    "Immediately offer a discount to ease their concern and close faster",
+                    "Defend your price aggressively and refuse to negotiate any terms",
+                    "Stay calm, pause briefly, then walk through your value narrative without rushing to discount",
+                    "Ask them what price they expected and match that number"
+                ]
+            },
+            {
+                q: "In BATNA power dynamics, who has leverage in this scenario: You have 3 qualified deals in pipeline. They have no viable alternatives and legacy system is failing.",
+                options: [
+                    "The buyer has leverage because they control the budget decision",
+                    "You have leverage because your BATNA is strong and theirs is weak",
+                    "Neither party has leverage because this is a balanced negotiation",
+                    "Leverage is irrelevant in collaborative B2B enterprise sales negotiations"
+                ]
+            },
+            {
+                q: "How can you ethically WEAKEN their BATNA to strengthen your position?",
+                options: [
+                    "Lie about competitors or create false scarcity with manufactured deadlines",
+                    "Demonstrate unique value they can't get elsewhere through legitimate differentiation",
+                    "Threaten to walk away immediately unless they accept your terms",
+                    "Hide information about your product limitations to avoid comparisons"
+                ]
+            },
+            {
+                q: "What is the 'Value Stacking Framework' designed to accomplish?",
+                options: [
+                    "List all product features in the most technical detail possible",
+                    "Reduce price until it matches the buyer's stated budget constraints",
+                    "Build multiple layers of value so large that price becomes a non-issue",
+                    "Create complex pricing structures that confuse buyers about total cost"
+                ]
+            },
+            {
+                q: "What is the CRITICAL rule about giving discounts during negotiations?",
+                options: [
+                    "Give discounts early to build trust and show you're flexible partners",
+                    "Never discount without getting something valuable in return like contract term or sign date",
+                    "Always match competitor pricing to stay competitive in the market",
+                    "Discount freely because buyers expect it in enterprise B2B deals"
+                ]
+            },
+            {
+                q: "In the Concession Ladder, which should you give FIRST?",
+                options: [
+                    "Price discounts since that's what buyers care most about first",
+                    "Low-cost high-value items like training payment terms or support hours",
+                    "All concessions at once to close the deal faster efficiently",
+                    "No concessions until the buyer makes the first move in negotiation"
+                ]
+            },
+            {
+                q: "Buyer says 'We can just delay this project to next year if pricing doesn't work.' What's the BEST response to weaken their 'Do Nothing' BATNA?",
+                options: [
+                    "Immediately drop price by twenty percent to prevent them from walking away",
+                    "Agree with them that delaying is a viable option without pushback",
+                    "Show cost of delay opportunity cost competitive risk and increasing migration complexity",
+                    "Threaten to raise prices next year if they don't sign today"
+                ]
+            },
+            {
+                q: "What is 'The Salami Technique' in concession strategy?",
+                options: [
+                    "Give all concessions at once in a bundle to maximize perceived value",
+                    "Give concessions in thin slices one at a time getting trades for each",
+                    "Never give any concessions and hold firm on all terms absolutely",
+                    "Randomly give concessions whenever buyer asks without any strategy"
+                ]
+            },
+            {
+                q: "When should you be willing to walk away from a negotiation?",
+                options: [
+                    "Never walk away because any deal is better than no deal",
+                    "Only walk away if buyer is rude or unprofessional personally",
+                    "Walk away when discounts destroy margin or terms set bad precedent",
+                    "Walk away immediately when buyer asks for any discount whatsoever"
+                ]
+            }
+        ];
+
+        // Correct answers - balanced distribution (A:3, B:4, C:4, D:4)
+        const correctAnswers = {
+            0: 1,  // B
+            1: 2,  // C
+            2: 3,  // D
+            3: 1,  // B
+            4: 2,  // C
+            5: 3,  // D
+            6: 2,  // C
+            7: 1,  // B
+            8: 1,  // B
+            9: 2,  // C
+            10: 1, // B
+            11: 1, // B
+            12: 2, // C
+            13: 1, // B
+            14: 2  // C
+        };
+
+        const explanations = {
+            0: "Win-win collaboration is the foundation of successful B2B negotiations. Adversarial approaches damage relationships, create high churn, and limit expansion opportunities. The best negotiators create outcomes where both parties achieve their goals.",
+            1: "The Analyst buyer type is data-driven and risk-averse. They need extensive proof through documentation, case studies, and ROI calculations. Be patient with their decision process and provide detailed evidence to support your claims.",
+            2: "The Competitor buyer type uses aggressive tactics and competitor leverage. Your best strategy is to stand firm on value, differentiate clearly from competitors, stay unemotional, and be willing to walk away if the deal doesn't make business sense.",
+            3: "Loss aversion psychology shows people are 2X more motivated to avoid loss than achieve equivalent gain. Framing in terms of what they're LOSING (savings, time, competitive advantage) is more effective than framing what they'll gain.",
+            4: "The anchoring effect means the first number mentioned in a negotiation disproportionately influences the final outcome. You should anchor high with your opening price (20-30% above target) so negotiations move down from YOUR number, not up from buyer's low anchor.",
+            5: "BATNA (Best Alternative To a Negotiated Agreement) is your best course of action if the current negotiation fails. It determines your walk-away point and gives you negotiation power. The party with the stronger BATNA has more leverage.",
+            6: "The Flinch is a common tactic to make you doubt your pricing. The best response is to stay calm, pause (don't react immediately), and walk through your value narrative without rushing to offer a discount. Don't let their emotional reaction pressure you.",
+            7: "When you have multiple options (strong BATNA) and they have no viable alternatives (weak BATNA), you have leverage. You can walk away easily, but they need a solution. This power dynamic should guide your negotiation strategy.",
+            8: "You weaken their BATNA ethically by demonstrating unique value they can't get elsewhere. Show how alternatives (competitors, building in-house, or doing nothing) have legitimate drawbacks compared to your solution. Never lie or create false scarcity.",
+            9: "The Value Stacking Framework builds multiple layers of value (ROI, efficiency, risk mitigation, competitive advantage, speed, support, innovation) until the value is SO much larger than the price that price becomes a non-issue.",
+            10: "Never discount without getting something in return. Every concession you give should be traded for something you want (earlier sign date, longer contract term, payment terms, reference agreement). Free discounts train buyers to expect them and erode value.",
+            11: "The Concession Ladder says give low-cost, high-value items FIRST (training, support, payment terms, implementation priority). Save price discounts for last resort. This maximizes perceived value while minimizing your cost.",
+            12: "When buyer says they can delay, you weaken that BATNA by showing: (1) cost of delay (lost ROI opportunity), (2) competitive risk (competitors implementing while they wait), and (3) increasing complexity (data volume growth makes migration harder). Make 'doing nothing' expensive.",
+            13: "The Salami Technique means giving concessions in thin slices, one at a time, getting something in return for each. Don't give all concessions at once—this maximizes perceived value of each concession and trains buyer to reciprocate.",
+            14: "Walk away when: discounts destroy your margin, terms set bad precedent for other customers, customizations aren't in roadmap, or support commitments you can't deliver. A bad deal at low margin with high support costs will hurt you for years."
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+            document.getElementById('prevBtn').disabled = true;
+            renderQuiz();
+        });
+
+        // Navigation functions
+        function showPart(partNum) {
+            for (let i = 1; i <= totalParts; i++) {
+                document.getElementById('part' + i).classList.remove('active');
+            }
+            
+            document.getElementById('part' + partNum).classList.add('active');
+            currentPart = partNum;
+            
+            updateProgress();
+            
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach((btn, idx) => {
+                btn.classList.remove('active');
+                if (idx === partNum - 1) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            document.getElementById('prevBtn').disabled = (currentPart === 1);
+            document.getElementById('nextBtn').disabled = (currentPart === totalParts);
+            
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function nextPart() {
+            if (currentPart < totalParts) {
+                showPart(currentPart + 1);
+            }
+        }
+
+        function prevPart() {
+            if (currentPart > 1) {
+                showPart(currentPart - 1);
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentPart / totalParts) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = 'Part ' + currentPart + ' of ' + totalParts;
+        }
+
+        // Interactive elements
+        function toggleBuyerCard(card) {
+            card.classList.toggle('expanded');
+        }
+
+        function toggleScenario(card) {
+            card.classList.toggle('revealed');
+        }
+
+        function toggleValueItem(button, value) {
+            const item = button.closest('.value-item');
+            
+            if (valueStackItems.has(value)) {
+                valueStackItems.delete(value);
+                item.classList.remove('added');
+                button.textContent = 'Add to Stack';
+                button.classList.remove('remove-button');
+                button.classList.add('add-button');
+            } else {
+                valueStackItems.add(value);
+                item.classList.add('added');
+                button.textContent = 'Remove';
+                button.classList.remove('add-button');
+                button.classList.add('remove-button');
+            }
+            
+            updateValueStack();
+        }
+
+        function updateValueStack() {
+            const summary = document.getElementById('valueStackSummary');
+            const count = document.getElementById('valueStackCount');
+            
+            if (valueStackItems.size > 0) {
+                summary.style.display = 'block';
+                count.textContent = valueStackItems.size + ' value layer' + (valueStackItems.size > 1 ? 's' : '') + ' added';
+            } else {
+                summary.style.display = 'none';
+            }
+        }
+
+        // Quiz functions
+        function renderQuiz() {
+            const container = document.getElementById('quizQuestions');
+            let html = '';
+            
+            quizQuestions.forEach((item, idx) => {
+                html += `
+                    <div class="quiz-question">
+                        <h4>${idx + 1}. ${item.q}</h4>
+                        <ul class="quiz-options" id="options-${idx}">
+                `;
+                
+                item.options.forEach((option, optIdx) => {
+                    html += `
+                        <li class="quiz-option" onclick="selectAnswer(${idx}, ${optIdx}, this)">
+                            <input type="radio" name="q${idx}" value="${optIdx}" id="q${idx}-${optIdx}">
+                            <label for="q${idx}-${optIdx}">${option}</label>
+                        </li>
+                    `;
+                });
+                
+                html += `
+                        </ul>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // Randomize options for each question
+            document.querySelectorAll('.quiz-options').forEach(optionsList => {
+                const options = Array.from(optionsList.children);
+                
+                // Fisher-Yates shuffle
+                for (let i = options.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [options[i], options[j]] = [options[j], options[i]];
+                }
+                
+                options.forEach(option => optionsList.appendChild(option));
+            });
+        }
+
+        function selectAnswer(questionNum, answerIdx, element) {
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            element.classList.add('selected');
+            
+            // Update the radio button
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            quizAnswers[questionNum] = answerIdx;
+            
+            const answeredCount = Object.keys(quizAnswers).length;
+            const submitBtn = document.getElementById('submitBtn');
+            if (answeredCount === 15) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Quiz';
+            } else {
+                submitBtn.textContent = `Answer all questions (${answeredCount}/15 complete)`;
+            }
+        }
+
+        function submitQuiz() {
+            let correct = 0;
+            for (let q in correctAnswers) {
+                if (quizAnswers[q] === correctAnswers[q]) {
+                    correct++;
+                }
+            }
+            const score = Math.round((correct / 15) * 100);
+            const passed = score >= 67;
+            
+            document.getElementById('quizContent').style.display = 'none';
+            
+            const resultsDiv = document.getElementById('quizResults');
+            resultsDiv.style.display = 'block';
+            
+            let resultsHTML = `
+                <div class="quiz-result ${passed ? 'pass' : 'fail'}">
+                    <h3>${passed ? '🎉 Excellent Work! Quiz Passed! 🎉' : '📚 Keep Learning! More Practice Needed'}</h3>
+                    <p style="font-size: 1.4em; margin-top: 10px;">Your Score: <strong>${score}%</strong> (${correct}/15 correct)</p>
+                    ${passed ? '<p style="margin-top: 10px;">You\'ve mastered negotiation preparation and value strategy! 🌟</p>' : '<p style="margin-top: 10px;">Review the explanations below and try again. You need 67% to pass.</p>'}
+                </div>
+            `;
+            
+            for (let q = 0; q < 15; q++) {
+                const isCorrect = quizAnswers[q] === correctAnswers[q];
+                resultsHTML += `
+                    <div class="quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                        <h4>${isCorrect ? '✅' : '❌'} ${q + 1}. ${quizQuestions[q].q}</h4>
+                        <p style="margin-top: 15px;"><strong>Your answer:</strong> ${quizQuestions[q].options[quizAnswers[q]]}</p>
+                        ${!isCorrect ? `<p style="margin-top: 10px; color: #2e7d32;"><strong>Correct answer:</strong> ${quizQuestions[q].options[correctAnswers[q]]}</p>` : ''}
+                        <div style="background: ${isCorrect ? '#f1f8f4' : '#fff9f9'}; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid ${isCorrect ? '#c3e6cb' : '#f5c6cb'};">
+                            <p style="font-weight: 600; margin-bottom: 8px; color: #333;">💡 Explanation:</p>
+                            <p style="color: #333;">${explanations[q]}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultsHTML += `
+                <button class="button button-primary" style="width: 100%; margin-top: 20px;" onclick="retakeQuiz()">
+                    🔄 Retake Quiz
+                </button>
+            `;
+            
+            resultsDiv.innerHTML = resultsHTML;
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+        
+        function retakeQuiz() {
+            // Clear answers
+            for (let q in quizAnswers) {
+                delete quizAnswers[q];
+            }
+            
+            // Reset UI
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+                const radio = opt.querySelector('input[type="radio"]');
+                if (radio) radio.checked = false;
+            });
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Answer all questions (0/15 complete)';
+            
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('quizResults').style.display = 'none';
+            
+            // Re-randomize questions
+            renderQuiz();
+            
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Download checklist
+        function downloadChecklist() {
+            const printContent = document.getElementById('printChecklist').innerHTML;
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            
+            // Re-initialize after restoring content
+            location.reload();
+        }
+    </script>
+</body>
+</html>

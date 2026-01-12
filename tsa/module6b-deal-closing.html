@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSA Module 6B: Multi-Party Execution & Deal Closing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        .header .meta {
+            margin-top: 20px;
+            font-size: 0.9em;
+            opacity: 0.85;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #666;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        .navigation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .nav-button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: #e9ecef;
+            color: #495057;
+            font-size: 0.9em;
+        }
+        
+        .nav-button:hover {
+            background: #dee2e6;
+        }
+        
+        .nav-button.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 5px solid #f39c12;
+            margin-bottom: 25px;
+        }
+        
+        .section-header h3 {
+            font-size: 1.8em;
+            color: #d35400;
+            margin-bottom: 5px;
+        }
+        
+        .section-header p {
+            color: #8b5a00;
+            font-size: 1.05em;
+        }
+        
+        .content-box {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .content-box h4 {
+            color: #f093fb;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        
+        .stakeholder-card {
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-left: 6px solid;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .stakeholder-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .stakeholder-card.economic { border-left-color: #e74c3c; background: linear-gradient(135deg, #ffebee 0%, #ffffff 100%); }
+        .stakeholder-card.technical { border-left-color: #3498db; background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%); }
+        .stakeholder-card.champion { border-left-color: #f39c12; background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%); }
+        .stakeholder-card.user { border-left-color: #27ae60; background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%); }
+        .stakeholder-card.procurement { border-left-color: #9b59b6; background: linear-gradient(135deg, #f3e5f5 0%, #ffffff 100%); }
+        .stakeholder-card.legal { border-left-color: #34495e; background: linear-gradient(135deg, #eceff1 0%, #ffffff 100%); }
+        .stakeholder-card.blocker { border-left-color: #e67e22; background: linear-gradient(135deg, #fff8e1 0%, #ffffff 100%); }
+        
+        .stakeholder-card h5 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .stakeholder-detail {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(0,0,0,0.1);
+        }
+        
+        .stakeholder-card.expanded .stakeholder-detail {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 500px; }
+        }
+        
+        .expand-hint {
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        .stakeholder-card.expanded .expand-hint {
+            display: none;
+        }
+        
+        .mapping-grid {
+            background: #f8f9fa;
+            border: 2px solid #f093fb;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+        
+        .mapping-quadrant {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .quadrant {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 150px;
+            position: relative;
+        }
+        
+        .quadrant h5 {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .quadrant.high-power-high-influence {
+            background: linear-gradient(135deg, #d4edda 0%, #ffffff 100%);
+            border-color: #28a745;
+        }
+        
+        .quadrant.high-power-low-influence {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffffff 100%);
+            border-color: #ffc107;
+        }
+        
+        .quadrant.low-power-high-influence {
+            background: linear-gradient(135deg, #d1ecf1 0%, #ffffff 100%);
+            border-color: #17a2b8;
+        }
+        
+        .quadrant.low-power-low-influence {
+            background: linear-gradient(135deg, #f8d7da 0%, #ffffff 100%);
+            border-color: #dc3545;
+        }
+        
+        .draggable-persona {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: move;
+            transition: all 0.3s;
+        }
+        
+        .draggable-persona:hover {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .closing-technique {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-left: 5px solid #f093fb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .closing-technique:hover {
+            border-color: #f093fb;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .closing-technique h5 {
+            color: #f093fb;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .technique-detail {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .closing-technique.expanded .technique-detail {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+        
+        .objection-scenario {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .objection-scenario h5 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+        
+        .objection-options {
+            margin-top: 15px;
+        }
+        
+        .objection-option {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .objection-option:hover {
+            border-color: #f093fb;
+            background: #fff;
+        }
+        
+        .objection-option.selected {
+            border-color: #f093fb;
+            background: linear-gradient(135deg, #fce4ec 0%, #ffffff 100%);
+        }
+        
+        .objection-option.correct {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #ffffff 100%);
+        }
+        
+        .objection-option.wrong {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #f8d7da 0%, #ffffff 100%);
+        }
+        
+        .objection-feedback {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .objection-feedback.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+        
+        .objection-feedback.correct {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+        
+        .objection-feedback.wrong {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+        
+        .pro-tip {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .pro-tip h5 {
+            color: #155724;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .pro-tip p {
+            color: #155724;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .warning-box h5 {
+            color: #856404;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .danger-box {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .danger-box h5 {
+            color: #721c24;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .info-box h5 {
+            color: #0c5460;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .laer-framework {
+            background: #f8f9fa;
+            border: 2px solid #f093fb;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+        
+        .laer-step {
+            background: white;
+            border-left: 4px solid;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .laer-step.listen { border-color: #3498db; }
+        .laer-step.acknowledge { border-color: #27ae60; }
+        .laer-step.explore { border-color: #f39c12; }
+        .laer-step.respond { border-color: #e74c3c; }
+        
+        .laer-step h5 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-question {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .quiz-question h4 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .quiz-options {
+            list-style: none;
+        }
+        
+        .quiz-option {
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background: #f5f5f5;
+            border-color: #f093fb;
+        }
+        
+        .quiz-option.selected {
+            background: #fce4ec;
+            border-color: #f093fb;
+            font-weight: 600;
+        }
+        
+        .quiz-option input[type="radio"] {
+            margin-top: 3px;
+            cursor: pointer;
+        }
+        
+        .quiz-result {
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .quiz-result.pass {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 3px solid #28a745;
+        }
+        
+        .quiz-result.fail {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 3px solid #dc3545;
+        }
+        
+        .quiz-result h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        
+        .quiz-feedback {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .quiz-feedback.correct {
+            background: linear-gradient(135deg, #d4edda 0%, #ffffff 100%);
+            border-color: #28a745;
+        }
+        
+        .quiz-feedback.incorrect {
+            background: linear-gradient(135deg, #f8d7da 0%, #ffffff 100%);
+            border-color: #dc3545;
+        }
+        
+        .quiz-feedback h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .button-primary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .button-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .button-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .button-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .button-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .button-success:hover {
+            background: #218838;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 10px;
+        }
+        
+        .download-section {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .download-section h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .download-section p {
+            color: #856404;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+        }
+        
+        table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #f093fb;
+        }
+        
+        table tr:nth-child(even) {
+            background: #fafafa;
+        }
+        
+        ul, ol {
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .nav-button {
+                font-size: 0.8em;
+                padding: 10px 15px;
+            }
+            
+            .mapping-quadrant {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 Module 6B: Multi-Party Execution & Deal Closing</h1>
+            <div class="subtitle">"Navigate Complex Deals & Close with Confidence"</div>
+            <div class="meta">Duration: 35-40 minutes | TransLab Sales Academy</div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 25%"></div>
+        </div>
+        <div class="progress-text" id="progressText">Part 1 of 4</div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-button active" onclick="showPart(1)">Part 1: Stakeholders</button>
+            <button class="nav-button" onclick="showPart(2)">Part 2: Procurement</button>
+            <button class="nav-button" onclick="showPart(3)">Part 3: Closing</button>
+            <button class="nav-button" onclick="showPart(4)">Part 4: Quiz</button>
+        </div>
+
+        <!-- Part 1: Multi-Stakeholder Mapping -->
+        <div id="part1" class="content-section active">
+            <div class="section-header">
+                <h3>👥 Part 1: Multi-Stakeholder Mapping & Orchestration</h3>
+                <p>Master the art of navigating complex enterprise buying committees</p>
+            </div>
+
+            <div class="content-box">
+                <h4>The 7 Enterprise Stakeholder Types</h4>
+                
+                <div class="info-box">
+                    <h5>🎯 Critical Truth</h5>
+                    <p>Enterprise deals involve 5-8 stakeholders on average. Each has different concerns, priorities, and veto power. Your job is to understand ALL of them and orchestrate consensus.</p>
+                </div>
+
+                <p style="margin: 20px 0;">Click each stakeholder type to see their role, concerns, and your strategy:</p>
+
+                <div class="stakeholder-card economic" onclick="toggleStakeholder(this)">
+                    <h5>🔴 1. Economic Buyer</h5>
+                    <p><strong>Role:</strong> Controls budget & final decision</p>
+                    <div class="expand-hint">👆 Click to see strategy</div>
+                    <div class="stakeholder-detail">
+                        <p><strong>Concerns:</strong> ROI, total cost of ownership, strategic fit, payback period</p>
+                        <p style="margin-top: 10px;"><strong>Typical Titles:</strong> CFO, VP Finance, Budget Owner</p>
+                        <p style="margin-top: 10px;"><strong>Your Strategy:</strong></p>
+                        <ul>
+                            <li>Lead with business outcomes and financial metrics</li>
+                            <li>Speak CFO language: payback period, NPV, cost avoidance</li>
+                            <li>Show total cost comparison vs. competitors (TCO analysis)</li>
+                            <li>Quantify risk of NOT solving the problem</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: #e74c3c; font-weight: 600;">⚠️ Critical: If you don't know who the Economic Buyer is, you don't have a qualified deal!</p>
+                    </div>
+                </div>
+
+                <div class="stakeholder-card technical" onclick="toggleStakeholder(this)">
+                    <h5>🔵 2. Technical Buyer</h5>
+                    <p><strong>Role:</strong> Validates technical fit & implementation feasibility</p>
+                    <div class="expand-hint">👆 Click to see strategy</div>
+                    <div class="stakeholder-detail">
+                        <p><strong>Concerns:</strong> Architecture, security, scalability, integration effort, technical debt</p>
+                        <p style="margin-top: 10px;"><strong>Typical Titles:</strong> CTO, VP Engineering, Solutions Architect, DevOps Lead</p>
+                        <p style="margin-top: 10px;"><strong>Your Strategy:</strong></p>
+                        <ul>
+                            <li>Provide technical deep-dives with architecture diagrams</li>
+                            <li>Offer proof-of-concept to validate in their environment</li>
+                            <li>Share reference architecture and integration guides</li>
+                            <li>Address security and compliance concerns early (SOC2, ISO)</li>
+                            <li>Engage your solutions architect for technical validation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="stakeholder-card champion" onclick="toggleStakeholder(this)">
+                    <h5>🟡 3. Champion (Your Internal Advocate)</h5>
+                    <p><strong>Role:</strong> Sells for you when you're not in the room</p>
+                    <div class="expand-hint">👆 Click to see strategy</div>
+                    <div class="stakeholder-detail">
+                        <p><strong>Concerns:</strong> Personal success, career impact, solving their pain, looking like a hero</p>
+                        <p style="margin-top: 10px;"><strong>Typical Titles:</strong> Can be anyone who has a problem you solve and political capital</p>
+                        <p style="margin-top: 10px;"><strong>Your Strategy:</strong></p>
+                        <ul>
+                            <li>Equip them with presentation materials and ROI data</li>
+                            <li>Provide answers to likely objections from other stakeholders</li>
+                            <li>Make them look like a hero to their leadership</li>
+                            <li>Coach them on how to position your solution internally</li>
+                            <li>Stay close—if they leave or lose influence, deal is at risk</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: #f39c12; font-weight: 600;">💡 Pro Tip: Ask your Champion: "Who else needs to be involved? What concerns will they have?"</p>
+                    </div>
+                </div>
+
+                <div class="stakeholder-card user" onclick="toggleStakeholder(this)">
+                    <h5>🟢 4. End User</h5>
+                    <p><strong>Role:</strong> Will use the product daily</p>
+                    <div class="expand-hint">👆 Click to see strategy</div>
+                    <div class="stakeholder-detail">
+                        <p><strong>Concerns:</strong> Ease of use, training burden, disruption to workflow, learning curve</p>
+                        <p style="margin-top: 10px;"><strong>Typical Titles:</strong> Data Analysts, Operations Teams, Business Users</p>
+                        <p style="margin-top: 10px;"><strong>Your Strategy:</strong></p>
+                        <ul>
+                            <li>Hands-on demos showing actual workflows</li>
+                            <li>Provide detailed training plans and change management support</li>
+                            <li>Show how it makes their job EASIER, not harder</li>
+                            <li>Address "what about my existing workflows?" concerns</li>
+                            <li>Get user buy-in early—they can derail deals if unhappy</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="stakeholder-card procurement" onclick="toggleStakeholder(this)">
+                    <h5>🟣 5. Procurement</h5>
+                    <p><strong>Role:</strong> Negotiates terms & manages vendor relationships</p>
+                    <div class="expand-hint">👆 Click to see strategy</div>
+                    <div class="stakeholder-detail">
+                        <p><strong>Concerns:</strong> Price, contract terms, SLAs, risk mitigation, cost savings metrics</p>
+                        <p style="margin-top: 10px;"><strong>Typical Titles:</strong> Procurement Manager, Strategic Sourcing, Vendor Management</p>
+                        <p style="margin-top: 10px;"><strong>Your Strategy:</strong></p>
+                        <ul>
+                            <li>Be transparent on pricing—don't play games</li>
+                            <li>Provide standard contracts early to streamline process</li>
+                            <li>Build relationship before negotiation starts</li>
+                            <li>Show TCO comparison to help them demonstrate savings</li>
+                            <li>Understand they're measured on cost savings, risk, and efficiency</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: #9b59b6; font-weight: 600;">💡 Pro Tip: Turn procurement into an ally by helping them look good to their CFO</p>
+                    </div>
+                </div>
+
+                <div class="stakeholder-card legal" onclick="toggleStakeholder(this)">
+                    <h5>⚫ 6. Legal/Compliance</h5>
+                    <p><strong>Role:</strong> Reviews contracts & ensures regulatory compliance</p>
+                    <div class="expand-hint">👆 Click to see strategy</div>
+                    <div class="stakeholder-detail">
+                        <p><strong>Concerns:</strong> Data privacy, liability, IP rights, compliance (GDPR, SOC2, ISO)</p>
+                        <p style="margin-top: 10px;"><strong>Typical Titles:</strong> General Counsel, Legal Team, Compliance Officer</p>
+                        <p style="margin-top: 10px;"><strong>Your Strategy:</strong></p>
+                        <ul>
+                            <li>Provide security documentation upfront (SOC2, ISO, pen tests)</li>
+                            <li>Engage early to avoid late-stage contract blockers</li>
+                            <li>Have your legal team ready for redlines and negotiations</li>
+                            <li>Never say "we'll figure it out later" on compliance</li>
+                            <li>Be patient—legal reviews take time, build it into timeline</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="stakeholder-card blocker" onclick="toggleStakeholder(this)">
+                    <h5>🟠 7. Influencer/Blocker</h5>
+                    <p><strong>Role:</strong> No formal authority but can derail or accelerate deal</p>
+                    <div class="expand-hint">👆 Click to see strategy</div>
+                    <div class="stakeholder-detail">
+                        <p><strong>Concerns:</strong> Status quo, competing priorities, political dynamics, turf protection</p>
+                        <p style="margin-top: 10px;"><strong>Typical Behavior:</strong> "We tried this before and it didn't work" / "We're too busy right now"</p>
+                        <p style="margin-top: 10px;"><strong>Your Strategy:</strong></p>
+                        <ul>
+                            <li>Identify early through your Champion ("Who might resist this?")</li>
+                            <li>Understand their concerns—usually fear of change or loss of control</li>
+                            <li>Address concerns directly through 1:1 conversations</li>
+                            <li>Neutralize by building consensus with other stakeholders</li>
+                            <li>If intractable, work around them with Economic Buyer support</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: #e67e22; font-weight: 600;">⚠️ Warning: Ignoring blockers is dangerous. They can kill deals at the last minute.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>Multi-Threading: Your Deal Safety Net</h4>
+                
+                <div class="danger-box">
+                    <h5>🚨 Golden Rule</h5>
+                    <p><strong>If you only have ONE contact in an enterprise deal, you don't have a deal—you have a single point of failure.</strong></p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Single-Threading (Risky ❌)</th>
+                            <th>Multi-Threading (Resilient ✅)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Champion gets promoted → deal stalls</td>
+                            <td>Multiple relationships across hierarchy levels</td>
+                        </tr>
+                        <tr>
+                            <td>Champion leaves company → deal dies</td>
+                            <td>Deal survives personnel changes</td>
+                        </tr>
+                        <tr>
+                            <td>Champion loses influence → no air cover</td>
+                            <td>360° view of organizational dynamics</td>
+                        </tr>
+                        <tr>
+                            <td>Hidden objections from other stakeholders</td>
+                            <td>Early warning system for objections</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pro-tip">
+                    <h5>💡 Multi-Threading Tactics</h5>
+                    <ol>
+                        <li><strong>Stakeholder Introductions:</strong> "Sarah, as we move to the next phase, who else should be involved? Can you introduce me to your CIO and CFO?"</li>
+                        <li><strong>Cross-Functional Workshops:</strong> Run discovery sessions with multiple departments present (creates multiple relationships)</li>
+                        <li><strong>Executive Briefings:</strong> Offer to present to leadership team (gets you to Economic Buyer)</li>
+                        <li><strong>Technical Validation:</strong> Engage IT/Security early for proof-of-concept (brings in Technical Buyers)</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>Interactive: Map Your Buying Committee</h4>
+                
+                <div class="mapping-grid">
+                    <h5 style="color: #f093fb; margin-bottom: 15px;">📍 Power/Influence Matrix</h5>
+                    <p style="margin-bottom: 20px;">In your next deal, map each stakeholder by their POWER (budget authority) and INFLUENCE (ability to sway opinion):</p>
+                    
+                    <div class="mapping-quadrant">
+                        <div class="quadrant high-power-high-influence">
+                            <h5>🎯 Key Players</h5>
+                            <p style="font-size: 0.9em; color: #155724;">High Power + High Influence</p>
+                            <p style="margin-top: 10px; font-style: italic;">Example: CFO, CEO</p>
+                            <p style="margin-top: 5px; font-size: 0.9em;">Strategy: Engage closely, they make or break the deal</p>
+                        </div>
+                        
+                        <div class="quadrant high-power-low-influence">
+                            <h5>⚡ Keep Satisfied</h5>
+                            <p style="font-size: 0.9em; color: #856404;">High Power + Low Influence</p>
+                            <p style="margin-top: 10px; font-style: italic;">Example: Legal, Procurement</p>
+                            <p style="margin-top: 5px; font-size: 0.9em;">Strategy: Keep informed, address concerns, don't ignore</p>
+                        </div>
+                        
+                        <div class="quadrant low-power-high-influence">
+                            <h5>🤝 Keep Informed</h5>
+                            <p style="font-size: 0.9em; color: #0c5460;">Low Power + High Influence</p>
+                            <p style="margin-top: 10px; font-style: italic;">Example: Champion, Technical Lead</p>
+                            <p style="margin-top: 5px; font-size: 0.9em;">Strategy: Arm them with info to influence others</p>
+                        </div>
+                        
+                        <div class="quadrant low-power-low-influence">
+                            <h5>👀 Monitor</h5>
+                            <p style="font-size: 0.9em; color: #721c24;">Low Power + Low Influence</p>
+                            <p style="margin-top: 10px; font-style: italic;">Example: End Users (sometimes)</p>
+                            <p style="margin-top: 5px; font-size: 0.9em;">Strategy: Keep updated but don't over-invest</p>
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                        <p style="color: #f093fb; font-weight: 600; margin-bottom: 10px;">💾 Exercise for Your Next Deal</p>
+                        <p style="font-size: 0.95em;">List all stakeholders, map them to this matrix, then plan your engagement strategy for each quadrant. Update weekly as deal progresses and stakeholders emerge.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: Procurement & Legal Navigation -->
+        <div id="part2" class="content-section">
+            <div class="section-header">
+                <h3>📋 Part 2: Procurement & Legal Navigation</h3>
+                <p>Turn gatekeepers into partners and accelerate contract approval</p>
+            </div>
+
+            <div class="content-box">
+                <h4>Understanding Procurement's World</h4>
+                
+                <div class="info-box">
+                    <h5>🎯 The Procurement Success Formula</h5>
+                    <p>Procurement is measured on THREE things:</p>
+                    <ol>
+                        <li><strong>Cost Savings:</strong> They need to show they negotiated well and saved money</li>
+                        <li><strong>Risk Mitigation:</strong> They need to protect the company from bad vendors</li>
+                        <li><strong>Process Efficiency:</strong> They need to close deals quickly without drama</li>
+                    </ol>
+                    <p style="margin-top: 15px; font-weight: 600;">Help them win on all three, and they become your ally.</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Procurement Goal</th>
+                            <th>How You Help Them Achieve It</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cost Savings</strong></td>
+                            <td>Show TCO comparison vs competitors. Highlight cost avoidance (e.g., "eliminates 3 point solutions saving ₹X annually")</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Risk Mitigation</strong></td>
+                            <td>Provide security docs (SOC2, ISO27001), reference customers in their industry, proof of financial stability</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Process Efficiency</strong></td>
+                            <td>Send standard contract early, respond to RFPs quickly, be easy to work with, no surprises</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-box">
+                <h4>5 Common Procurement Tactics & How to Navigate Them</h4>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>1. The Last-Minute Discount Request</h5>
+                    <p><strong>Scenario:</strong> "Everything looks good, we just need a 20% discount to finalize."</p>
+                    <div class="expand-hint">👆 Click for response strategy</div>
+                    <div class="technique-detail">
+                        <p><strong>❌ Mistake:</strong> Immediately agreeing (devalues your offering) or refusing (creates standoff)</p>
+                        <p style="margin-top: 15px;"><strong>✅ Right Move:</strong></p>
+                        <p style="margin-top: 10px;">"Help me understand - what changed from our original proposal? If we adjust pricing, we may need to adjust scope or timeline. What's driving this request?"</p>
+                        <p style="margin-top: 10px;">Then tie any discount to business conditions: "We can offer 10% if you commit to a case study, sign by Friday, and move to a 2-year term instead of 1-year."</p>
+                    </div>
+                </div>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>2. The Competitive Leverage Play</h5>
+                    <p><strong>Scenario:</strong> "We have another vendor offering this for 30% less."</p>
+                    <div class="expand-hint">👆 Click for response strategy</div>
+                    <div class="technique-detail">
+                        <p><strong>❌ Mistake:</strong> Matching price without understanding competitor's offer or panicking</p>
+                        <p style="margin-top: 15px;"><strong>✅ Right Move:</strong></p>
+                        <p style="margin-top: 10px;">Stay confident: "I'm glad you're evaluating options. Can you share what's included in their proposal?"</p>
+                        <p style="margin-top: 10px;">Highlight differences: "The 30% price difference makes sense because: (1) Our implementation is 90 days vs their 18 months—that's 12 months of lost ROI, (2) We include 24/7 support they charge extra for, (3) Our customers see payback in 8 months vs 18+. What matters more to you—upfront cost or speed to value?"</p>
+                        <p style="margin-top: 10px;">Shift to TCO, not just price.</p>
+                    </div>
+                </div>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>3. The RFP Requirement</h5>
+                    <p><strong>Scenario:</strong> "We need to run an RFP process with 3 vendors."</p>
+                    <div class="expand-hint">👆 Click for response strategy</div>
+                    <div class="technique-detail">
+                        <p><strong>❌ Mistake:</strong> Fighting the RFP or treating it as a formality you'll win automatically</p>
+                        <p style="margin-top: 15px;"><strong>✅ Right Move:</strong></p>
+                        <p style="margin-top: 10px;">"That's completely fair—I understand the process. Can I help by providing a draft RFP that covers the key technical and business requirements? This ensures we're all evaluated on what matters most to you."</p>
+                        <p style="margin-top: 10px;"><strong>Why this works:</strong> You shape the evaluation criteria to highlight your strengths. You also demonstrate partnership by making their job easier.</p>
+                        <p style="margin-top: 10px;"><strong>Critical:</strong> Stay close to the Champion during RFP. Get debriefs after competitor presentations to address gaps.</p>
+                    </div>
+                </div>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>4. The Payment Terms Squeeze</h5>
+                    <p><strong>Scenario:</strong> "Our policy is Net 90 payment terms, non-negotiable."</p>
+                    <div class="expand-hint">👆 Click for response strategy</div>
+                    <div class="technique-detail">
+                        <p><strong>❌ Mistake:</strong> Accepting without getting something in return</p>
+                        <p style="margin-top: 15px;"><strong>✅ Right Move:</strong></p>
+                        <p style="margin-top: 10px;">"I understand that's your standard. We typically work with Net 30, but I can discuss Net 60 with our finance team if we can finalize the contract this week and lock in a 3-year term. Does that work?"</p>
+                        <p style="margin-top: 10px;"><strong>Trade principle:</strong> Extended payment terms cost you cash flow. Get something valuable in return (longer contract, faster close, reference).</p>
+                    </div>
+                </div>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>5. The Evergreen Clause Request</h5>
+                    <p><strong>Scenario:</strong> "We need the contract to auto-renew annually with 60-day notice to cancel."</p>
+                    <div class="expand-hint">👆 Click for response strategy</div>
+                    <div class="technique-detail">
+                        <p><strong>❌ Mistake:</strong> Refusing because it reduces negotiation leverage at renewal</p>
+                        <p style="margin-top: 15px;"><strong>✅ Right Move:</strong></p>
+                        <p style="margin-top: 10px;">"We can include auto-renewal with 90-day notice. This ensures you don't have service interruption and gives us both time for renewal planning. We'll also cap annual price increases at 5% to give you predictability."</p>
+                        <p style="margin-top: 10px;"><strong>Why this works:</strong> You make it mutual (they get continuity, you get renewal revenue), and you add price protection to make it feel fair.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>Legal Review Timeline Management</h4>
+                
+                <div class="warning-box">
+                    <h5>⏰ Critical Timeline Rule</h5>
+                    <p><strong>Legal review takes 2-4 weeks minimum in enterprise deals.</strong> Factor this into your close plan or you'll miss your forecast.</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Stage</th>
+                            <th>Timeline</th>
+                            <th>Your Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Initial Review</strong></td>
+                            <td>Week 1</td>
+                            <td>Send standard contract and security docs (SOC2, ISO, DPA)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Redlines</strong></td>
+                            <td>Week 2</td>
+                            <td>Get their redlines, review with your legal team, prepare responses</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Negotiation</strong></td>
+                            <td>Week 3</td>
+                            <td>Address major concerns, find middle ground on liability and IP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Final Approval</strong></td>
+                            <td>Week 4</td>
+                            <td>Get executive signatures, process through procurement</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pro-tip">
+                    <h5>💡 Pro Tip: Accelerate Legal Review</h5>
+                    <ol>
+                        <li><strong>Start early:</strong> Send contract when deal is 70% likely, not 100%</li>
+                        <li><strong>Provide context:</strong> Include a one-pager explaining the business relationship</li>
+                        <li><strong>Highlight standard terms:</strong> "Sections 1-8 are our standard terms used with [similar customer]"</li>
+                        <li><strong>Pre-negotiate blockers:</strong> Know your company's red lines on liability, IP, indemnity</li>
+                        <li><strong>Build relationships:</strong> Call their legal counsel, don't just email redlines back and forth</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: Closing Techniques & Objection Handling -->
+        <div id="part3" class="content-section">
+            <div class="section-header">
+                <h3>🏆 Part 3: Closing Techniques & Objection Handling</h3>
+                <p>Master the art of closing without pressure and handling objections with confidence</p>
+            </div>
+
+            <div class="content-box">
+                <h4>The Modern Closing Mindset</h4>
+                
+                <div class="info-box">
+                    <h5>🎯 The Closing Equation</h5>
+                    <p style="text-align: center; font-size: 1.4em; font-weight: bold; margin: 15px 0;">Deal Closes When: <span style="color: #28a745;">Value</span> > <span style="color: #dc3545;">Pain of Change</span></p>
+                    <p>Your job is to: <strong>(1) Maximize perceived value</strong> through ROI and proof, and <strong>(2) Minimize pain of change</strong> through smooth implementation, training, and risk mitigation.</p>
+                </div>
+
+                <div class="danger-box">
+                    <h5>❌ Old-School Pressure Tactics DON'T WORK</h5>
+                    <p>Avoid: "This deal expires Friday" (if fake), "My manager will be upset if we don't close" (manipulative), "Just sign now and we'll work out details later" (unethical)</p>
+                    <p style="margin-top: 10px;"><strong>Why they fail:</strong> Modern B2B buyers see through them. You damage trust and hurt long-term relationship.</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>7 Proven Closing Techniques</h4>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>1. The Assumptive Close</h5>
+                    <p><strong>What it is:</strong> Act as if the decision has been made, focus on next steps</p>
+                    <div class="expand-hint">👆 Click to see example and when to use</div>
+                    <div class="technique-detail">
+                        <p><strong>Example:</strong> "Great! Let me walk you through our onboarding process. We typically kick off implementation 2 weeks after contract signature. Does that timeline work for your team?"</p>
+                        <p style="margin-top: 15px;"><strong>When to use:</strong> When buyer signals are strong (asked about implementation, pricing approved, stakeholders aligned)</p>
+                        <p style="margin-top: 10px;"><strong>⚠️ Caution:</strong> Don't push if major objections remain unresolved—you'll seem pushy.</p>
+                    </div>
+                </div>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>2. The Trial Close</h5>
+                    <p><strong>What it is:</strong> Test readiness without asking for the sale directly</p>
+                    <div class="expand-hint">👆 Click to see example and when to use</div>
+                    <div class="technique-detail">
+                        <p><strong>Examples:</strong></p>
+                        <ul>
+                            <li>"Based on what we've covered, does this approach solve your data governance challenges?"</li>
+                            <li>"Is there anything preventing you from moving forward?"</li>
+                            <li>"On a scale of 1-10, how confident are you this is the right solution?"</li>
+                        </ul>
+                        <p style="margin-top: 15px;"><strong>When to use:</strong> Throughout the sales cycle to gauge interest and uncover objections early</p>
+                        <p style="margin-top: 10px;"><strong>💡 Pro Tip:</strong> If they say "no" or "not yet," dig deeper with "Help me understand what's missing"—don't push to close.</p>
+                    </div>
+                </div>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>3. The Mutual Action Plan (MAP) Close</h5>
+                    <p><strong>What it is:</strong> Co-create a timeline with milestones and owners</p>
+                    <div class="expand-hint">👆 Click to see example and when to use</div>
+                    <div class="technique-detail">
+                        <p><strong>Example:</strong> "Let's build a roadmap together. What needs to happen before we can kick off? Who needs to approve? What's your ideal go-live date?"</p>
+                        <p style="margin-top: 15px;"><strong>Sample MAP:</strong></p>
+                        <table style="margin-top: 10px;">
+                            <tr><th>Milestone</th><th>Owner</th><th>Date</th></tr>
+                            <tr><td>Security review complete</td><td>Their IT</td><td>Jan 15</td></tr>
+                            <tr><td>Legal contract finalized</td><td>Both legal teams</td><td>Jan 22</td></tr>
+                            <tr><td>Budget approval</td><td>Their CFO</td><td>Jan 25</td></tr>
+                            <tr><td>Contract signature</td><td>Both parties</td><td>Jan 31</td></tr>
+                        </table>
+                        <p style="margin-top: 15px;"><strong>When to use:</strong> Mid-late stage deals to drive accountability and uncover hidden steps</p>
+                        <p style="margin-top: 10px;"><strong>Why it works:</strong> Creates shared ownership of timeline. Surfaces blockers early. Shows you're organized.</p>
+                    </div>
+                </div>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>4. The Summary Close</h5>
+                    <p><strong>What it is:</strong> Recap agreed value, then ask for commitment</p>
+                    <div class="expand-hint">👆 Click to see example and when to use</div>
+                    <div class="technique-detail">
+                        <p><strong>Example:</strong> "Let me make sure we're aligned. You need: (1) 3X transaction processing capacity, (2) 90-day implementation, (3) ₹3CR annual cost savings. We've shown we can deliver all three. The investment is ₹75L with 8-month payback. Does this make sense to move forward?"</p>
+                        <p style="margin-top: 15px;"><strong>When to use:</strong> After presenting proposal, when multiple stakeholders need alignment on benefits</p>
+                        <p style="margin-top: 10px;"><strong>Why it works:</strong> Reinforces value, confirms mutual understanding, makes "yes" easy.</p>
+                    </div>
+                </div>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>5. The Alternative Choice Close</h5>
+                    <p><strong>What it is:</strong> Present two options, both of which move the deal forward</p>
+                    <div class="expand-hint">👆 Click to see example and when to use</div>
+                    <div class="technique-detail">
+                        <p><strong>Example:</strong> "We have two implementation approaches: (1) Full rollout in Q1 with complete feature set, or (2) Phased approach—Data Platform in January, AI layer in March. Which fits your team's bandwidth better?"</p>
+                        <p style="margin-top: 15px;"><strong>When to use:</strong> When buyer is committed but unsure of scope, timing, or package</p>
+                        <p style="margin-top: 10px;"><strong>Why it works:</strong> Moves conversation from "if" to "how." Both choices result in a closed deal.</p>
+                    </div>
+                </div>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>6. The Puppy Dog Close</h5>
+                    <p><strong>What it is:</strong> Let them "try before they buy" with low-risk pilot</p>
+                    <div class="expand-hint">👆 Click to see example and when to use</div>
+                    <div class="technique-detail">
+                        <p><strong>Example:</strong> "I understand you want proof this works in your environment. Let's run a 30-day pilot with one use case—your fraud detection workflow. If it delivers the results we've discussed, we move to full implementation. Fair?"</p>
+                        <p style="margin-top: 15px;"><strong>When to use:</strong> When buyer is hesitant due to risk, or they're Analyst type needing proof</p>
+                        <p style="margin-top: 10px;"><strong>Why it works:</strong> Reduces perceived risk. Once they experience value, they don't want to give it up (like taking a puppy home).</p>
+                        <p style="margin-top: 10px;"><strong>⚠️ Caution:</strong> Set clear success criteria upfront. Define what "good" looks like or pilot never converts.</p>
+                    </div>
+                </div>
+
+                <div class="closing-technique" onclick="toggleTechnique(this)">
+                    <h5>7. The Question Close</h5>
+                    <p><strong>What it is:</strong> Simply ask "Are you ready to move forward?"</p>
+                    <div class="expand-hint">👆 Click to see example and when to use</div>
+                    <div class="technique-detail">
+                        <p><strong>Example:</strong> After presenting solution and addressing objections: "Based on everything we've covered, are you ready to move forward? What questions do you still have?"</p>
+                        <p style="margin-top: 15px;"><strong>When to use:</strong> When all objections are addressed and buying signals are present</p>
+                        <p style="margin-top: 10px;"><strong>Why it works:</strong> Direct, honest, and respectful. If they say "yes," great. If they say "no," you uncover remaining concerns.</p>
+                        <p style="margin-top: 10px;"><strong>💡 Pro Tip:</strong> After asking, SHUT UP. First person to speak loses. Silence is powerful—let them respond.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>The LAER Objection Handling Framework</h4>
+                
+                <div class="info-box">
+                    <h5>🎯 The Golden Rule</h5>
+                    <p><strong>An objection is a request for more information.</strong> Your job isn't to "overcome" it—it's to understand, validate, and address it.</p>
+                    <p style="margin-top: 10px;">If a prospect has objections, they're still engaged. Silence is worse than objections.</p>
+                </div>
+
+                <div class="laer-framework">
+                    <h5 style="color: #f093fb; margin-bottom: 20px;">The 4-Step LAER Method</h5>
+
+                    <div class="laer-step listen">
+                        <h5>L - LISTEN</h5>
+                        <p><strong>What to do:</strong> Let them finish completely. Don't interrupt. Take notes.</p>
+                        <p style="margin-top: 10px;"><strong>Example:</strong> Prospect: "Your pricing is too high." ❌ Don't jump in immediately. ✅ Let them elaborate: "What I mean is..."</p>
+                        <p style="margin-top: 10px;"><strong>💡 Tip:</strong> Use active listening: nod, maintain eye contact, take notes. This shows you value their concern.</p>
+                    </div>
+
+                    <div class="laer-step acknowledge">
+                        <h5>A - ACKNOWLEDGE</h5>
+                        <p><strong>What to do:</strong> Validate their concern. Show empathy. Don't dismiss or get defensive.</p>
+                        <p style="margin-top: 10px;"><strong>✅ Good:</strong> "I appreciate you being direct about pricing. It's an important consideration."</p>
+                        <p style="margin-top: 5px;"><strong>❌ Bad:</strong> "Well, actually our pricing is very competitive compared to..."</p>
+                        <p style="margin-top: 10px;"><strong>💡 Phrases that work:</strong> "I understand why you'd feel that way" | "That's a fair concern" | "I've heard that from others initially"</p>
+                    </div>
+
+                    <div class="laer-step explore">
+                        <h5>E - EXPLORE</h5>
+                        <p><strong>What to do:</strong> Ask questions to understand the root cause. Objections are often symptoms, not the real issue.</p>
+                        <p style="margin-top: 10px;"><strong>✅ Good:</strong> "Help me understand—when you say pricing is high, are you comparing to a specific competitor? Or is this about budget constraints?"</p>
+                        <p style="margin-top: 5px;"><strong>❌ Bad:</strong> Assume you know what they mean and launch into a response</p>
+                        <p style="margin-top: 10px;"><strong>💡 Dig deeper:</strong> "Tell me more about that" | "What specifically concerns you?" | "Can you give me an example?"</p>
+                    </div>
+
+                    <div class="laer-step respond">
+                        <h5>R - RESPOND</h5>
+                        <p><strong>What to do:</strong> Address the ROOT CAUSE with data, proof, or creative solutions.</p>
+                        <p style="margin-top: 10px;"><strong>Example:</strong> "Great question. When customers compare us to Informatica, they initially see 30% higher upfront cost. However, our customers see 60% faster time-to-value, which means ROI in 8 months vs 18 months. Let me show you the math..."</p>
+                        <p style="margin-top: 10px;"><strong>💡 Use proof:</strong> Customer examples, ROI data, case studies. Offer alternatives: phased approach, different packages, payment terms.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>Interactive: Practice Objection Handling</h4>
+                
+                <p style="margin-bottom: 20px;">Click the BEST response for each common objection:</p>
+
+                <div class="objection-scenario">
+                    <h5>Objection: "Your pricing is too high"</h5>
+                    <div class="objection-options">
+                        <div class="objection-option" onclick="handleObjection(this, false, 1)">
+                            <strong>A)</strong> "I can offer you a 20% discount if you sign today"
+                        </div>
+                        <div class="objection-option" onclick="handleObjection(this, true, 1)">
+                            <strong>B)</strong> "Help me understand—are you comparing to a competitor, or is this a budget constraint? Let me show you the TCO analysis..."
+                        </div>
+                        <div class="objection-option" onclick="handleObjection(this, false, 1)">
+                            <strong>C)</strong> "Actually, our pricing is very competitive in the market"
+                        </div>
+                    </div>
+                    <div class="objection-feedback" id="feedback1">
+                        <strong>Explanation:</strong> Option B follows LAER: Acknowledges implicitly, Explores root cause, prepares to Respond with value. Option A gives away margin. Option C is defensive.
+                    </div>
+                </div>
+
+                <div class="objection-scenario">
+                    <h5>Objection: "We need to think about it"</h5>
+                    <div class="objection-options">
+                        <div class="objection-option" onclick="handleObjection(this, false, 2)">
+                            <strong>A)</strong> "Sure, when can we reconnect?" (and leave it at that)
+                        </div>
+                        <div class="objection-option" onclick="handleObjection(this, true, 2)">
+                            <strong>B)</strong> "Absolutely. Help me understand what specifically you need to think about—is it budget, technical fit, timing, or something else?"
+                        </div>
+                        <div class="objection-option" onclick="handleObjection(this, false, 2)">
+                            <strong>C)</strong> "What's there to think about? We've covered everything."
+                        </div>
+                    </div>
+                    <div class="objection-feedback" id="feedback2">
+                        <strong>Explanation:</strong> "Need to think about it" usually means "I'm not convinced" or "I have concerns I'm not sharing." Option B explores to uncover the REAL objection. Option A lets deal die. Option C is pushy.
+                    </div>
+                </div>
+
+                <div class="objection-scenario">
+                    <h5>Objection: "We're already working with [Competitor]"</h5>
+                    <div class="objection-options">
+                        <div class="objection-option" onclick="handleObjection(this, false, 3)">
+                            <strong>A)</strong> "Their solution is inferior to ours in every way"
+                        </div>
+                        <div class="objection-option" onclick="handleObjection(this, true, 3)">
+                            <strong>B)</strong> "I respect that. How long have you been with them? What's working well, and where do you wish things were better?"
+                        </div>
+                        <div class="objection-option" onclick="handleObjection(this, false, 3)">
+                            <strong>C)</strong> "OK, let me know if that changes" (and give up)
+                        </div>
+                    </div>
+                    <div class="objection-feedback" id="feedback3">
+                        <strong>Explanation:</strong> Option B uses LAER: Acknowledges their choice, Explores satisfaction gaps. Never attack competitors (Option A)—position yourself as better for SPECIFIC use cases. Option C gives up too easily.
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h4>When to Walk Away</h4>
+                
+                <div class="danger-box">
+                    <h5>🚨 Red Flag Objections</h5>
+                    <p>Not all objections are worth handling. Some signal a bad-fit customer:</p>
+                    <ul>
+                        <li><strong>"We just want the cheapest option"</strong> → They don't value quality/service. You'll have support issues and churn.</li>
+                        <li><strong>"Can you match [unrealistic competitor claim]?"</strong> → They're being misled or shopping unrealistically. Educate, but be willing to walk.</li>
+                        <li><strong>"We need you to customize everything"</strong> → Scope creep nightmare. They want consulting, not a product.</li>
+                        <li><strong>Constantly changing requirements</strong> → They don't know what they want. Deal will never close.</li>
+                        <li><strong>"We'll sign if you agree to unlimited liability"</strong> → Legal/risk red flag. Walk away immediately.</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-weight: 600;">Remember: A bad deal at low margin with high support costs will hurt you for years. Protect your time and your company.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: Master Quiz -->
+        <div id="part4" class="content-section">
+            <div class="section-header">
+                <h3>🏆 Part 4: Master Knowledge Check</h3>
+                <p>Test your understanding of multi-party execution and deal closing (15 questions)</p>
+            </div>
+
+            <div id="quizContent">
+                <div class="info-box">
+                    <h5>📋 Quiz Instructions</h5>
+                    <ul>
+                        <li>15 multiple choice questions covering all three parts</li>
+                        <li>Pass threshold: 67% (10 out of 15 correct)</li>
+                        <li>Unlimited attempts—learn from mistakes and try again</li>
+                        <li>Detailed explanations provided for every answer</li>
+                    </ul>
+                </div>
+
+                <!-- Questions will be inserted here by JavaScript -->
+                <div id="quizQuestions"></div>
+
+                <button class="button button-primary" style="width: 100%; margin-top: 20px;" id="submitBtn" onclick="submitQuiz()" disabled>
+                    Answer all questions (0/15 complete)
+                </button>
+            </div>
+
+            <div id="quizResults" style="display: none;">
+                <!-- Results will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Download Section -->
+            <div class="download-section">
+                <h4>📥 Download Your Deal Closing Checklist</h4>
+                <p>Use this PDF checklist to navigate complex deals and close with confidence</p>
+                <button class="button button-success" onclick="downloadChecklist()">
+                    Download Checklist (PDF)
+                </button>
+                <p style="font-size: 0.9em; margin-top: 15px; color: #666;">
+                    Note: This triggers a browser print dialog. Select "Save as PDF" for a downloadable checklist.
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button class="button button-secondary" onclick="prevPart()" id="prevBtn">← Previous</button>
+            <button class="button button-primary" onclick="nextPart()" id="nextBtn">Next →</button>
+        </div>
+
+        <!-- Footer -->
+        <div style="margin-top: 60px; padding-top: 30px; border-top: 2px solid #e0e0e0; text-align: center; color: #666;">
+            <p style="font-weight: 600; font-size: 1.1em;">© 2026 TransLab | Sales Academy</p>
+            <p style="margin-top: 8px;">Module 6B: Multi-Party Execution & Deal Closing | All Rights Reserved</p>
+            <p style="margin-top: 8px; font-size: 0.9em;">Duration: 35-40 minutes | Interactive Training Module</p>
+        </div>
+    </div>
+
+    <!-- Hidden Print Template for Checklist -->
+    <div id="printChecklist" style="display: none;">
+        <div style="padding: 40px; font-family: Arial, sans-serif;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #f093fb; margin-bottom: 10px;">Deal Closing & Stakeholder Management Checklist</h1>
+                <p style="color: #666;">TransLab Sales Academy | Module 6B</p>
+            </div>
+            
+            <div style="margin: 30px 0;">
+                <h3 style="color: #f093fb; border-bottom: 2px solid #f093fb; padding-bottom: 5px;">Stakeholder Mapping</h3>
+                <div style="margin: 15px 0;">
+                    <input type="checkbox"> <strong>Identify Economic Buyer</strong> (controls budget, makes final decision)<br>
+                    <input type="checkbox"> <strong>Identify Technical Buyer</strong> (validates technical fit)<br>
+                    <input type="checkbox"> <strong>Find your Champion</strong> (internal advocate)<br>
+                    <input type="checkbox"> <strong>Map End Users</strong> (will use product daily)<br>
+                    <input type="checkbox"> <strong>Engage Procurement early</strong> (build relationship)<br>
+                    <input type="checkbox"> <strong>Involve Legal/Compliance</strong> (provide security docs upfront)<br>
+                    <input type="checkbox"> <strong>Identify Influencers/Blockers</strong> (can derail deal)<br>
+                    <input type="checkbox"> <strong>Multi-thread</strong> (relationships across 3+ stakeholders)<br>
+                </div>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <h3 style="color: #f093fb; border-bottom: 2px solid #f093fb; padding-bottom: 5px;">Procurement Navigation</h3>
+                <div style="margin: 15px 0;">
+                    <input type="checkbox"> <strong>Send standard contract early</strong> (don't wait until deal is 100%)<br>
+                    <input type="checkbox"> <strong>Provide TCO analysis</strong> (help procurement show cost savings)<br>
+                    <input type="checkbox"> <strong>Share security docs</strong> (SOC2, ISO27001, pen test results)<br>
+                    <input type="checkbox"> <strong>Never discount without trade</strong> (get contract term, sign date, reference)<br>
+                    <input type="checkbox"> <strong>Factor in legal review time</strong> (2-4 weeks minimum)<br>
+                </div>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <h3 style="color: #f093fb; border-bottom: 2px solid #f093fb; padding-bottom: 5px;">Closing Techniques</h3>
+                <div style="margin: 15px 0;">
+                    <input type="checkbox"> <strong>Use Trial Close</strong> ("Is there anything preventing you from moving forward?")<br>
+                    <input type="checkbox"> <strong>Build Mutual Action Plan</strong> (timeline with milestones and owners)<br>
+                    <input type="checkbox"> <strong>Summary Close</strong> (recap value, ask for commitment)<br>
+                    <input type="checkbox"> <strong>Alternative Choice Close</strong> (two options that both close deal)<br>
+                    <input type="checkbox"> <strong>Question Close</strong> (simply ask "Are you ready to move forward?")<br>
+                </div>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <h3 style="color: #f093fb; border-bottom: 2px solid #f093fb; padding-bottom: 5px;">Objection Handling (LAER)</h3>
+                <div style="margin: 15px 0;">
+                    <input type="checkbox"> <strong>LISTEN</strong> (let them finish, don't interrupt)<br>
+                    <input type="checkbox"> <strong>ACKNOWLEDGE</strong> (validate their concern, show empathy)<br>
+                    <input type="checkbox"> <strong>EXPLORE</strong> (ask questions to find root cause)<br>
+                    <input type="checkbox"> <strong>RESPOND</strong> (address root cause with data and proof)<br>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 40px;">
+                <h4 style="color: #f093fb;">Deal Health Indicators:</h4>
+                <ul style="margin-top: 10px; line-height: 1.8;">
+                    <li><strong>Green:</strong> Multi-threaded, Economic Buyer engaged, MAP in place, no blockers</li>
+                    <li><strong>Yellow:</strong> Single-threaded, haven't met Economic Buyer, timeline slipping</li>
+                    <li><strong>Red:</strong> Champion ghosting, hidden objections, procurement stalling, competing priority</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin-top: 50px; color: #666; font-size: 0.9em;">
+                <p>© 2026 TransLab Sales Academy | Module 6B</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let currentPart = 1;
+        const totalParts = 4;
+        const quizAnswers = {};
+        const objectionAttempts = {1: false, 2: false, 3: false};
+
+        // Quiz data with balanced distribution
+        const quizQuestions = [
+            {
+                q: "What is the 'Golden Rule' of multi-stakeholder deal navigation?",
+                options: [
+                    "Always negotiate through procurement to streamline the process efficiently",
+                    "Focus exclusively on Economic Buyer since they control the budget",
+                    "Multi-thread across stakeholders because single contact is single point of failure",
+                    "Keep stakeholder relationships minimal to avoid conflicting priorities"
+                ]
+            },
+            {
+                q: "The Economic Buyer's PRIMARY concern is:",
+                options: [
+                    "Technical architecture scalability and integration complexity",
+                    "Ease of use and training requirements for end users",
+                    "Return on investment and total cost of ownership analysis",
+                    "Contract terms and service level agreements"
+                ]
+            },
+            {
+                q: "Your Champion leaves the company mid-deal. What should have prevented this from killing your deal?",
+                options: [
+                    "Having backup contacts and relationships across multiple stakeholder levels",
+                    "Negotiating faster to close before personnel changes occur",
+                    "Getting written commitment from Champion before they departed",
+                    "Focusing solely on Economic Buyer relationship for stability"
+                ]
+            },
+            {
+                q: "Procurement says 'We need a 20% discount to finalize.' What's the BEST response?",
+                options: [
+                    "Immediately offer fifteen percent to show flexibility and goodwill",
+                    "Refuse firmly because discounting sets bad precedent for future",
+                    "Ask what changed and tie any discount to business conditions",
+                    "Match their request to close the deal quickly this quarter"
+                ]
+            },
+            {
+                q: "How can you turn Procurement into an ALLY rather than an adversary?",
+                options: [
+                    "Bypass them entirely by working directly with Economic Buyer",
+                    "Help them achieve their goals cost savings risk mitigation and efficiency",
+                    "Offer steep discounts early to make them look successful",
+                    "Delay procurement involvement until contract is ready for signature"
+                ]
+            },
+            {
+                q: "What is the typical timeline for legal review in enterprise B2B deals?",
+                options: [
+                    "Two to four weeks minimum for contract review and negotiation",
+                    "Two to three days if you provide standard contracts upfront",
+                    "Six to eight weeks regardless of contract complexity",
+                    "Legal review timing is unpredictable and cannot be planned"
+                ]
+            },
+            {
+                q: "The 'Closing Equation' states that a deal closes when:",
+                options: [
+                    "Economic Buyer approves the budget and signs off immediately",
+                    "Value exceeds pain of change for buyer organization",
+                    "Price drops below buyer's stated budget threshold constraints",
+                    "All stakeholders unanimously agree on implementation timeline"
+                ]
+            },
+            {
+                q: "The Assumptive Close technique is BEST used when:",
+                options: [
+                    "Major objections remain unresolved but you need to push",
+                    "Buyer shows strong signals pricing approved stakeholders aligned implementation discussed",
+                    "You need to create urgency in a stalled deal",
+                    "Economic Buyer is unavailable and Champion can sign independently"
+                ]
+            },
+            {
+                q: "What is the purpose of a Trial Close?",
+                options: [
+                    "Test readiness without asking for sale directly uncover objections early",
+                    "Create artificial urgency by setting arbitrary decision deadlines",
+                    "Pressure buyer into committing before they are ready",
+                    "Replace the final close by indirectly securing verbal commitment"
+                ]
+            },
+            {
+                q: "The Mutual Action Plan (MAP) closing technique works by:",
+                options: [
+                    "Creating shared timeline with milestones owners and driving accountability",
+                    "Setting aggressive deadlines to force buyer to act quickly",
+                    "Documenting all buyer objections for later reference",
+                    "Outlining your implementation plan without buyer input needed"
+                ]
+            },
+            {
+                q: "In the LAER objection handling framework, what does 'E - Explore' mean?",
+                options: [
+                    "Ask questions to understand root cause because objections are often symptoms",
+                    "Explain your solution features in greater technical detail immediately",
+                    "Escalate the objection to your manager for guidance",
+                    "Exit the conversation if objection seems insurmountable"
+                ]
+            },
+            {
+                q: "Buyer says 'We need to think about it.' This REALLY means:",
+                options: [
+                    "They are genuinely ready to buy but need internal discussion",
+                    "They are not convinced yet or have concerns they are not sharing",
+                    "They want you to offer a discount immediately",
+                    "They have already decided to go with competitor"
+                ]
+            },
+            {
+                q: "When handling 'Your pricing is too high' objection, you should FIRST:",
+                options: [
+                    "Offer immediate discount to remove the pricing objection quickly",
+                    "Explore root cause are they comparing to competitor or budget constraint",
+                    "Defend your pricing aggressively with competitive comparisons",
+                    "Walk away because they do not value your solution"
+                ]
+            },
+            {
+                q: "A buyer says 'We're already working with [Competitor].' The BEST response is:",
+                options: [
+                    "Attack competitor's solution and explain why they are inferior",
+                    "Give up immediately since switching costs are too high",
+                    "Respect their choice explore what works well and what could be better",
+                    "Offer fifty percent discount to incentivize switching immediately"
+                ]
+            },
+            {
+                q: "Which objection signals you should WALK AWAY from the deal?",
+                options: [
+                    "We need more case studies and proof before committing",
+                    "Implementation seems complex and we are concerned about timeline",
+                    "We just want cheapest option and will sign if unlimited liability",
+                    "Your pricing is higher than expected but we see the value"
+                ]
+            }
+        ];
+
+        // Correct answers - balanced distribution (A:4, B:4, C:4, D:3)
+        const correctAnswers = {
+            0: 2,  // C
+            1: 2,  // C
+            2: 0,  // A
+            3: 2,  // C
+            4: 1,  // B
+            5: 0,  // A
+            6: 1,  // B
+            7: 1,  // B
+            8: 0,  // A
+            9: 0,  // A
+            10: 0, // A
+            11: 1, // B
+            12: 1, // B
+            13: 2, // C
+            14: 2  // C
+        };
+
+        const explanations = {
+            0: "If you only have ONE contact in an enterprise deal, you don't have a deal—you have a single point of failure. Multi-threading means building relationships across multiple stakeholders (Economic Buyer, Technical Buyer, Champion, End Users) so your deal survives personnel changes and you get 360° view of objections.",
+            1: "The Economic Buyer controls budget and makes final decision. Their PRIMARY concern is ROI, total cost of ownership, payback period, and strategic fit. Speak CFO language: NPV, cost avoidance, business outcomes. Technical details matter to Technical Buyer, not Economic Buyer.",
+            2: "Multi-threading prevents single point of failure. If your Champion leaves and you only had that one relationship, the deal dies. By building relationships with Technical Buyer, Economic Buyer, and other stakeholders, the deal survives personnel changes because you have multiple advocates and context.",
+            3: "Never discount without getting something in return. Ask 'What changed from our original proposal?' and explore root cause. Then tie any discount to business conditions: 'We can offer 10% if you sign by Friday and commit to 2-year term and case study.' This gets you value while giving concession.",
+            4: "Procurement is measured on three things: (1) Cost Savings, (2) Risk Mitigation, (3) Process Efficiency. Help them achieve all three: Show TCO comparison to demonstrate savings, provide security docs to mitigate risk, send standard contract early for efficiency. They become your ally when you help them look good to their CFO.",
+            5: "Legal review takes 2-4 weeks minimum in enterprise deals for: Week 1 Initial Review, Week 2 Redlines, Week 3 Negotiation, Week 4 Final Approval. Factor this into your close plan or you'll miss forecast. Start legal review when deal is 70% likely, not 100%.",
+            6: "The Closing Equation: Deal Closes When Value > Pain of Change. Your job is to (1) Maximize perceived value through ROI and proof, and (2) Minimize pain of change through smooth implementation, training, and risk mitigation. If value doesn't exceed pain of change, buyer stays with status quo.",
+            7: "The Assumptive Close works when buyer signals are STRONG: they've asked about implementation, pricing is approved, stakeholders are aligned, no major objections remain. You act as if decision is made and focus on next steps. DON'T use if major objections remain—you'll seem pushy.",
+            8: "Trial Close tests readiness without asking for sale directly. Examples: 'Does this solve your challenge?' or 'Is there anything preventing you from moving forward?' Use throughout sales cycle to gauge interest and uncover objections EARLY. If they say 'no,' dig deeper—don't push to close.",
+            9: "Mutual Action Plan (MAP) creates co-created timeline with milestones, owners, and dates. Example: Security review (Their IT, Jan 15), Legal finalized (Both teams, Jan 22), Budget approval (CFO, Jan 25), Signature (Both, Jan 31). This drives accountability, surfaces blockers early, shows you're organized.",
+            10: "In LAER, 'Explore' means asking questions to understand ROOT CAUSE. Objections are often symptoms, not the real issue. 'Pricing is too high' might mean budget constraint OR competitor comparison OR don't see value. Ask: 'Help me understand—are you comparing to competitor or is this budget?' Then respond to the REAL issue.",
+            11: "'We need to think about it' is NOT genuine readiness—it's code for 'I'm not convinced yet' or 'I have concerns I'm not sharing' or 'I'm avoiding saying no.' Explore: 'What specifically do you need to think about?' Address the REAL concern, don't just schedule followup and let deal die.",
+            12: "'Pricing is too high' objection requires Explore step FIRST. Ask: 'Are you comparing to specific competitor or is this budget constraint?' Understand root cause BEFORE responding. Then shift to TCO and value: 'Our customers initially think same, then realize faster implementation saves 4 months of resources...' Don't immediately discount or defend.",
+            13: "'We're already working with Competitor' requires respect and exploration. Don't attack competitor—you look desperate. Ask: 'How long have you been with them? What's working well, where do you wish things were better?' Position yourself as complementary or better for SPECIFIC use cases they lack. Many customers use multiple vendors.",
+            14: "'We just want cheapest option' signals they don't value quality/service—you'll have support issues and churn. 'Unlimited liability' is legal red flag—walk away. These are bad-fit customers. Good objections are: 'need more proof,' 'implementation concerns,' 'pricing higher than expected BUT we see value.' Those are workable.",
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+            document.getElementById('prevBtn').disabled = true;
+            renderQuiz();
+        });
+
+        // Navigation functions
+        function showPart(partNum) {
+            for (let i = 1; i <= totalParts; i++) {
+                document.getElementById('part' + i).classList.remove('active');
+            }
+            
+            document.getElementById('part' + partNum).classList.add('active');
+            currentPart = partNum;
+            
+            updateProgress();
+            
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach((btn, idx) => {
+                btn.classList.remove('active');
+                if (idx === partNum - 1) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            document.getElementById('prevBtn').disabled = (currentPart === 1);
+            document.getElementById('nextBtn').disabled = (currentPart === totalParts);
+            
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function nextPart() {
+            if (currentPart < totalParts) {
+                showPart(currentPart + 1);
+            }
+        }
+
+        function prevPart() {
+            if (currentPart > 1) {
+                showPart(currentPart - 1);
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentPart / totalParts) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = 'Part ' + currentPart + ' of ' + totalParts;
+        }
+
+        // Interactive elements
+        function toggleStakeholder(card) {
+            card.classList.toggle('expanded');
+        }
+
+        function toggleTechnique(card) {
+            card.classList.toggle('expanded');
+        }
+
+        function handleObjection(element, isCorrect, scenarioNum) {
+            if (objectionAttempts[scenarioNum]) return; // Already attempted
+            
+            const scenario = element.closest('.objection-scenario');
+            const options = scenario.querySelectorAll('.objection-option');
+            const feedback = scenario.querySelector('.objection-feedback');
+            
+            // Mark selected
+            element.classList.add('selected');
+            
+            // Show result
+            if (isCorrect) {
+                element.classList.add('correct');
+                feedback.classList.add('correct');
+            } else {
+                element.classList.add('wrong');
+                feedback.classList.add('wrong');
+                
+                // Show correct answer
+                options.forEach(opt => {
+                    const isThisCorrect = opt.getAttribute('onclick').includes('true');
+                    if (isThisCorrect) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            feedback.classList.add('show');
+            objectionAttempts[scenarioNum] = true;
+            
+            // Disable further clicks
+            options.forEach(opt => {
+                opt.style.cursor = 'default';
+                opt.onclick = null;
+            });
+        }
+
+        // Quiz functions
+        function renderQuiz() {
+            const container = document.getElementById('quizQuestions');
+            let html = '';
+            
+            quizQuestions.forEach((item, idx) => {
+                html += `
+                    <div class="quiz-question">
+                        <h4>${idx + 1}. ${item.q}</h4>
+                        <ul class="quiz-options" id="options-${idx}">
+                `;
+                
+                item.options.forEach((option, optIdx) => {
+                    html += `
+                        <li class="quiz-option" onclick="selectAnswer(${idx}, ${optIdx}, this)">
+                            <input type="radio" name="q${idx}" value="${optIdx}" id="q${idx}-${optIdx}">
+                            <label for="q${idx}-${optIdx}">${option}</label>
+                        </li>
+                    `;
+                });
+                
+                html += `
+                        </ul>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // Randomize options for each question
+            document.querySelectorAll('.quiz-options').forEach(optionsList => {
+                const options = Array.from(optionsList.children);
+                
+                // Fisher-Yates shuffle
+                for (let i = options.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [options[i], options[j]] = [options[j], options[i]];
+                }
+                
+                options.forEach(option => optionsList.appendChild(option));
+            });
+        }
+
+        function selectAnswer(questionNum, answerIdx, element) {
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            element.classList.add('selected');
+            
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            quizAnswers[questionNum] = answerIdx;
+            
+            const answeredCount = Object.keys(quizAnswers).length;
+            const submitBtn = document.getElementById('submitBtn');
+            if (answeredCount === 15) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Quiz';
+            } else {
+                submitBtn.textContent = `Answer all questions (${answeredCount}/15 complete)`;
+            }
+        }
+
+        function submitQuiz() {
+            let correct = 0;
+            for (let q in correctAnswers) {
+                if (quizAnswers[q] === correctAnswers[q]) {
+                    correct++;
+                }
+            }
+            const score = Math.round((correct / 15) * 100);
+            const passed = score >= 67;
+            
+            document.getElementById('quizContent').style.display = 'none';
+            
+            const resultsDiv = document.getElementById('quizResults');
+            resultsDiv.style.display = 'block';
+            
+            let resultsHTML = `
+                <div class="quiz-result ${passed ? 'pass' : 'fail'}">
+                    <h3>${passed ? '🎉 Outstanding! Quiz Passed! 🎉' : '📚 Keep Practicing! More Study Needed'}</h3>
+                    <p style="font-size: 1.4em; margin-top: 10px;">Your Score: <strong>${score}%</strong> (${correct}/15 correct)</p>
+                    ${passed ? '<p style="margin-top: 10px;">You\'ve mastered multi-party deal execution and closing! 🌟</p>' : '<p style="margin-top: 10px;">Review the explanations below and try again. You need 67% to pass.</p>'}
+                </div>
+            `;
+            
+            for (let q = 0; q < 15; q++) {
+                const isCorrect = quizAnswers[q] === correctAnswers[q];
+                resultsHTML += `
+                    <div class="quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                        <h4>${isCorrect ? '✅' : '❌'} ${q + 1}. ${quizQuestions[q].q}</h4>
+                        <p style="margin-top: 15px;"><strong>Your answer:</strong> ${quizQuestions[q].options[quizAnswers[q]]}</p>
+                        ${!isCorrect ? `<p style="margin-top: 10px; color: #2e7d32;"><strong>Correct answer:</strong> ${quizQuestions[q].options[correctAnswers[q]]}</p>` : ''}
+                        <div style="background: ${isCorrect ? '#f1f8f4' : '#fff9f9'}; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid ${isCorrect ? '#c3e6cb' : '#f5c6cb'};">
+                            <p style="font-weight: 600; margin-bottom: 8px; color: #333;">💡 Explanation:</p>
+                            <p style="color: #333;">${explanations[q]}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultsHTML += `
+                <button class="button button-primary" style="width: 100%; margin-top: 20px;" onclick="retakeQuiz()">
+                    🔄 Retake Quiz
+                </button>
+            `;
+            
+            resultsDiv.innerHTML = resultsHTML;
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+        
+        function retakeQuiz() {
+            for (let q in quizAnswers) {
+                delete quizAnswers[q];
+            }
+            
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+                const radio = opt.querySelector('input[type="radio"]');
+                if (radio) radio.checked = false;
+            });
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Answer all questions (0/15 complete)';
+            
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('quizResults').style.display = 'none';
+            
+            renderQuiz();
+            
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Download checklist
+        function downloadChecklist() {
+            const printContent = document.getElementById('printChecklist').innerHTML;
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            
+            location.reload();
+        }
+    </script>
+</body>
+</html>
