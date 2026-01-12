@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Exchange Mission | Tantor Sales Training</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d3748;
+        }
+
+        .game-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            overflow: hidden;
+        }
+
+        /* Header with Progress */
+        .game-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px 40px;
+        }
+
+        .game-title {
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .mission-subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 25px;
+        }
+
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-label {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* Level Container */
+        .level {
+            display: none;
+            padding: 50px;
+            animation: slideIn 0.5s ease;
+        }
+
+        .level.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .level-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-right: 20px;
+        }
+
+        .level-title {
+            font-size: 2em;
+            color: #1e3c72;
+            font-weight: 700;
+        }
+
+        /* Content Boxes */
+        .info-box {
+            background: #f7fafc;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .info-box h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .success-box {
+            background: #f0fff4;
+            border: 2px solid #48bb78;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .metric-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .checklist {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .checklist-item {
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .checklist-item.yes {
+            background: #f0fff4;
+            border-left: 4px solid #48bb78;
+        }
+
+        .checklist-item.no {
+            background: #fff5f5;
+            border-left: 4px solid #f56565;
+        }
+
+        .checklist-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            min-width: 30px;
+        }
+
+        .architecture-layer {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .layer-title {
+            font-size: 1.2em;
+            color: #1e3c72;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .objection-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .objection-q {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #c53030;
+            margin-bottom: 15px;
+        }
+
+        .objection-a {
+            color: #2d3748;
+            line-height: 1.7;
+        }
+
+        /* Navigation Buttons */
+        .level-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn.back {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .nav-btn.back:hover {
+            background: #cbd5e0;
+        }
+
+        .completion-screen {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .trophy-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .completion-title {
+            font-size: 2.5em;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        ul li {
+            margin: 8px 0;
+        }
+
+        strong {
+            color: #1e3c72;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #1e3c72;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comparison-table tr:hover {
+            background: #f7fafc;
+        }
+
+        .check {
+            color: #48bb78;
+            font-weight: 700;
+        }
+
+        .cross {
+            color: #f56565;
+            font-weight: 700;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                border-radius: 0;
+            }
+
+            .level {
+                padding: 30px 20px;
+            }
+
+            .level-title {
+                font-size: 1.5em;
+            }
+
+            .metrics-grid,
+            .stats-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-btn {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <div class="game-header">
+            <div class="game-title">🎯 Stock Exchange Scale-Up Mission</div>
+            <div class="mission-subtitle">Master the Tantor + Cloudera Partnership Play</div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">Level 1 of 8 - Just Getting Started</div>
+        </div>
+
+        <!-- Level 1: Mission Brief -->
+        <div class="level active" id="level1">
+            <div class="level-header">
+                <div class="level-badge">LEVEL 1</div>
+                <div class="level-title">Mission Brief</div>
+            </div>
+
+            <div class="highlight-box">
+                <h3 style="color: white; margin-bottom: 15px;">🚀 Your Mission</h3>
+                <p style="font-size: 1.1em; line-height: 1.8;">You're about to master one of Tantor's most powerful sales plays: the Stock Exchange Scale-Up story. This is a <strong>real deployment</strong> where Tantor + Cloudera handled 900 crore transactions per day with 6-second latency.</p>
+                <p style="margin-top: 15px; font-size: 1.1em; line-height: 1.8;">By completing this mission, you'll learn when to use this case study, how to position it, and how to handle objections in high-stakes conversations with CIOs, CTOs, and CDOs.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>What You'll Master in 8 Levels:</h3>
+                <ul>
+                    <li><strong>Level 1:</strong> Mission overview and learning objectives</li>
+                    <li><strong>Level 2:</strong> The challenge that needed solving</li>
+                    <li><strong>Level 3:</strong> When to deploy this case study (qualification)</li>
+                    <li><strong>Level 4:</strong> The solution architecture (Tantor + Cloudera)</li>
+                    <li><strong>Level 5:</strong> Results and business impact</li>
+                    <li><strong>Level 6:</strong> Competitive positioning</li>
+                    <li><strong>Level 7:</strong> Objection handling scenarios</li>
+                    <li><strong>Level 8:</strong> Mission complete - key takeaways</li>
+                </ul>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">~15 min</div>
+                    <div class="metric-label">Completion Time</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">8</div>
+                    <div class="metric-label">Interactive Levels</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">100%</div>
+                    <div class="metric-label">Sales Ready</div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>📘 Important Context:</strong> This case study demonstrates a <strong>Tier 1 Cloudera deployment</strong> (infrastructure partner). If your prospect uses Cloudera Machine Learning (CML) actively, refer to Module 6: The Cloudera Playbook for Tier 2 positioning. More on this in Level 3.
+            </div>
+
+            <div class="level-navigation">
+                <button class="nav-btn back" disabled>← Back</button>
+                <button class="nav-btn next" onclick="nextLevel()">Start Mission →</button>
+            </div>
+        </div>
+
+        <!-- Level 2: The Challenge -->
+        <div class="level" id="level2">
+            <div class="level-header">
+                <div class="level-badge">LEVEL 2</div>
+                <div class="level-title">The Challenge</div>
+            </div>
+
+            <div class="info-box">
+                <h3>The Situation</h3>
+                <p style="line-height: 1.8;"><strong>Client:</strong> Major Stock Exchange (NSE-scale)</p>
+                <p style="line-height: 1.8;"><strong>Context:</strong> India's trading volumes were exploding. Market had grown 3X in 18 months, but infrastructure hadn't kept pace.</p>
+                <p style="line-height: 1.8; margin-top: 15px;"><strong>The Breaking Point:</strong> Their legacy system could handle 300 crore transactions/day. Actual demand: 900 crore and growing.</p>
+            </div>
+
+            <div class="highlight-box">
+                <h3 style="color: white;">💥 What Was Breaking</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                    <div>
+                        <div style="font-size: 2em; font-weight: 700; margin-bottom: 10px;">30-40 sec</div>
+                        <div>Data pipeline latency (needed: <10 sec)</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 2em; font-weight: 700; margin-bottom: 10px;">140%</div>
+                        <div>Infrastructure cost growth vs 60% volume growth</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="architecture-layer">
+                <div class="layer-title">Key Stakeholder Pain Points</div>
+                
+                <div style="background: #f7fafc; padding: 15px; border-left: 4px solid #667eea; margin: 15px 0;">
+                    <strong>CTO:</strong> "We're adding servers every quarter, but latency keeps increasing. We're scaling wrong."
+                </div>
+
+                <div style="background: #f7fafc; padding: 15px; border-left: 4px solid #667eea; margin: 15px 0;">
+                    <strong>CFO:</strong> "Our infrastructure costs have grown 140% while transaction volumes grew 60%. We need a platform that allows growth without proportional cost increases."
+                </div>
+
+                <div style="background: #f7fafc; padding: 15px; border-left: 4px solid #667eea; margin: 15px 0;">
+                    <strong>Head of Risk & Compliance:</strong> "Real-time risk monitoring is impossible when our data pipeline is 30-40 seconds behind market reality. We're flying blind during critical moments."
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>Why This Matters for Your Sales Conversations</h3>
+                <p style="line-height: 1.8;">This isn't a theoretical problem. These exact pain points show up in banking (high-volume payment processing), insurance (claims processing), and telecom (CDR processing). The pattern is universal: <strong>legacy systems break when volumes 3X</strong>.</p>
+            </div>
+
+            <div class="level-navigation">
+                <button class="nav-btn back" onclick="prevLevel()">← Back</button>
+                <button class="nav-btn next" onclick="nextLevel()">Next: Qualification →</button>
+            </div>
+        </div>
+
+        <!-- Level 3: Qualification Checklist -->
+        <div class="level" id="level3">
+            <div class="level-header">
+                <div class="level-badge">LEVEL 3</div>
+                <div class="level-title">When to Deploy This Play</div>
+            </div>
+
+            <div class="success-box">
+                <h3 style="color: #2f855a; margin-bottom: 20px;">✅ Use This Case Study When Prospect Has:</h3>
+                
+                <div class="checklist">
+                    <div class="checklist-item yes">
+                        <div class="checklist-icon">✓</div>
+                        <div><strong>Existing Cloudera CDP deployment</strong> (or considering it) for data infrastructure</div>
+                    </div>
+                    <div class="checklist-item yes">
+                        <div class="checklist-icon">✓</div>
+                        <div><strong>Minimal or no Cloudera Machine Learning (CML) usage</strong> - infrastructure focus only</div>
+                    </div>
+                    <div class="checklist-item yes">
+                        <div class="checklist-icon">✓</div>
+                        <div><strong>Need for distributed processing infrastructure</strong> to handle scale</div>
+                    </div>
+                    <div class="checklist-item yes">
+                        <div class="checklist-icon">✓</div>
+                        <div><strong>Scaling challenges with transaction volumes</strong> (batch processing delays, cost scaling issues)</div>
+                    </div>
+                    <div class="checklist-item yes">
+                        <div class="checklist-icon">✓</div>
+                        <div><strong>Real-time or near-real-time requirements</strong> for data processing</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h3 style="color: #c53030; margin-bottom: 20px;">❌ Do NOT Use This Case Study If Prospect:</h3>
+                
+                <div class="checklist">
+                    <div class="checklist-item no">
+                        <div class="checklist-icon">✗</div>
+                        <div><strong>Heavily invested in Cloudera Machine Learning (CML)</strong> - active model development teams</div>
+                    </div>
+                    <div class="checklist-item no">
+                        <div class="checklist-icon">✗</div>
+                        <div><strong>Views Cloudera as their primary AI/ML platform</strong> - not just infrastructure</div>
+                    </div>
+                    <div class="checklist-item no">
+                        <div class="checklist-icon">✗</div>
+                        <div><strong>CML team actively building production ML models</strong> - Tier 2 competitive scenario</div>
+                    </div>
+                    <div class="checklist-item no">
+                        <div class="checklist-icon">✗</div>
+                        <div><strong>Looking to expand CML capabilities</strong> - budget competition with Tantor agents</div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 20px; font-weight: 600; color: #c53030;">→ Instead, refer to <strong>Module 6: The Cloudera Playbook</strong> for Tier 2 competitive positioning.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>🤔 Not Sure Which Tier? Ask These Questions:</h3>
+                <ul>
+                    <li>"Are you currently using Cloudera Machine Learning for model development?"</li>
+                    <li>"Do you have data scientists building ML models in CML?"</li>
+                    <li>"Is Cloudera primarily for storage/processing, or also for ML/AI?"</li>
+                </ul>
+                <p style="margin-top: 15px; font-style: italic; color: #64748b;">If answers indicate active CML usage → Switch to Cloudera Playbook positioning</p>
+            </div>
+
+            <div class="level-navigation">
+                <button class="nav-btn back" onclick="prevLevel()">← Back</button>
+                <button class="nav-btn next" onclick="nextLevel()">Next: The Solution →</button>
+            </div>
+        </div>
+
+        <!-- Level 4: The Solution -->
+        <div class="level" id="level4">
+            <div class="level-header">
+                <div class="level-badge">LEVEL 4</div>
+                <div class="level-title">The Solution Architecture</div>
+            </div>
+
+            <div class="highlight-box">
+                <h3 style="color: white; margin-bottom: 15px;">🔧 Tantor + Cloudera Data Platform</h3>
+                <p style="font-size: 1.1em; line-height: 1.8;"><strong>Deployment Model:</strong> Hybrid architecture leveraging Tantor's orchestration with Cloudera's distributed processing</p>
+                <p style="font-size: 1.1em; line-height: 1.8;"><strong>Timeline:</strong> 90-day implementation including testing and migration</p>
+                <p style="font-size: 1.1em; line-height: 1.8;"><strong>Migration Strategy:</strong> Parallel run for 30 days before full cutover</p>
+            </div>
+
+            <div class="architecture-layer">
+                <div class="layer-title">Layer 1: Tantor Data Platform (Orchestration)</div>
+                <ul>
+                    <li><strong>Smart Data Routing:</strong> Automatically routes high-priority trade data vs. batch analytics data</li>
+                    <li><strong>Real-time Validation:</strong> Validates transaction formats and integrity before ingestion (99.97% accuracy)</li>
+                    <li><strong>Dynamic Load Balancing:</strong> Distributes ingestion across Cloudera nodes based on real-time capacity monitoring</li>
+                    <li><strong>Event-Driven Architecture:</strong> Triggers downstream processes (risk calculations, compliance checks) instantly</li>
+                    <li><strong>Meta-data Management:</strong> Maintains lineage and audit trails for regulatory compliance (SEBI requirements)</li>
+                </ul>
+            </div>
+
+            <div class="architecture-layer">
+                <div class="layer-title">Layer 2: Cloudera Data Platform (CDP) (Processing)</div>
+                <ul>
+                    <li><strong>Distributed Storage:</strong> HDFS across 40-node cluster for 15 PB capacity</li>
+                    <li><strong>Parallel Processing:</strong> Apache Spark for distributed computing</li>
+                    <li><strong>Real-time Streaming:</strong> Kafka for high-throughput message processing</li>
+                    <li><strong>Horizontal Scalability:</strong> Add nodes without reconfiguration</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>🎯 The Key Insight: Role Separation</h3>
+                <p style="line-height: 1.8; margin-bottom: 15px;"><strong>Cloudera CDP</strong> = The engine (storage and distributed processing power)</p>
+                <p style="line-height: 1.8;"><strong>Tantor</strong> = The steering system (orchestration, validation, intelligence, business logic)</p>
+                <p style="margin-top: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+                    <strong>Sales Message:</strong> "This isn't about replacing Cloudera—it's about making your Cloudera investment dramatically more productive. The stock exchange tried Cloudera-only for 6 months. With Tantor, what took their data engineers 6 months came out-of-the-box in 30 days."
+                </p>
+            </div>
+
+            <div class="level-navigation">
+                <button class="nav-btn back" onclick="prevLevel()">← Back</button>
+                <button class="nav-btn next" onclick="nextLevel()">Next: Results →</button>
+            </div>
+        </div>
+
+        <!-- Level 5: Results -->
+        <div class="level" id="level5">
+            <div class="level-header">
+                <div class="level-badge">LEVEL 5</div>
+                <div class="level-title">Results That Matter</div>
+            </div>
+
+            <div class="highlight-box">
+                <h3 style="color: white; margin-bottom: 25px;">📊 The Numbers</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 8px;">
+                        <div style="font-size: 2.5em; font-weight: 700; margin-bottom: 10px;">900 Cr</div>
+                        <div>Transactions/day processed</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 8px;">
+                        <div style="font-size: 2.5em; font-weight: 700; margin-bottom: 10px;">6.2 sec</div>
+                        <div>Average latency (from 30-40 sec)</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 8px;">
+                        <div style="font-size: 2.5em; font-weight: 700; margin-bottom: 10px;">42%</div>
+                        <div>Infrastructure cost reduction</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 8px;">
+                        <div style="font-size: 2.5em; font-weight: 700; margin-bottom: 10px;">99.97%</div>
+                        <div>Data integrity accuracy</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>Business Impact Translation</h3>
+                <p style="line-height: 1.8; margin-bottom: 15px;">Here's how to talk about these numbers in CxO conversations:</p>
+                
+                <div style="background: white; padding: 15px; border-left: 4px solid #667eea; margin: 15px 0;">
+                    <strong>For CFO:</strong> "42% infrastructure cost reduction while handling 3X volume growth. That's inverse scaling—costs go down as volumes go up."
+                </div>
+
+                <div style="background: white; padding: 15px; border-left: 4px solid #667eea; margin: 15px 0;">
+                    <strong>For CTO:</strong> "6.2-second latency at 900 crore transactions per day. That's production-proven, not projected. Real-time risk monitoring became reality."
+                </div>
+
+                <div style="background: white; padding: 15px; border-left: 4px solid #667eea; margin: 15px 0;">
+                    <strong>For CDO:</strong> "99.97% data integrity with zero manual intervention. Regulatory compliance went from audit nightmare to automated confidence."
+                </div>
+            </div>
+
+            <div class="success-box">
+                <h3 style="color: #2f855a;">⏱️ Timeline to Value</h3>
+                <ul>
+                    <li><strong>Day 1-30:</strong> Architecture design and infrastructure setup</li>
+                    <li><strong>Day 31-60:</strong> Integration with existing systems and testing</li>
+                    <li><strong>Day 61-90:</strong> Parallel run and migration</li>
+                    <li><strong>Day 91:</strong> Full cutover - 900 crore transactions/day operational</li>
+                </ul>
+                <p style="margin-top: 20px; font-weight: 600; color: #2f855a;">90 days from contract signing to production handling 3X previous capacity.</p>
+            </div>
+
+            <div class="level-navigation">
+                <button class="nav-btn back" onclick="prevLevel()">← Back</button>
+                <button class="nav-btn next" onclick="nextLevel()">Next: Competitive Edge →</button>
+            </div>
+        </div>
+
+        <!-- Level 6: Competitive Positioning -->
+        <div class="level" id="level6">
+            <div class="level-header">
+                <div class="level-badge">LEVEL 6</div>
+                <div class="level-title">Competitive Battlefield</div>
+            </div>
+
+            <div class="info-box">
+                <h3>Tantor + Cloudera CDP vs. Alternative Approaches</h3>
+                <p style="margin-bottom: 20px;">This comparison focuses on Cloudera CDP (infrastructure). For CML scenarios, see Cloudera Playbook.</p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Capability</th>
+                            <th>Tantor + Cloudera CDP</th>
+                            <th>Pure Cloudera CDP</th>
+                            <th>Informatica</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Massive Scale</strong><br>(900 Cr+ tx/day)</td>
+                            <td class="check">✓ Proven</td>
+                            <td class="check">✓ With Custom Dev</td>
+                            <td class="cross">✗ Limited Scale</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intelligent Orchestration</strong></td>
+                            <td class="check">✓ Built-in</td>
+                            <td class="cross">✗ Build Yourself</td>
+                            <td class="check">✓ Basic ETL Only</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Real-time Processing</strong><br>(&lt;10 sec)</td>
+                            <td class="check">✓ 6.2 sec Proven</td>
+                            <td class="check">✓ With Config</td>
+                            <td class="check">✓ Variable</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI-Powered Agents</strong></td>
+                            <td class="check">✓ Included</td>
+                            <td class="cross">✗ Build Custom</td>
+                            <td class="cross">✗ Not Available</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Time to Production</strong></td>
+                            <td class="check">✓ 90 Days</td>
+                            <td class="cross">✗ 12-18 Months</td>
+                            <td class="check">✓ 6-9 Months</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="highlight-box">
+                <h3 style="color: white; margin-bottom: 15px;">🎯 The Tantor + Cloudera Advantage</h3>
+                <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 15px;">This isn't "Tantor vs. Cloudera" - it's <strong>Tantor + Cloudera as an integrated solution</strong>.</p>
+                <ul style="line-height: 1.8;">
+                    <li>Tantor provides orchestration intelligence</li>
+                    <li>Cloudera provides processing power</li>
+                    <li>Together they deliver what neither can alone</li>
+                </ul>
+                <p style="margin-top: 20px; font-weight: 600; border-top: 2px solid rgba(255,255,255,0.3); padding-top: 20px;">Emphasize partnership, not competition. This is a Tier 1 (infrastructure) deployment.</p>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> This comparison focuses on Cloudera CDP (data platform) as infrastructure. For comparisons involving Cloudera Machine Learning (CML), the competitive landscape differs significantly. Refer to <strong>Module 6: The Cloudera Playbook</strong> for complete CML positioning.
+            </div>
+
+            <div class="level-navigation">
+                <button class="nav-btn back" onclick="prevLevel()">← Back</button>
+                <button class="nav-btn next" onclick="nextLevel()">Next: Objections →</button>
+            </div>
+        </div>
+
+        <!-- Level 7: Objection Handling -->
+        <div class="level" id="level7">
+            <div class="level-header">
+                <div class="level-badge">LEVEL 7</div>
+                <div class="level-title">Handling Objections</div>
+            </div>
+
+            <div class="info-box">
+                <h3>Master These 4 Critical Objections</h3>
+            </div>
+
+            <div class="objection-card">
+                <div class="objection-q">❓ "Can't we just add more servers to our current setup?"</div>
+                <div class="objection-a">
+                    <strong>Response:</strong> "That's a common first instinct, and it works initially. The challenge is that infrastructure costs scale exponentially while volumes scale linearly. The stock exchange tried that approach—they added servers three times, each time with diminishing returns. By the third addition, their cost per transaction had increased 140% while volumes only grew 60%. Tantor + Cloudera gives you linear cost scaling because of intelligent distribution and horizontal scalability."
+                </div>
+            </div>
+
+            <div class="objection-card">
+                <div class="objection-q">❓ "This sounds like a custom development project. How long would implementation take?"</div>
+                <div class="objection-a">
+                    <strong>Response:</strong> "This isn't custom development—we're deploying proven patterns with pre-built integrations between Tantor and Cloudera. That's why we can move in 90 days instead of 12-18 months for build-from-scratch approaches. The stock exchange was operational in 90 days, including migration. The orchestration logic, validation rules, and AI agents come out-of-the-box."
+                </div>
+            </div>
+
+            <div class="objection-card">
+                <div class="objection-q">❓ "We already have [Informatica/other ETL tool]. Why do we need this?"</div>
+                <div class="objection-a">
+                    <strong>Response:</strong> "I'm not suggesting you abandon existing tools immediately. In fact, many of our clients run Tantor + Cloudera alongside their current platforms. The question is: can your current tool handle 3X volume growth at acceptable cost and latency? If yes, great. If not, let's calculate the cost of that limitation vs. the investment in our platform."
+                </div>
+            </div>
+
+            <div class="objection-card">
+                <div class="objection-q">❓ "Why not just use Cloudera directly? Why do we need Tantor?"</div>
+                <div class="objection-a">
+                    <strong>Response:</strong> "Excellent question - this is where understanding the role separation matters. Cloudera is a phenomenal distributed processing engine—best-in-class for storage and compute. But it's like having a powerful car engine without the steering system, dashboard, and safety features."
+                    <br><br>
+                    <strong>Tantor adds:</strong>
+                    <ul style="margin: 10px 0;">
+                        <li>Intelligent routing and load balancing (Cloudera processes, Tantor decides where and how)</li>
+                        <li>Real-time validation and business logic (before data hits Cloudera)</li>
+                        <li>AI agents for proactive monitoring and capacity planning</li>
+                        <li>Pre-built compliance and regulatory reporting</li>
+                    </ul>
+                    <strong>Real Example:</strong> "The stock exchange tried Cloudera-only initially. Their data engineers spent 6 months building custom orchestration logic. With Tantor, that comes out-of-the-box and took 30 days."
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Important Context:</strong> This answer applies to <strong>Cloudera CDP (infrastructure)</strong>. If your prospect is actively using <strong>Cloudera Machine Learning (CML)</strong> for ML model development, the competitive positioning differs. Refer to <strong>Module 6: The Cloudera Playbook</strong> for Tier 2 positioning.
+            </div>
+
+            <div class="level-navigation">
+                <button class="nav-btn back" onclick="prevLevel()">← Back</button>
+                <button class="nav-btn next" onclick="nextLevel()">Complete Mission →</button>
+            </div>
+        </div>
+
+        <!-- Level 8: Mission Complete -->
+        <div class="level" id="level8">
+            <div class="completion-screen">
+                <div class="trophy-icon">🏆</div>
+                <div class="completion-title">Mission Complete!</div>
+                <p style="font-size: 1.2em; color: #64748b; margin-bottom: 40px;">You've mastered the Stock Exchange Scale-Up play</p>
+
+                <div class="stats-summary">
+                    <div class="stat-box">
+                        <div class="stat-number">8/8</div>
+                        <div class="stat-label">Levels Completed</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Mastery Achieved</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">Ready</div>
+                        <div class="stat-label">For Client Meetings</div>
+                    </div>
+                </div>
+
+                <div class="info-box" style="text-align: left;">
+                    <h3>🎯 Key Takeaways - Your Cheat Sheet</h3>
+                    <ul>
+                        <li><strong>The Scale is Real:</strong> 900 crore transactions/day isn't theoretical—it's proven in production</li>
+                        <li><strong>This is a Tier 1 Play:</strong> Use when Cloudera = infrastructure partner (CDP only, no CML)</li>
+                        <li><strong>Qualify First:</strong> Ask about CML usage before deploying this case study</li>
+                        <li><strong>Role Separation Message:</strong> Cloudera = engine, Tantor = steering/intelligence</li>
+                        <li><strong>Timeline Matters:</strong> 90 days to production vs. 12-18 months build-from-scratch</li>
+                        <li><strong>Partnership Not Competition:</strong> This isn't Tantor vs. Cloudera—it's Tantor + Cloudera</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box" style="text-align: left;">
+                    <h3 style="color: white; margin-bottom: 15px;">📚 Next Steps</h3>
+                    <p style="line-height: 1.8; margin-bottom: 15px;">For complete Cloudera positioning framework covering both Tier 1 and Tier 2 scenarios:</p>
+                    <p style="font-size: 1.2em; font-weight: 700;">→ Complete Module 6: The Cloudera Playbook</p>
+                    <p style="margin-top: 15px; opacity: 0.95;">Understanding when to partner (Tier 1) vs. compete (Tier 2) with Cloudera is critical to positioning Tantor effectively.</p>
+                </div>
+
+                <div class="success-box">
+                    <h3 style="color: #2f855a;">✅ You're Now Ready To:</h3>
+                    <ul>
+                        <li>Use this case study in CIO/CTO/CDO conversations</li>
+                        <li>Qualify prospects for Tier 1 vs. Tier 2 scenarios</li>
+                        <li>Handle objections about Cloudera, Informatica, and build-from-scratch</li>
+                        <li>Position Tantor + Cloudera as integrated partnership</li>
+                        <li>Translate technical metrics into business value for each CxO</li>
+                    </ul>
+                </div>
+
+                <div class="level-navigation">
+                    <button class="nav-btn back" onclick="prevLevel()">← Review</button>
+                    <button class="nav-btn next" onclick="restartMission()">🔄 Replay Mission</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>© 2026 Translab Technologies | Sales Academy</strong></p>
+            <p style="margin-top: 8px;">Tantor + Cloudera Partnership Success Story</p>
+            <p style="margin-top: 8px; opacity: 0.8;">For internal sales training use only</p>
+        </div>
+    </div>
+
+    <script>
+        let currentLevel = 1;
+        const totalLevels = 8;
+
+        function updateProgress() {
+            const progress = ((currentLevel - 1) / (totalLevels - 1)) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            let label = '';
+            if (currentLevel === 1) label = 'Level 1 of 8 - Just Getting Started';
+            else if (currentLevel === 2) label = 'Level 2 of 8 - Understanding the Challenge';
+            else if (currentLevel === 3) label = 'Level 3 of 8 - Qualification Mastery';
+            else if (currentLevel === 4) label = 'Level 4 of 8 - Architecture Deep Dive';
+            else if (currentLevel === 5) label = 'Level 5 of 8 - Results & Impact';
+            else if (currentLevel === 6) label = 'Level 6 of 8 - Competitive Edge';
+            else if (currentLevel === 7) label = 'Level 7 of 8 - Objection Handling';
+            else if (currentLevel === 8) label = 'Level 8 of 8 - Mission Complete!';
+            
+            document.getElementById('progressLabel').textContent = label;
+        }
+
+        function showLevel(levelNum) {
+            // Hide all levels
+            for (let i = 1; i <= totalLevels; i++) {
+                document.getElementById('level' + i).classList.remove('active');
+            }
+            
+            // Show target level
+            document.getElementById('level' + levelNum).classList.add('active');
+            currentLevel = levelNum;
+            updateProgress();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextLevel() {
+            if (currentLevel < totalLevels) {
+                showLevel(currentLevel + 1);
+            }
+        }
+
+        function prevLevel() {
+            if (currentLevel > 1) {
+                showLevel(currentLevel - 1);
+            }
+        }
+
+        function restartMission() {
+            if (confirm('Ready to replay the mission from the beginning?')) {
+                showLevel(1);
+            }
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>

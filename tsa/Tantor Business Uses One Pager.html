@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tantor - The Autonomous Banking Advantage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            color: #2d3748;
+            line-height: 1.4;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px 25px 40px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header .tagline {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 30px 40px 30px 40px;
+            flex: 1;
+        }
+
+        .gap-section {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+
+        .gap-section h2 {
+            color: #667eea;
+            font-size: 1.4em;
+            margin-bottom: 12px;
+        }
+
+        .spectrum {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .spectrum-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .spectrum-item.tantor {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        }
+
+        .spectrum-item h4 {
+            font-size: 0.95em;
+            color: #667eea;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .spectrum-item .label {
+            font-size: 0.85em;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .spectrum-item .who {
+            font-size: 0.75em;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .agents-section h2 {
+            color: #2d3748;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .agents-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .agent-box {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .agent-box .domain {
+            font-size: 0.75em;
+            color: #667eea;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .agent-box h4 {
+            font-size: 1.05em;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .agent-box .value {
+            font-size: 0.85em;
+            color: #4a5568;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .agent-box .metric {
+            font-size: 0.8em;
+            color: #48bb78;
+            font-weight: 700;
+            background: #f0fff4;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .roi-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .roi-section h2 {
+            font-size: 1.4em;
+            margin-bottom: 12px;
+        }
+
+        .roi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .roi-item {
+            text-align: center;
+        }
+
+        .roi-item .number {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .roi-item .label {
+            font-size: 0.85em;
+            opacity: 0.95;
+        }
+
+        .competitive-section {
+            margin-bottom: 25px;
+        }
+
+        .competitive-section h3 {
+            font-size: 1.2em;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .competitive-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .competitive-item {
+            background: #fff5f5;
+            border-left: 3px solid #f56565;
+            padding: 10px 12px;
+            font-size: 0.85em;
+            border-radius: 4px;
+        }
+
+        .competitive-item strong {
+            color: #c53030;
+        }
+
+        .next-steps {
+            background: #f0fff4;
+            border: 2px solid #48bb78;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .next-steps h3 {
+            color: #2f855a;
+            font-size: 1.2em;
+            margin-bottom: 12px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .step-box {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #48bb78;
+        }
+
+        .step-box h4 {
+            font-size: 0.95em;
+            color: #2f855a;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .step-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .step-box li {
+            font-size: 0.8em;
+            color: #4a5568;
+            margin-bottom: 3px;
+            padding-left: 12px;
+            position: relative;
+        }
+
+        .step-box li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .footer-left {
+            font-size: 0.85em;
+        }
+
+        .footer-left strong {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 1.05em;
+        }
+
+        .footer-right {
+            text-align: right;
+            font-size: 0.85em;
+        }
+
+        .footer-right a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media print {
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            .page {
+                margin: 0;
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .highlight-stat {
+            background: #fff5f5;
+            border-left: 4px solid #f56565;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .highlight-stat strong {
+            color: #c53030;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <h1>The Autonomous Banking Advantage</h1>
+            <div class="tagline">Why Banks That Act Beat Banks That Alert</div>
+        </div>
+
+        <div class="content">
+            <!-- The Gap -->
+            <div class="gap-section">
+                <h2>The Autonomy Gap: Between Detection and Action, Money Moves</h2>
+                <p style="margin-bottom: 12px; font-size: 0.95em;">Every bank has AI that can <em>detect</em> problems. The question is: Can your AI <strong>act</strong> on what it detects?</p>
+                
+                <div class="spectrum">
+                    <div class="spectrum-item">
+                        <h4>Descriptive</h4>
+                        <div class="label">What happened?</div>
+                        <div class="who">Most banks are here</div>
+                    </div>
+                    <div class="spectrum-item">
+                        <h4>Predictive</h4>
+                        <div class="label">What will happen?</div>
+                        <div class="who">Your competitors</div>
+                    </div>
+                    <div class="spectrum-item tantor">
+                        <h4>Autonomous</h4>
+                        <div class="label">What am I doing?</div>
+                        <div class="who"><strong>Tantor operates here</strong></div>
+                    </div>
+                </div>
+
+                <div class="highlight-stat">
+                    <strong>The Cost of Waiting:</strong> Banks with assisted AI (alerts only) see 95% of fraud alerts go uninvestigated. That's ₹5-8 crore in annual losses that autonomous agents prevent.
+                </div>
+            </div>
+
+            <!-- Six Agents -->
+            <div class="agents-section">
+                <h2>Six Autonomous Agents for Banking</h2>
+                
+                <div class="agents-grid">
+                    <div class="agent-box">
+                        <div class="domain">Fraud Detection</div>
+                        <h4>Autonomous Anti-Fraud Agent</h4>
+                        <div class="value">Detects coordinated attacks at 2 AM, freezes cards, notifies customers—all in 5 minutes.</div>
+                        <div class="metric">85-90% reduction in fraud losses</div>
+                    </div>
+
+                    <div class="agent-box">
+                        <div class="domain">Credit & Lending</div>
+                        <h4>Adaptive Underwriting Agent</h4>
+                        <div class="value">Updates credit scores continuously (not quarterly). First to approve wins the customer.</div>
+                        <div class="metric">30-40% increase in approval rates</div>
+                    </div>
+
+                    <div class="agent-box">
+                        <div class="domain">Compliance & Risk</div>
+                        <h4>Continuous Regulatory Monitoring</h4>
+                        <div class="value">100% transaction compliance checking in real-time. Blocks violations in 500 milliseconds.</div>
+                        <div class="metric">70-80% reduction in penalties</div>
+                    </div>
+
+                    <div class="agent-box">
+                        <div class="domain">Wealth Management</div>
+                        <h4>Virtual Relationship Manager</h4>
+                        <div class="value">Rebalances HNI portfolios during 2 AM market crashes. No voicemail, no panic-selling.</div>
+                        <div class="metric">40-50% reduction in HNI churn</div>
+                    </div>
+
+                    <div class="agent-box">
+                        <div class="domain">Operations</div>
+                        <h4>Workflow Orchestration Agent</h4>
+                        <div class="value">Real-time reconciliation across 20+ systems. Fixes salary mismatches in 8 seconds, not 5 days.</div>
+                        <div class="metric">60-70% reduction in ops costs</div>
+                    </div>
+
+                    <div class="agent-box">
+                        <div class="domain">Retail Banking</div>
+                        <h4>Personal Finance Co-Pilot</h4>
+                        <div class="value">Proactive tax optimization, automated savings, instant investment execution at scale.</div>
+                        <div class="metric">4-6x increase in engagement</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROI Snapshot -->
+            <div class="roi-section">
+                <h2>Typical Mid-Size Bank Impact (Year 1)</h2>
+                <div class="roi-grid">
+                    <div class="roi-item">
+                        <div class="number">₹15-25 Cr</div>
+                        <div class="label">Annual Net Benefit</div>
+                    </div>
+                    <div class="roi-item">
+                        <div class="number">300-500%</div>
+                        <div class="label">Return on Investment</div>
+                    </div>
+                    <div class="roi-item">
+                        <div class="number">21-30 Days</div>
+                        <div class="label">Time to First Results</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Competitive Positioning -->
+            <div class="competitive-section">
+                <h3>Why Tantor vs Traditional AI Platforms</h3>
+                <div class="competitive-grid">
+                    <div class="competitive-item">
+                        <strong>vs. IBM Watson / SAS:</strong> They detect. We detect + decide + act.
+                    </div>
+                    <div class="competitive-item">
+                        <strong>vs. FICO / Experian:</strong> They score monthly. We score continuously.
+                    </div>
+                    <div class="competitive-item">
+                        <strong>vs. Informatica / Collibra:</strong> They govern data. We govern transactions.
+                    </div>
+                    <div class="competitive-item">
+                        <strong>vs. UiPath / RPA:</strong> They automate tasks. We orchestrate decisions.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <h3>The Path Forward</h3>
+                <div class="steps-grid">
+                    <div class="step-box">
+                        <h4>Phase 1: Proof of Value (30 days)</h4>
+                        <ul>
+                            <li>Deploy ONE agent in controlled environment</li>
+                            <li>Your data, your infrastructure</li>
+                            <li>Measure actual impact vs projections</li>
+                            <li>Zero commitment, full transparency</li>
+                        </ul>
+                    </div>
+                    <div class="step-box">
+                        <h4>Phase 2: Scaled Deployment (90 days)</h4>
+                        <ul>
+                            <li>Deploy all agents across bank</li>
+                            <li>Integration with core banking systems</li>
+                            <li>Staff training and change management</li>
+                            <li>Full ROI realization within 6 months</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-left">
+                <strong>© 2026 Translab Technologies</strong>
+                <div>For training and education purposes only</div>
+            </div>
+            <div class="footer-right">
+                <div style="margin-bottom: 3px;">Ready to discuss your business case?</div>
+                <div><a href="/cdn-cgi/l/email-protection#e1888f878ea19593808f928d8083cf888e"><span class="__cf_email__" data-cfemail="5e37303

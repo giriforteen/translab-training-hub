@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Autonomous Banking Advantage - Interactive Business Case</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #856404;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .nav-button {
+            padding: 12px 30px;
+            margin: 0 10px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #667eea;
+        }
+
+        .nav-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .section {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .choice-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .choice-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            text-align: center;
+        }
+
+        .choice-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .choice-card h3 {
+            font-size: 1.5em;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .choice-card p {
+            font-size: 1.1em;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .spectrum-visual {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .spectrum-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .spectrum-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .spectrum-card h4 {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .spectrum-card .label {
+            font-size: 1.1em;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .spectrum-card .description {
+            font-size: 0.95em;
+            color: #718096;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .spectrum-card .who {
+            font-size: 0.85em;
+            color: #a0aec0;
+            font-style: italic;
+        }
+
+        .calculator-section {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .calculator-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .calculate-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .calculate-button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .results-container {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .results-container.show {
+            display: block !important;
+        }
+
+        .result-card {
+            background: white;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .result-card h4 {
+            font-size: 1.3em;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .result-value {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .result-value.positive {
+            color: #48bb78;
+        }
+
+        .result-value.negative {
+            color: #f56565;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .highlight-box h3 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .highlight-box p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .agent-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .agent-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .agent-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        }
+
+        .agent-card h4 {
+            font-size: 1.2em;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .agent-card .domain {
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .agent-card .value-prop {
+            font-size: 0.95em;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+
+        .agent-detail {
+            display: none;
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .agent-detail.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .agent-detail h4 {
+            font-size: 1.5em;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .scenario-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .scenario-box h5 {
+            font-size: 1.2em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .scenario-box p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .vs-box {
+            background: #fff5f5;
+            border-left: 4px solid #f56565;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .vs-box strong {
+            color: #c53030;
+        }
+
+        .roi-metric {
+            background: #f0fff4;
+            border-left: 4px solid #48bb78;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #2f855a;
+        }
+
+        .export-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .export-button {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-button:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .path-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .path-card {
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .path-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .path-card h4 {
+            font-size: 1.4em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .path-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .path-card li {
+            padding: 8px 0;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+
+        .path-card li:before {
+            content: "→ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .success-criteria {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #48bb78;
+        }
+
+        .infrastructure-section {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .infrastructure-section h5 {
+            font-size: 1.2em;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .infrastructure-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .infrastructure-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .infrastructure-item strong {
+            color: #2d3748;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .infrastructure-item span {
+            color: #4a5568;
+            font-size: 0.95em;
+        }
+
+        .section-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn.back {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .nav-btn.back:hover {
+            background: #cbd5e0;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            font-size: 0.95em;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .timeline-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .timeline-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .timeline-card.traditional {
+            border-left: 5px solid #f56565;
+        }
+
+        .timeline-card.tantor {
+            border-left: 5px solid #48bb78;
+        }
+
+        .timeline-card h5 {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .timeline-card.traditional h5 {
+            color: #c53030;
+        }
+
+        .timeline-card.tantor h5 {
+            color: #2f855a;
+        }
+
+        .timeline-event {
+            display: flex;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 8px;
+            animation: slideIn 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-event .time {
+            font-weight: 700;
+            color: #667eea;
+            min-width: 100px;
+            font-size: 0.9em;
+        }
+
+        .timeline-event .event-text {
+            color: #4a5568;
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        .timeline-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .timeline-card.traditional .timeline-result {
+            background: #fff5f5;
+            color: #c53030;
+            border: 2px solid #fc8181;
+        }
+
+        .timeline-card.tantor .timeline-result {
+            background: #f0fff4;
+            color: #2f855a;
+            border: 2px solid #68d391;
+        }
+
+        @media (max-width: 768px) {
+            .choice-container,
+            .spectrum-visual,
+            .calculator-inputs,
+            .agent-grid,
+            .path-cards,
+            .infrastructure-grid,
+            .timeline-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .section-navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>The Autonomous Banking Advantage</h1>
+            <p>Interactive Business Case Builder</p>
+        </div>
+
+        <div class="disclaimer">
+            <strong>Disclaimer:</strong> This tool is developed for training and demonstration purposes only. Calculations are based on industry averages and should be validated with actual client data during formal engagements.
+        </div>
+
+        <div class="navigation">
+            <button class="nav-button active" onclick="showSection(1)">1. The Autonomy Gap</button>
+            <button class="nav-button" onclick="showSection(2)">2. Six Agents</button>
+            <button class="nav-button" onclick="showSection(3)">3. Your Business Case</button>
+            <button class="nav-button" onclick="showSection(4)">4. Path Forward</button>
+        </div>
+
+        <!-- Section 1: The Autonomy Gap -->
+        <div id="section1" class="section active">
+            <h2 class="section-title">The Autonomy Gap: Between Detection and Action</h2>
+            
+            <p style="font-size: 1.2em; color: #4a5568; margin-bottom: 30px; line-height: 1.8;">
+                Simple question: When your fraud detection system identifies a suspicious transaction at 2 AM on Sunday, what happens next?
+            </p>
+
+            <div class="choice-container">
+                <div class="choice-card" onclick="selectApproach('alert')">
+                    <h3>System Sends Alert</h3>
+                    <p>Team reviews when they're back online (Monday morning)</p>
+                </div>
+                <div class="choice-card" onclick="selectApproach('action')">
+                    <h3>System Takes Action</h3>
+                    <p>Immediate autonomous response, logs for review</p>
+                </div>
+            </div>
+
+            <div id="approach-feedback" style="display: none; margin: 30px 0;">
+                <div id="alert-feedback" style="display: none;">
+                    <div class="highlight-box" style="background: linear-gradient(135deg, #f56565 0%, #c53030 100%);">
+                        <h3>You're not alone. 90% of banks operate this way.</h3>
+                        <p>The challenge isn't detection—every bank has AI that can spot problems. The gap is action. Between detection and action, money moves.</p>
+                    </div>
+                </div>
+                <div id="action-feedback" style="display: none;">
+                    <div class="highlight-box" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+                        <h3>Excellent. You're in the 10% with autonomous capabilities.</h3>
+                        <p>Let's benchmark where you stand vs what's possible, and identify any domains where you're still operating on alerts.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.5em; color: #2d3748; margin: 40px 0 20px 0;">The Autonomy Spectrum</h3>
+
+            <div class="spectrum-visual">
+                <div class="spectrum-card">
+                    <h4>Descriptive Analytics</h4>
+                    <div class="label">What happened?</div>
+                    <div class="description">Dashboards and reports showing historical data</div>
+                    <div class="who">Most banks are here</div>
+                </div>
+                <div class="spectrum-card">
+                    <h4>Predictive Analytics</h4>
+                    <div class="label">What will happen?</div>
+                    <div class="description">Alerts + recommendations requiring human approval</div>
+                    <div class="who">Your competitors (IBM Watson, Informatica, SAS)</div>
+                </div>
+                <div class="spectrum-card" style="border: 3px solid #667eea;">
+                    <h4>Autonomous Analytics</h4>
+                    <div class="label">What am I doing about it?</div>
+                    <div class="description">Pre-approved actions executed 24/7</div>
+                    <div class="who">Tantor operates here</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.5em; color: #2d3748; margin: 40px 0 20px 0;">The Cost of the Gap</h3>
+
+            <div class="calculator-section">
+                <div class="calculator-inputs">
+                    <div class="input-group">
+                        <label>Monthly fraud alerts:</label>
+                        <input type="number" id="fraudAlerts" value="30000" />
+                    </div>
+                    <div class="input-group">
+                        <label>Team investigation capacity (per month):</label>
+                        <input type="number" id="investigationCapacity" value="1500" />
+                    </div>
+                </div>
+                <button class="calculate-button" onclick="calculateGapCost()">Calculate Your Gap</button>
+                
+                <div id="gap-results" class="results-container">
+                    <div class="result-card">
+                        <h4>Your Autonomy Gap Analysis</h4>
+                        <div class="result-row">
+                            <span class="result-label">Uninvestigated alerts:</span>
+                            <span class="result-value negative" id="uninvestigated">0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Coverage gap:</span>
+                            <span class="result-value negative" id="coverageGap">0%</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Estimated monthly exposure:</span>
+                            <span class="result-value negative" id="monthlyExposure">₹0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Potential annual loss (5% fraud rate):</span>
+                            <span class="result-value negative" id="annualLoss">₹0</span>
+                        </div>
+                    </div>
+                    <div class="highlight-box">
+                        <h3>The gap between detection and action isn't a feature gap.</h3>
+                        <p>It's a revenue leak.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-navigation">
+                <button class="nav-btn back" disabled>← Back</button>
+                <button class="nav-btn next" onclick="showSection(2)">Next: Six Agents →</button>
+            </div>
+        </div>
+
+        <!-- Section 2: Six Autonomous Agents -->
+        <div id="section2" class="section">
+            <h2 class="section-title">Six Autonomous Agents: From Detection to Action</h2>
+            
+            <p style="font-size: 1.2em; color: #4a5568; margin-bottom: 30px; line-height: 1.8;">
+                Click on any agent to see how it closes the autonomy gap in specific banking domains:
+            </p>
+
+            <div class="agent-grid">
+                <div class="agent-card" onclick="showAgentDetail(1)">
+                    <div class="domain">Fraud Detection</div>
+                    <h4>Autonomous Anti-Fraud Agent</h4>
+                    <p class="value-prop">Detects, decides, acts—while competitors are still sending emails</p>
+                </div>
+
+                <div class="agent-card" onclick="showAgentDetail(2)">
+                    <div class="domain">Credit & Lending</div>
+                    <h4>Adaptive Underwriting Agent</h4>
+                    <p class="value-prop">Updates credit decisions in real-time, not quarterly</p>
+                </div>
+
+                <div class="agent-card" onclick="showAgentDetail(3)">
+                    <div class="domain">Compliance & Risk</div>
+                    <h4>Continuous Regulatory Monitoring</h4>
+                    <p class="value-prop">100% transaction compliance checking, not statistical sampling</p>
+                </div>
+
+                <div class="agent-card" onclick="showAgentDetail(4)">
+                    <div class="domain">Wealth Management</div>
+                    <h4>Virtual Relationship Manager</h4>
+                    <p class="value-prop">HNI customers get 24/7 wealth management, not voicemail</p>
+                </div>
+
+                <div class="agent-card" onclick="showAgentDetail(5)">
+                    <div class="domain">Operations</div>
+                    <h4>Workflow Orchestration Agent</h4>
+                    <p class="value-prop">Real-time reconciliation across 20+ systems, not overnight batches</p>
+                </div>
+
+                <div class="agent-card" onclick="showAgentDetail(6)">
+                    <div class="domain">Retail Banking</div>
+                    <h4>Personal Finance Co-Pilot</h4>
+                    <p class="value-prop">Retail customers get private banking treatment, at scale</p>
+                </div>
+            </div>
+
+            <!-- Agent Details (hidden by default) -->
+            <div id="agent1-detail" class="agent-detail">
+                <h4>Autonomous Anti-Fraud Agent</h4>
+                
+                <div class="timeline-container">
+                    <div class="timeline-card traditional">
+                        <h5>⚠️ Traditional AI Approach (Assisted)</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">Fri 11:47 PM</div>
+                            <div class="event-text">Fraud detection system identifies coordinated ATM skimming pattern across 207 cards</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">Fri 11:48 PM</div>
+                            <div class="event-text">Alert sent to fraud team email and dashboard</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">Sat-Sun</div>
+                            <div class="event-text">Weekend - No one monitoring alerts</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">Mon 9:00 AM</div>
+                            <div class="event-text">Junior analyst sees alert, begins investigation</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">Mon 11:30 AM</div>
+                            <div class="event-text">Escalated to senior analyst for review</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">Mon 3:00 PM</div>
+                            <div class="event-text">Report created for manager approval</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1.2s;">
+                            <div class="time">Tue 10:00 AM</div>
+                            <div class="event-text">Manager reviews and approves freeze action</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1.4s;">
+                            <div class="time">Tue 2:00 PM</div>
+                            <div class="event-text">Cards finally frozen, customers notified</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Timeline: 62 hours</strong><br>
+                            Loss: ₹2.8 crore (207 cards compromised)<br>
+                            847 angry customers
+                        </div>
+                    </div>
+
+                    <div class="timeline-card tantor">
+                        <h5>✅ Tantor Agentic AI (Autonomous)</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">Fri 11:47 PM</div>
+                            <div class="event-text">Agent detects coordinated ATM skimming pattern across 207 cards</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">Fri 11:48 PM</div>
+                            <div class="event-text">Agent cross-references 14 data sources instantly</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">Fri 11:49 PM</div>
+                            <div class="event-text">Agent calculates risk score: 94% confidence (coordinated attack)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">Fri 11:50 PM</div>
+                            <div class="event-text">Agent executes pre-approved action: Freeze all 207 cards</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">Fri 11:51 PM</div>
+                            <div class="event-text">Agent sends SMS to customers with fraud alert and explanation</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">Fri 11:52 PM</div>
+                            <div class="event-text">Agent files police report, creates audit trail, generates investigation report</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1.2s;">
+                            <div class="time">Mon 9:00 AM</div>
+                            <div class="event-text">Fraud team arrives to find complete investigation already done</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Timeline: 5 minutes</strong><br>
+                            Loss: ₹18 lakhs (23 cards compromised before detection)<br>
+                            Prevented ₹2.62 crore loss
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vs-box">
+                    <strong>vs. IBM Watson / SAS Fraud Management:</strong> They detect. We detect + decide + act. The difference is ₹2.62 crore per incident.
+                </div>
+                <div class="roi-metric">
+                    Banks see 85-90% reduction in fraud losses within 90 days
+                </div>
+            </div>
+
+            <div id="agent2-detail" class="agent-detail">
+                <h4>Adaptive Underwriting Agent</h4>
+                
+                <div class="timeline-container">
+                    <div class="timeline-card traditional">
+                        <h5>⚠️ Traditional Credit Scoring</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">Monday 10 AM</div>
+                            <div class="event-text">Customer applies for ₹50L home loan online</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">Monday 10:15 AM</div>
+                            <div class="event-text">System pulls CIBIL score: 680 (last updated 30 days ago)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">Monday 11 AM</div>
+                            <div class="event-text">Underwriter reviews: Score below 700 threshold</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">Monday 2 PM</div>
+                            <div class="event-text">Application rejected via automated email</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">Monday 3 PM</div>
+                            <div class="event-text">Customer receives rejection, applies at competitor bank</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Result: Customer Lost</strong><br>
+                            CIBIL missed: Recent promotion (40% salary increase), car loan closure, new SIP investments<br>
+                            Lost revenue: ₹1.2L (loan interest over 20 years)
+                        </div>
+                    </div>
+
+                    <div class="timeline-card tantor">
+                        <h5>✅ Tantor Real-Time Scoring</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">Monday 10 AM</div>
+                            <div class="event-text">Customer applies for ₹50L home loan online</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">Monday 10:01 AM</div>
+                            <div class="event-text">Agent analyzes 200+ real-time data points</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">Monday 10:02 AM</div>
+                            <div class="event-text">Agent detects: Salary increased 40% last month (promotion verified)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">Monday 10:03 AM</div>
+                            <div class="event-text">Agent finds: Car loan closed yesterday, SIP started in equity funds</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">Monday 10:04 AM</div>
+                            <div class="event-text">Agent calculates real-time score: 740 (excellent risk profile)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">Monday 10:05 AM</div>
+                            <div class="event-text">Agent auto-approves loan, sends congratulatory SMS</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Timeline: 5 minutes</strong><br>
+                            Result: Loan approved before competitor sees application<br>
+                            Revenue captured: ₹1.2L + lifetime customer value
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vs-box">
+                    <strong>vs. FICO / Experian:</strong> They score monthly. We score continuously. First to approve wins the customer.
+                </div>
+                <div class="roi-metric">
+                    Banks see 30-40% increase in approval rates without increasing risk
+                </div>
+            </div>
+
+            <div id="agent3-detail" class="agent-detail">
+                <h4>Continuous Regulatory Monitoring Agent</h4>
+                
+                <div class="timeline-container">
+                    <div class="timeline-card traditional">
+                        <h5>⚠️ Traditional Compliance (Sample-Based)</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">Tuesday 2 PM</div>
+                            <div class="event-text">Customer transfers ₹15L to newly added beneficiary in high-risk country</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">Tuesday 2:01 PM</div>
+                            <div class="event-text">Transaction processed successfully</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">End of Month</div>
+                            <div class="event-text">Compliance team runs monthly sample audit (checks 10% of transactions)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">+30 Days</div>
+                            <div class="event-text">This transaction randomly selected in audit sample</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">+31 Days</div>
+                            <div class="event-text">Analyst discovers: Customer KYC was outdated, country on watchlist</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">+32 Days</div>
+                            <div class="event-text">RBI violation report filed, penalty notice received</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Timeline: 32 days to detection</strong><br>
+                            RBI Penalty: ₹2.5 lakhs<br>
+                            Reputational damage: Priceless
+                        </div>
+                    </div>
+
+                    <div class="timeline-card tantor">
+                        <h5>✅ Tantor Real-Time Monitoring</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">Tuesday 2 PM</div>
+                            <div class="event-text">Customer attempts ₹15L transfer to new international beneficiary</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">2:00:00.100</div>
+                            <div class="event-text">Agent checks: Customer KYC status (expired 15 days ago)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">2:00:00.200</div>
+                            <div class="event-text">Agent checks: Beneficiary country (on FATF grey list)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">2:00:00.300</div>
+                            <div class="event-text">Agent checks: Transaction history (no prior international transfers)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">2:00:00.400</div>
+                            <div class="event-text">Agent calculates risk: 93% violation probability</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">2:00:00.500</div>
+                            <div class="event-text">Agent blocks transaction, triggers enhanced due diligence workflow</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1.2s;">
+                            <div class="time">Tuesday 2:01 PM</div>
+                            <div class="event-text">Compliance team notified with complete context and recommended action</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Timeline: 500 milliseconds</strong><br>
+                            Violation prevented before occurrence<br>
+                            Penalty saved: ₹2.5 lakhs + reputation preserved
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vs-box">
+                    <strong>vs. Informatica / Collibra:</strong> They govern data (what happened yesterday). We govern transactions (what's happening now).
+                </div>
+                <div class="roi-metric">
+                    Banks see 70-80% reduction in compliance violations and penalties
+                </div>
+            </div>
+
+            <div id="agent4-detail" class="agent-detail">
+                <h4>Autonomous Virtual Relationship Manager</h4>
+                
+                <div class="timeline-container">
+                    <div class="timeline-card traditional">
+                        <h5>⚠️ Traditional Wealth Management</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">Tue 2:00 AM</div>
+                            <div class="event-text">Market crash: Nifty down 800 points, global markets plunging</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">Tue 2:15 AM</div>
+                            <div class="event-text">HNI customer's portfolio down ₹2.4 crore (12% drawdown)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">Tue 7:00 AM</div>
+                            <div class="event-text">Customer wakes, checks app, sees massive red numbers, panics</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">Tue 7:15 AM</div>
+                            <div class="event-text">Customer calls RM (voicemail - not working hours yet)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">Tue 9:15 AM</div>
+                            <div class="event-text">Market opens, customer panic-sells entire portfolio</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">Tue 10:00 AM</div>
+                            <div class="event-text">RM calls back, too late - customer already sold at bottom</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1.2s;">
+                            <div class="time">Tue 3:00 PM</div>
+                            <div class="event-text">Market recovers 60% of losses - customer locked in ₹45L loss</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Result: ₹45 lakhs avoidable loss</strong><br>
+                            Customer trust broken<br>
+                            Considering moving to competitor bank
+                        </div>
+                    </div>
+
+                    <div class="timeline-card tantor">
+                        <h5>✅ Tantor Virtual RM Agent</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">Tue 2:00 AM</div>
+                            <div class="event-text">Market crash detected: Nifty down 800 points</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">Tue 2:05 AM</div>
+                            <div class="event-text">Agent analyzes customer portfolio: ₹20 crore AUM, down ₹2.4 crore</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">Tue 2:06 AM</div>
+                            <div class="event-text">Agent checks risk profile: Max 15% drawdown allowed, currently 12%</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">Tue 2:07 AM</div>
+                            <div class="event-text">Agent decision: Within tolerance but approaching limit</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">Tue 2:10 AM</div>
+                            <div class="event-text">Agent rebalances: Moves ₹3 crore from equity to debt (15% shift)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">Tue 2:15 AM</div>
+                            <div class="event-text">Agent sends SMS: "Market volatility detected. I've rebalanced your portfolio per your risk profile. No action needed."</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1.2s;">
+                            <div class="time">Tue 7:00 AM</div>
+                            <div class="event-text">Customer wakes, sees reassuring message, feels confident in bank</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Result: ₹38 lakhs saved</strong><br>
+                            Customer trust strengthened<br>
+                            Refers 3 friends to bank
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vs-box">
+                    <strong>vs. Salesforce Einstein / Chatbots:</strong> Einstein answers questions. Tantor manages portfolios. Conversation vs action.
+                </div>
+                <div class="roi-metric">
+                    Banks see 40-50% reduction in HNI churn within 6 months
+                </div>
+            </div>
+
+            <div id="agent5-detail" class="agent-detail">
+                <h4>Workflow Orchestration Agent</h4>
+                
+                <div class="timeline-container">
+                    <div class="timeline-card traditional">
+                        <h5>⚠️ Traditional Batch Processing</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">1st, 12:01 AM</div>
+                            <div class="event-text">Salary day: 50,000 salary credits start flowing in</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">1st, 6:00 AM</div>
+                            <div class="event-text">All 50,000 transactions processed and posted to accounts</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">1st, 11:00 PM</div>
+                            <div class="event-text">Overnight batch reconciliation job runs</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">2nd, 9:00 AM</div>
+                            <div class="event-text">Ops team arrives, finds 847 mismatches flagged</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">2nd, 10:00 AM</div>
+                            <div class="event-text">Manual investigation begins - one error: salary to wrong account (typo)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">2nd, 12:00 PM</div>
+                            <div class="event-text">Customer calls: "Where's my salary?" Added to resolution queue</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1.2s;">
+                            <div class="time">5th</div>
+                            <div class="event-text">Error corrected after 3-5 days investigation and approvals</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Timeline: 4-5 days to resolve</strong><br>
+                            Investigation cost: ₹450 per error × 847 = ₹3.8L<br>
+                            Angry customers: 847 calls to call center
+                        </div>
+                    </div>
+
+                    <div class="timeline-card tantor">
+                        <h5>✅ Tantor Real-Time Orchestration</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">1st, 2:45 AM</div>
+                            <div class="event-text">Agent monitoring salary credits in real-time</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">2:45:03 AM</div>
+                            <div class="event-text">Agent detects: Credit to account 123456780 but employer file shows 123456788</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">2:45:05 AM</div>
+                            <div class="event-text">Agent checks: Is 123456788 a valid account? Yes. Same customer name? Yes.</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">2:45:06 AM</div>
+                            <div class="event-text">Agent verifies: Typo detected (last digit: 0 vs 8)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">2:45:07 AM</div>
+                            <div class="event-text">Agent executes: Reverse credit from wrong account, post to correct account</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">2:45:08 AM</div>
+                            <div class="event-text">Agent logs complete audit trail, sends SMS to customer</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1.2s;">
+                            <div class="time">1st, 7:00 AM</div>
+                            <div class="event-text">Customer wakes up, checks app, salary correctly credited</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Timeline: 8 seconds</strong><br>
+                            Cost: ₹2.5L for 50,000 transactions<br>
+                            Happy customers: 100% on-time credits
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vs-box">
+                    <strong>vs. UiPath RPA / Automation Anywhere:</strong> RPA bots follow scripts (If this, then that). Tantor agents make decisions. Scripted vs intelligent.
+                </div>
+                <div class="roi-metric">
+                    Banks see 60-70% reduction in ops costs and errors
+                </div>
+            </div>
+
+            <div id="agent6-detail" class="agent-detail">
+                <h4>Personal Finance Co-Pilot Agent</h4>
+                
+                <div class="timeline-container">
+                    <div class="timeline-card traditional">
+                        <h5>⚠️ Traditional Financial Planning</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">Apr-Dec</div>
+                            <div class="event-text">Customer earns ₹18 lakhs, forgets about tax planning</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">15 March</div>
+                            <div class="event-text">Customer suddenly realizes: Only 2 weeks until tax filing deadline!</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">16 March</div>
+                            <div class="event-text">Customer rushes to bank branch, waits 45 minutes</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">16 March</div>
+                            <div class="event-text">Bank officer explains 80C options, customer fills forms</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">20 March</div>
+                            <div class="event-text">Forms processed, investment initiated</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">25 March</div>
+                            <div class="event-text">Investment confirmation received</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1.2s;">
+                            <div class="time">31 March</div>
+                            <div class="event-text">Tax filed, but rushed planning led to suboptimal choices</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Result: Stressful experience</strong><br>
+                            Extra tax paid: ₹12K (partial optimization only)<br>
+                            Customer frustrated with bank
+                        </div>
+                    </div>
+
+                    <div class="timeline-card tantor">
+                        <h5>✅ Tantor Proactive Co-Pilot</h5>
+                        <div class="timeline-event" style="animation-delay: 0s;">
+                            <div class="time">1 January</div>
+                            <div class="event-text">Agent analyzes: Customer earned ₹18L (Apr-Dec), projects ₹24L by March</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.2s;">
+                            <div class="time">1 January</div>
+                            <div class="event-text">Agent calculates: 30% tax bracket, needs ₹1.5L 80C to optimize</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.4s;">
+                            <div class="time">1 January</div>
+                            <div class="event-text">Agent checks: Customer has ₹8.2L in savings account (idle)</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.6s;">
+                            <div class="time">5 January</div>
+                            <div class="event-text">Agent sends app notification: "Save ₹46K tax by investing ₹1.5L. I found the best ELSS fund for you. [YES] [Customize]"</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 0.8s;">
+                            <div class="time">5 January</div>
+                            <div class="event-text">Customer clicks YES while having morning coffee</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1s;">
+                            <div class="time">5 January</div>
+                            <div class="event-text">Agent executes: ₹1.5L moved to ELSS, tax savings confirmed</div>
+                        </div>
+                        <div class="timeline-event" style="animation-delay: 1.2s;">
+                            <div class="time">February</div>
+                            <div class="event-text">Agent monitors: Income higher than projected, suggests PPF top-up</div>
+                        </div>
+                        <div class="timeline-result">
+                            <strong>Result: Effortless optimization</strong><br>
+                            Tax saved: ₹46K (full optimization)<br>
+                            Customer delighted, shares with friends
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vs-box">
+                    <strong>vs. Envestnet Yodlee / Mint:</strong> They show insights ("You're overspending"). Tantor takes action ("I've moved ₹12K to savings"). Awareness vs outcomes.
+                </div>
+                <div class="roi-metric">
+                    Banks see 4-6x increase in retail customer engagement and cross-sell
+                </div>
+            </div>
+
+            <div class="section-navigation">
+                <button class="nav-btn back" onclick="showSection(1)">← Back: Autonomy Gap</button>
+                <button class="nav-btn next" onclick="showSection(3)">Next: Your Business Case →</button>
+            </div>
+        </div>
+
+        <!-- Section 3: Your Business Case -->
+        <div id="section3" class="section">
+            <h2 class="section-title">Your Bank's Personalized Business Case</h2>
+            
+            <p style="font-size: 1.2em; color: #4a5568; margin-bottom: 30px; line-height: 1.8;">
+                Select the 2 agents that address your most urgent pain points, then input your numbers to calculate potential ROI:
+            </p>
+
+            <h3 style="font-size: 1.4em; color: #2d3748; margin: 30px 0 20px 0;">Step 1: Select Your Priority Domains</h3>
+
+            <div class="agent-grid">
+                <div class="agent-card" onclick="toggleAgentSelection(1)" id="select-agent-1">
+                    <div class="domain">Fraud Detection</div>
+                    <h4>Anti-Fraud Agent</h4>
+                    <p class="value-prop">Reduce fraud losses</p>
+                </div>
+
+                <div class="agent-card" onclick="toggleAgentSelection(2)" id="select-agent-2">
+                    <div class="domain">Credit & Lending</div>
+                    <h4>Underwriting Agent</h4>
+                    <p class="value-prop">Increase approval rates</p>
+                </div>
+
+                <div class="agent-card" onclick="toggleAgentSelection(3)" id="select-agent-3">
+                    <div class="domain">Compliance</div>
+                    <h4>Regulatory Monitoring</h4>
+                    <p class="value-prop">Avoid penalties</p>
+                </div>
+
+                <div class="agent-card" onclick="toggleAgentSelection(4)" id="select-agent-4">
+                    <div class="domain">Wealth Management</div>
+                    <h4>Virtual RM Agent</h4>
+                    <p class="value-prop">Reduce HNI churn</p>
+                </div>
+
+                <div class="agent-card" onclick="toggleAgentSelection(5)" id="select-agent-5">
+                    <div class="domain">Operations</div>
+                    <h4>Workflow Agent</h4>
+                    <p class="value-prop">Lower ops costs</p>
+                </div>
+
+                <div class="agent-card" onclick="toggleAgentSelection(6)" id="select-agent-6">
+                    <div class="domain">Retail Banking</div>
+                    <h4>Finance Co-Pilot</h4>
+                    <p class="value-prop">Boost engagement</p>
+                </div>
+            </div>
+
+            <div id="roi-calculator" style="display: none;">
+                <h3 style="font-size: 1.4em; color: #2d3748; margin: 40px 0 20px 0;">Step 2: Input Your Current State</h3>
+
+                <div id="agent1-inputs" class="calculator-section" style="display: none;">
+                    <h4 style="margin-bottom: 20px;">Anti-Fraud Agent - Your Numbers</h4>
+                    <div class="calculator-inputs">
+                        <div class="input-group">
+                            <label>Monthly fraud alerts:</label>
+                            <input type="number" id="roi-fraud-alerts" value="30000" />
+                        </div>
+                        <div class="input-group">
+                            <label>Team investigation capacity (per month):</label>
+                            <input type="number" id="roi-fraud-capacity" value="1500" />
+                        </div>
+                        <div class="input-group">
+                            <label>Average loss per fraud incident (₹):</label>
+                            <input type="number" id="roi-fraud-loss" value="45000" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="agent4-inputs" class="calculator-section" style="display: none;">
+                    <h4 style="margin-bottom: 20px;">Virtual RM Agent - Your Numbers</h4>
+                    <div class="calculator-inputs">
+                        <div class="input-group">
+                            <label>HNI customers (>₹1 Cr AUM):</label>
+                            <input type="number" id="roi-hni-customers" value="5000" />
+                        </div>
+                        <div class="input-group">
+                            <label>Current annual churn rate (%):</label>
+                            <input type="number" id="roi-hni-churn" value="18" />
+                        </div>
+                        <div class="input-group">
+                            <label>Average revenue per HNI (₹/year):</label>
+                            <input type="number" id="roi-hni-revenue" value="420000" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="agent3-inputs" class="calculator-section" style="display: none;">
+                    <h4 style="margin-bottom: 20px;">Regulatory Monitoring Agent - Your Numbers</h4>
+                    <div class="calculator-inputs">
+                        <div class="input-group">
+                            <label>Total active accounts:</label>
+                            <input type="number" id="roi-compliance-accounts" value="2000000" />
+                        </div>
+                        <div class="input-group">
+                            <label>Average compliance violations per month:</label>
+                            <input type="number" id="roi-compliance-violations" value="1200" />
+                        </div>
+                        <div class="input-group">
+                            <label>Average penalty per violation (₹):</label>
+                            <input type="number" id="roi-compliance-penalty" value="250000" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="agent2-inputs" class="calculator-section" style="display: none;">
+                    <h4 style="margin-bottom: 20px;">Underwriting Agent - Your Numbers</h4>
+                    <div class="calculator-inputs">
+                        <div class="input-group">
+                            <label>Monthly loan applications:</label>
+                            <input type="number" id="roi-loan-applications" value="25000" />
+                        </div>
+                        <div class="input-group">
+                            <label>Current approval rate (%):</label>
+                            <input type="number" id="roi-loan-approval" value="42" />
+                        </div>
+                        <div class="input-group">
+                            <label>Average loan size (₹):</label>
+                            <input type="number" id="roi-loan-size" value="850000" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="agent5-inputs" class="calculator-section" style="display: none;">
+                    <h4 style="margin-bottom: 20px;">Workflow Orchestration Agent - Your Numbers</h4>
+                    <div class="calculator-inputs">
+                        <div class="input-group">
+                            <label>Daily transactions:</label>
+                            <input type="number" id="roi-ops-transactions" value="2000000" />
+                        </div>
+                        <div class="input-group">
+                            <label>Current error rate (%):</label>
+                            <input type="number" id="roi-ops-error" value="0.8" />
+                        </div>
+                        <div class="input-group">
+                            <label>Cost to fix each error (₹):</label>
+                            <input type="number" id="roi-ops-fix-cost" value="450" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="agent6-inputs" class="calculator-section" style="display: none;">
+                    <h4 style="margin-bottom: 20px;">Personal Finance Co-Pilot - Your Numbers</h4>
+                    <div class="calculator-inputs">
+                        <div class="input-group">
+                            <label>Retail customers (savings >₹1L):</label>
+                            <input type="number" id="roi-retail-customers" value="400000" />
+                        </div>
+                        <div class="input-group">
+                            <label>Average revenue per customer (₹/year):</label>
+                            <input type="number" id="roi-retail-revenue" value="2800" />
+                        </div>
+                        <div class="input-group">
+                            <label>Current engagement rate (%):</label>
+                            <input type="number" id="roi-retail-engagement" value="12" />
+                        </div>
+                    </div>
+                </div>
+
+                <button class="calculate-button" onclick="calculateROI()">Calculate Your ROI</button>
+
+                <div id="roi-results" class="results-container">
+                    <!-- Results will be dynamically inserted here -->
+                </div>
+
+                <div id="infrastructure-cost" class="infrastructure-section" style="display: none;">
+                    <h5>Infrastructure Requirements</h5>
+                    <p style="color: #4a5568; margin-bottom: 15px;">Agentic AI requires GPU infrastructure for real-time autonomous decision-making:</p>
+                    <div class="infrastructure-grid">
+                        <div class="infrastructure-item">
+                            <strong>GPU Cluster</strong>
+                            <span id="gpu-cost">Estimated: ₹80 lakhs/year</span>
+                        </div>
+                        <div class="infrastructure-item">
+                            <strong>Cloud/On-Premise</strong>
+                            <span>Flexible deployment options</span>
+                        </div>
+                        <div class="infrastructure-item">
+                            <strong>Integration Layer</strong>
+                            <span id="integration-cost">Estimated: ₹45 lakhs one-time</span>
+                        </div>
+                        <div class="infrastructure-item">
+                            <strong>Ongoing Support</strong>
+                            <span id="support-cost">Estimated: ₹55 lakhs/year</span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #667eea; font-weight: 600;" id="total-infrastructure-cost">
+                        Total Year 1 Infrastructure: ₹2.25 crore
+                    </p>
+                </div>
+
+                <div class="export-buttons" id="export-section" style="display: none;">
+                    <button class="export-button" onclick="exportPDF()">📄 Export PDF Summary</button>
+                    <button class="export-button" onclick="emailSummary()">✉️ Email Summary</button>
+                </div>
+            </div>
+
+            <div class="section-navigation">
+                <button class="nav-btn back" onclick="showSection(2)">← Back: Six Agents</button>
+                <button class="nav-btn next" onclick="showSection(4)">Next: Path Forward →</button>
+            </div>
+        </div>
+
+        <!-- Section 4: Path Forward -->
+        <div id="section4" class="section">
+            <h2 class="section-title">The Path Forward: Proof of Value to Scaled Deployment</h2>
+            
+            <div id="recommendation-box" class="highlight-box">
+                <h3>Based on your analysis:</h3>
+                <p id="recommendation-text">Complete Section 3 to see your personalized recommendation</p>
+            </div>
+
+            <div class="path-cards">
+                <div class="path-card">
+                    <h4>PHASE 1: Proof of Value (30 days)</h4>
+                    <ul>
+                        <li>Deploy ONE agent in controlled environment</li>
+                        <li>Your data, your infrastructure</li>
+                        <li>Measure actual impact vs projections</li>
+                        <li>Zero commitment, full transparency</li>
+                    </ul>
+                    <div class="success-criteria">
+                        <strong>Success Criteria:</strong> 60%+ of projected savings realized
+                    </div>
+                </div>
+
+                <div class="path-card">
+                    <h4>PHASE 2: Scaled Deployment (90 days)</h4>
+                    <ul>
+                        <li>Deploy all selected agents across bank</li>
+                        <li>Integration with core banking systems</li>
+                        <li>Staff training and change management</li>
+                        <li>Full audit trail and compliance framework</li>
+                    </ul>
+                    <div class="success-criteria">
+                        <strong>Success Criteria:</strong> Full ROI realization within 6 months
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.5em; color: #2d3748; margin: 40px 0 20px 0; text-align: center;">What Makes Sense for Your Bank?</h3>
+
+            <div class="choice-container">
+                <div class="choice-card" onclick="selectNextStep('fraud')">
+                    <h3>Option A</h3>
+                    <p>Start with Anti-Fraud Agent (highest immediate impact, fastest ROI)</p>
+                </div>
+                <div class="choice-card" onclick="selectNextStep('strategic')">
+                    <h3>Option B</h3>
+                    <p>Start with Virtual RM or Underwriting (highest strategic value)</p>
+                </div>
+                <div class="choice-card" onclick="selectNextStep('detail')">
+                    <h3>Option C</h3>
+                    <p>Need more detail before deciding (technical architecture, compliance, references)</p>
+                </div>
+            </div>
+
+            <div id="next-step-feedback" style="display: none; margin: 30px 0;">
+                <div class="highlight-box">
+                    <h3 id="next-step-title">Next Step</h3>
+                    <p id="next-step-text"></p>
+                </div>
+            </div>
+
+            <div class="section-navigation">
+                <button class="nav-btn back" onclick="showSection(3)">← Back: Your Business Case</button>
+                <button class="nav-btn next" onclick="completeSession()">Complete Session ✓</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>© 2026 Translab Technologies</strong></p>
+        <p>For training and education purposes only</p>
+        <p>Contact: <a href="/cdn-cgi/l/email-protection#d9b0b7bfb699adabb8b7aab5b8bbf7b0b6"><span class="__cf_email__" data-cfemail="761f1810193602041718051a1714581f19">[email&#160;protected]</span></a></p>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Global state
+        let selectedAgents = [];
+        let calculatedROI = null;
+
+        // Navigation
+        function showSection(num) {
+            // Hide all sections
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('section' + i).classList.remove('active');
+            }
+            // Show selected section
+            document.getElementById('section' + num).classList.add('active');
+            
+            // Update navigation buttons
+            const buttons = document.querySelectorAll('.nav-button');
+            buttons.forEach((btn, index) => {
+                btn.classList.remove('active');
+                if (index === num - 1) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Section 1: Approach selection
+        function selectApproach(type) {
+            document.getElementById('approach-feedback').style.display = 'block';
+            if (type === 'alert') {
+                document.getElementById('alert-feedback').style.display = 'block';
+                document.getElementById('action-feedback').style.display = 'none';
+            } else {
+                document.getElementById('alert-feedback').style.display = 'none';
+                document.getElementById('action-feedback').style.display = 'block';
+            }
+        }
+
+        // Section 1: Calculate gap cost
+        function calculateGapCost() {
+            const alerts = parseInt(document.getElementById('fraudAlerts').value);
+            const capacity = parseInt(document.getElementById('investigationCapacity').value);
+            
+            if (isNaN(alerts) || isNaN(capacity)) {
+                alert('Please enter valid numbers for both fields');
+                return;
+            }
+            
+            const uninvestigated = alerts - capacity;
+            const coverageGap = ((uninvestigated / alerts) * 100).toFixed(1);
+            const avgLoss = 45000; // Average fraud loss in rupees
+            const fraudRate = 0.05; // 5% of uninvestigated are actual fraud
+            
+            // Calculate in rupees first, then convert to crores
+            const totalLossRupees = uninvestigated * avgLoss * fraudRate;
+            const monthlyExposure = totalLossRupees / 10000000; // Convert to crores
+            const annualLoss = monthlyExposure * 12;
+            
+            document.getElementById('uninvestigated').textContent = uninvestigated.toLocaleString('en-IN');
+            document.getElementById('coverageGap').textContent = coverageGap + '%';
+            document.getElementById('monthlyExposure').textContent = '₹' + monthlyExposure.toFixed(2) + ' crore';
+            document.getElementById('annualLoss').textContent = '₹' + annualLoss.toFixed(2) + ' crore';
+            
+            // Make results visible
+            const resultsDiv = document.getElementById('gap-results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.classList.add('show');
+            
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Section 2: Show agent details
+        function showAgentDetail(agentNum) {
+            // Hide all agent details
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById('agent' + i + '-detail').classList.remove('show');
+            }
+            // Show selected agent detail
+            document.getElementById('agent' + agentNum + '-detail').classList.add('show');
+            
+            // Scroll to detail
+            document.getElementById('agent' + agentNum + '-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Section 3: Toggle agent selection
+        function toggleAgentSelection(agentNum) {
+            const card = document.getElementById('select-agent-' + agentNum);
+            const index = selectedAgents.indexOf(agentNum);
+            
+            if (index > -1) {
+                // Deselect
+                selectedAgents.splice(index, 1);
+                card.classList.remove('selected');
+            } else {
+                // Select (max 2)
+                if (selectedAgents.length < 2) {
+                    selectedAgents.push(agentNum);
+                    card.classList.add('selected');
+                } else {
+                    alert('Please select only 2 agents for your business case');
+                    return;
+                }
+            }
+            
+            // Show/hide calculator
+            if (selectedAgents.length === 2) {
+                document.getElementById('roi-calculator').style.display = 'block';
+                
+                // Show relevant input sections
+                selectedAgents.forEach(num => {
+                    const inputSection = document.getElementById('agent' + num + '-inputs');
+                    if (inputSection) {
+                        inputSection.style.display = 'block';
+                    }
+                });
+                
+                // Scroll to calculator
+                document.getElementById('roi-calculator').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                document.getElementById('roi-calculator').style.display = 'none';
+                // Hide all input sections
+                for (let i = 1; i <= 6; i++) {
+                    const inputSection = document.getElementById('agent' + i + '-inputs');
+                    if (inputSection) {
+                        inputSection.style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        // Section 3: Calculate ROI
+        function calculateROI() {
+            let totalSavings90Days = 0;
+            let totalSavingsAnnual = 0;
+            let resultsHTML = '';
+            
+            selectedAgents.forEach(agentNum => {
+                let agentResults = calculateAgentROI(agentNum);
+                resultsHTML += agentResults.html;
+                totalSavings90Days += agentResults.savings90;
+                totalSavingsAnnual += agentResults.savingsAnnual;
+            });
+            
+            // Infrastructure costs
+            const infrastructureCostYear1 = 2.25; // crores
+            const infrastructureCostAnnual = 1.35; // crores (excluding one-time integration)
+            
+            const netBenefitYear1 = totalSavingsAnnual - infrastructureCostYear1;
+            const roi = ((netBenefitYear1 / infrastructureCostYear1) * 100).toFixed(0);
+            
+            // Summary box
+            resultsHTML += `
+                <div class="highlight-box">
+                    <h3>COMBINED 90-DAY IMPACT: ₹${totalSavings90Days.toFixed(2)} CRORE</h3>
+                    <p>Year 1 Savings: ₹${totalSavingsAnnual.toFixed(2)} crore</p>
+                    <p>Infrastructure Cost: ₹${infrastructureCostYear1.toFixed(2)} crore</p>
+                    <p style="font-size: 1.5em; margin-top: 15px;"><strong>NET BENEFIT: ₹${netBenefitYear1.toFixed(2)} CRORE/YEAR</strong></p>
+                    <p style="font-size: 1.3em;">ROI: ${roi}%</p>
+                </div>
+            `;
+            
+            document.getElementById('roi-results').innerHTML = resultsHTML;
+            document.getElementById('roi-results').classList.add('show');
+            document.getElementById('infrastructure-cost').style.display = 'block';
+            document.getElementById('export-section').style.display = 'flex';
+            
+            // Store for Section 4
+            calculatedROI = {
+                savings90: totalSavings90Days,
+                savingsAnnual: totalSavingsAnnual,
+                netBenefit: netBenefitYear1,
+                roi: roi,
+                agents: selectedAgents
+            };
+            
+            // Update Section 4 recommendation
+            updateSection4Recommendation();
+            
+            // Scroll to results
+            document.getElementById('roi-results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function calculateAgentROI(agentNum) {
+            let html = '';
+            let savings90 = 0;
+            let savingsAnnual = 0;
+            
+            switch(agentNum) {
+                case 1: // Anti-Fraud
+                    const fraudAlerts = parseInt(document.getElementById('roi-fraud-alerts').value);
+                    const fraudCapacity = parseInt(document.getElementById('roi-fraud-capacity').value);
+                    const fraudLoss = parseInt(document.getElementById('roi-fraud-loss').value);
+                    
+                    const uninvestigated = fraudAlerts - fraudCapacity;
+                    const currentAnnualLoss = (uninvestigated * fraudLoss * 0.05 * 12) / 10000000; // crores
+                    const withTantorLoss = currentAnnualLoss * 0.10; // 90% reduction
+                    savingsAnnual = currentAnnualLoss - withTantorLoss;
+                    savings90 = savingsAnnual / 4;
+                    
+                    html = `
+                        <div class="result-card">
+                            <h4>ANTI-FRAUD AGENT</h4>
+                            <div class="result-row">
+                                <span class="result-label">Current annual fraud loss:</span>
+                                <span class="result-value negative">₹${currentAnnualLoss.toFixed(2)} crore</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">With Tantor (90% reduction):</span>
+                                <span class="result-value positive">₹${withTantorLoss.toFixed(2)} crore</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Annual savings:</span>
+                                <span class="result-value positive">₹${savingsAnnual.toFixed(2)} crore</span>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 4: // Virtual RM
+                    const hniCustomers = parseInt(document.getElementById('roi-hni-customers').value);
+                    const hniChurn = parseFloat(document.getElementById('roi-hni-churn').value);
+                    const hniRevenue = parseInt(document.getElementById('roi-hni-revenue').value);
+                    
+                    const currentChurnCost = (hniCustomers * (hniChurn/100) * hniRevenue) / 10000000; // crores
+                    const withTantorChurn = 6; // 6% churn with Tantor
+                    const withTantorChurnCost = (hniCustomers * (withTantorChurn/100) * hniRevenue) / 10000000;
+                    savingsAnnual = currentChurnCost - withTantorChurnCost;
+                    savings90 = savingsAnnual / 4;
+                    
+                    html = `
+                        <div class="result-card">
+                            <h4>VIRTUAL RM AGENT</h4>
+                            <div class="result-row">
+                                <span class="result-label">Current annual churn cost:</span>
+                                <span class="result-value negative">₹${currentChurnCost.toFixed(2)} crore</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">With Tantor (6% churn):</span>
+                                <span class="result-value positive">₹${withTantorChurnCost.toFixed(2)} crore</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Annual savings:</span>
+                                <span class="result-value positive">₹${savingsAnnual.toFixed(2)} crore</span>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 3: // Compliance
+                    const complianceViolations = parseInt(document.getElementById('roi-compliance-violations').value);
+                    const compliancePenalty = parseInt(document.getElementById('roi-compliance-penalty').value);
+                    
+                    const currentPenalties = (complianceViolations * 12 * compliancePenalty) / 10000000; // crores
+                    const withTantorPenalties = currentPenalties * 0.20; // 80% reduction
+                    savingsAnnual = currentPenalties - withTantorPenalties;
+                    savings90 = savingsAnnual / 4;
+                    
+                    html = `
+                        <div class="result-card">
+                            <h4>REGULATORY MONITORING AGENT</h4>
+                            <div class="result-row">
+                                <span class="result-label">Current annual penalties:</span>
+                                <span class="result-value negative">₹${currentPenalties.toFixed(2)} crore</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">With Tantor (80% reduction):</span>
+                                <span class="result-value positive">₹${withTantorPenalties.toFixed(2)} crore</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Annual savings:</span>
+                                <span class="result-value positive">₹${savingsAnnual.toFixed(2)} crore</span>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 2: // Underwriting
+                    const loanApplications = parseInt(document.getElementById('roi-loan-applications').value);
+                    const approvalRate = parseFloat(document.getElementById('roi-loan-approval').value);
+                    const loanSize = parseInt(document.getElementById('roi-loan-size').value);
+                    
+                    const currentApprovals = loanApplications * (approvalRate/100);
+                    const withTantorApprovals = loanApplications * 0.58; // 58% approval rate
+                    const additionalLoans = (withTantorApprovals - currentApprovals) * 12;
+                    const loanRevenue = loanSize * 0.02; // 2% revenue per loan
+                    savingsAnnual = (additionalLoans * loanRevenue) / 10000000; // crores
+                    savings90 = savingsAnnual / 4;
+                    
+                    html = `
+                        <div class="result-card">
+                            <h4>ADAPTIVE UNDERWRITING AGENT</h4>
+                            <div class="result-row">
+                                <span class="result-label">Current approval rate:</span>
+                                <span class="result-value">${approvalRate}%</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">With Tantor:</span>
+                                <span class="result-value positive">58%</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Additional annual revenue:</span>
+                                <span class="result-value positive">₹${savingsAnnual.toFixed(2)} crore</span>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 5: // Workflow Orchestration
+                    const dailyTrans = parseInt(document.getElementById('roi-ops-transactions').value);
+                    const errorRate = parseFloat(document.getElementById('roi-ops-error').value);
+                    const fixCost = parseInt(document.getElementById('roi-ops-fix-cost').value);
+                    
+                    const dailyErrors = dailyTrans * (errorRate/100);
+                    const currentAnnualCost = (dailyErrors * fixCost * 365) / 10000000; // crores
+                    const withTantorCost = currentAnnualCost * 0.30; // 70% reduction
+                    savingsAnnual = currentAnnualCost - withTantorCost;
+                    savings90 = savingsAnnual / 4;
+                    
+                    html = `
+                        <div class="result-card">
+                            <h4>WORKFLOW ORCHESTRATION AGENT</h4>
+                            <div class="result-row">
+                                <span class="result-label">Current annual ops cost:</span>
+                                <span class="result-value negative">₹${currentAnnualCost.toFixed(2)} crore</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">With Tantor (70% reduction):</span>
+                                <span class="result-value positive">₹${withTantorCost.toFixed(2)} crore</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Annual savings:</span>
+                                <span class="result-value positive">₹${savingsAnnual.toFixed(2)} crore</span>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 6: // Finance Co-Pilot
+                    const retailCustomers = parseInt(document.getElementById('roi-retail-customers').value);
+                    const retailRevenue = parseInt(document.getElementById('roi-retail-revenue').value);
+                    const engagementRate = parseFloat(document.getElementById('roi-retail-engagement').value);
+                    
+                    const currentRevenue = (retailCustomers * (engagementRate/100) * retailRevenue) / 10000000; // crores
+                    const withTantorEngagement = 70; // 70% engagement
+                    const withTantorRevenue = (retailCustomers * (withTantorEngagement/100) * retailRevenue) / 10000000;
+                    savingsAnnual = withTantorRevenue - currentRevenue;
+                    savings90 = savingsAnnual / 4;
+                    
+                    html = `
+                        <div class="result-card">
+                            <h4>PERSONAL FINANCE CO-PILOT AGENT</h4>
+                            <div class="result-row">
+                                <span class="result-label">Current engagement:</span>
+                                <span class="result-value">${engagementRate}%</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">With Tantor:</span>
+                                <span class="result-value positive">70%</span>
+                            </div>
+                            <div class="result-row">
+                                <span class="result-label">Additional annual revenue:</span>
+                                <span class="result-value positive">₹${savingsAnnual.toFixed(2)} crore</span>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            return { html, savings90, savingsAnnual };
+        }
+
+        // Section 4: Update recommendation
+        function updateSection4Recommendation() {
+            if (calculatedROI) {
+                const text = `Your potential annual impact: ₹${calculatedROI.netBenefit.toFixed(2)} crore (${calculatedROI.roi}% ROI)`;
+                document.getElementById('recommendation-text').textContent = text;
+            }
+        }
+
+        // Section 4: Select next step
+        function selectNextStep(option) {
+            document.getElementById('next-step-feedback').style.display = 'block';
+            const titleEl = document.getElementById('next-step-title');
+            const textEl = document.getElementById('next-step-text');
+            
+            switch(option) {
+                case 'fraud':
+                    titleEl.textContent = 'Excellent Choice: Anti-Fraud POC';
+                    textEl.textContent = 'We\'ll send over the Phase 1 proposal with technical requirements, 30-day timeline, and success metrics. Most banks see results within 21 days. When can we reconvene to review the proposal?';
+                    break;
+                case 'strategic':
+                    titleEl.textContent = 'Strategic Approach';
+                    textEl.textContent = 'We\'ll prepare a Phase 1 proposal focusing on your selected agent with integration requirements, change management plan, and measurement framework. Timeline: 30 days for POC. When can we schedule a detailed technical discussion?';
+                    break;
+                case 'detail':
+                    titleEl.textContent = 'Let\'s Dive Deeper';
+                    textEl.textContent = 'What specific area needs more detail? We can discuss: (1) Technical architecture and integration, (2) Compliance and audit framework, (3) Change management and training, or (4) Customer references and case studies. Which would be most valuable?';
+                    break;
+            }
+            
+            document.getElementById('next-step-feedback').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Export functions
+        function exportPDF() {
+            alert('PDF export functionality would generate a professional summary including:\n\n• Your selected agents\n• Calculated ROI with all assumptions\n• Infrastructure requirements\n• Recommended next steps\n\n(This is a placeholder - actual implementation would use html2pdf library)');
+        }
+
+        function emailSummary() {
+            alert('Email functionality would send a professional summary to your specified recipients.\n\n(This is a placeholder - actual implementation would integrate with your email system)');
+        }
+
+        function completeSession() {
+            let message = '🎉 Session Complete!\n\n';
+            
+            if (calculatedROI) {
+                message += `Your Personalized Business Case:\n`;
+                message += `• 90-Day Impact: ₹${calculatedROI.savings90.toFixed(2)} crore\n`;
+                message += `• Annual Net Benefit: ₹${calculatedROI.netBenefit.toFixed(2)} crore\n`;
+                message += `• ROI: ${calculatedROI.roi}%\n\n`;
+                message += `Selected Agents: ${calculatedROI.agents.length} of 6\n\n`;
+            } else {
+                message += 'You explored the Autonomous Banking Advantage.\n\n';
+            }
+            
+            message += 'Next Steps:\n';
+            message += '1. Export your personalized business case (Section 3)\n';
+            message += '2. Schedule a technical deep-dive with our team\n';
+            message += '3. Discuss Phase 1 POC timeline and requirements\n\n';
+            message += 'Contact: info@translab.io';
+            
+            if (confirm(message + '\n\nWould you like to restart the session?')) {
+                // Reset the tool
+                selectedAgents = [];
+                calculatedROI = null;
+                
+                // Remove all selected classes
+                for (let i = 1; i <= 6; i++) {
+                    const card = document.getElementById('select-agent-' + i);
+                    if (card) card.classList.remove('selected');
+                }
+                
+                // Hide results
+                document.getElementById('roi-calculator').style.display = 'none';
+                document.getElementById('roi-results').classList.remove('show');
+                
+                // Go back to section 1
+                showSection(1);
+            }
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
