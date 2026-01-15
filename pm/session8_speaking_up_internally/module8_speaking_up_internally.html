@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 8: Speaking Up Internally</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 min-h-screen p-4 md:p-8">
+
+<div class="max-w-5xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black text-orange-900">Module 8: Speaking Up Internally</h1>
+                <p class="text-orange-700">Session 8 of 24 • Strength Layer</p>
+            </div>
+            <div class="text-5xl">🗣️</div>
+        </div>
+        <div class="mt-4 bg-gray-200 rounded-full h-3">
+            <div id="progress" class="bg-gradient-to-r from-orange-500 to-red-500 h-3 rounded-full transition-all duration-500" style="width: 16%"></div>
+        </div>
+        <p id="progressText" class="text-center text-sm text-gray-600 mt-2">Section 1 of 6</p>
+    </div>
+
+    <div id="content" class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6"></div>
+
+    <div class="flex justify-between">
+        <button id="backBtn" class="hidden px-6 py-3 bg-gray-300 rounded-lg font-bold">← Back</button>
+        <button id="nextBtn" class="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg font-bold ml-auto">Next →</button>
+    </div>
+</div>
+
+<script>
+console.log('MODULE 8: SPEAKING UP INTERNALLY - FIXED VERSION');
+
+let currentSection = 0;
+let score = 0;
+let scenario1Options = [];
+let scenario2Options = [];
+
+function shuffleArray(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+}
+
+function initializeScenarios() {
+    scenario1Options = shuffleArray([
+        {
+            text: "Wait until next Monday to see if the pattern continues, then brief your manager with more data points.",
+            correct: false,
+            feedback: "Too slow! By Monday, the pattern may have caused more damage. The 48-hour rule exists to catch issues while they're still manageable. Brief your manager within 2 days of spotting the pattern."
+        },
+        {
+            text: "Brief your manager by Thursday with pattern data and impact assessment, following the 48-hour rule.",
+            correct: true,
+            feedback: "Perfect! You spotted a pattern by Wednesday (3 incidents over 3 days). The 48-hour rule means briefing manager by Thursday. This catches the issue early while it's still manageable and shows professional judgment."
+        },
+        {
+            text: "Send a professional email to the client explaining why their requests are creating scope issues and timeline concerns.",
+            correct: false,
+            feedback: "Never push back on clients without manager support first! This is aggressive, not assertive. Always brief your manager internally BEFORE any external communication. Get alignment first."
+        },
+        {
+            text: "Document everything carefully in your notes and continue working, planning to mention it in your next 1-on-1 meeting.",
+            correct: false,
+            feedback: "Documentation is good, but waiting for your scheduled 1-on-1 (which might be next week or next month) violates the 48-hour rule. Create a brief now, don't wait for scheduled meetings."
+        }
+    ]);
+
+    scenario2Options = shuffleArray([
+        {
+            text: "Hi, we need to talk about this stakeholder situation. They keep ignoring my recommendations and it's becoming a problem.",
+            correct: false,
+            feedback: "Too confrontational and vague. 'We need to talk' sounds alarming. 'Becoming a problem' lacks data. Use the magic phrase: 'I need your guidance on something' with specific pattern data."
+        },
+        {
+            text: "I need your guidance on something. I've noticed a pattern with the stakeholder over the past two weeks and want to brief you.",
+            correct: true,
+            feedback: "Excellent! The magic phrase 'I need your guidance' positions you as professional seeking input, not complaining. You mention pattern (data-driven) and timeframe (2 weeks), showing you've prepared. This gets support, not defensiveness."
+        },
+        {
+            text: "Quick heads up - the stakeholder is being difficult again with my recommendations. Just wanted to keep you in the loop on this.",
+            correct: false,
+            feedback: "Too casual and lacks urgency. 'Heads up' and 'just FYI' don't convey this needs action. 'Being difficult' is judgmental, not data. Use the magic phrase and request actual guidance."
+        },
+        {
+            text: "I'm finding it really challenging to work with this stakeholder. Could we schedule time to discuss how to handle them better?",
+            correct: false,
+            feedback: "Focuses on your feelings ('challenging,' 'how to handle them') rather than the business impact and pattern. Also delays action by scheduling future meeting. Use magic phrase now with pattern data."
+        }
+    ]);
+}
+
+const sections = [
+    {
+        title: "Welcome",
+        render: function() {
+            return '<div class="text-center mb-8"><div class="text-7xl mb-4">🗣️</div><h1 class="text-4xl font-black text-orange-900 mb-3">SPEAKING UP INTERNALLY</h1><p class="text-xl text-orange-700">How to Voice Concerns and Get Manager Support</p></div><div class="bg-yellow-50 border-4 border-yellow-400 rounded-xl p-6 mb-6"><h2 class="text-2xl font-black text-yellow-900 mb-3">📊 THE YES BANK LESSON</h2><p class="text-lg mb-2"><strong>What Happened:</strong> Client showed challenging patterns from early stages. PM escalated concerns. The situation evolved over several months as leadership assessed different approaches.</p><p class="text-lg mb-2"><strong>The Learning:</strong> Complex client situations benefit from continued documentation and regular updates as circumstances develop.</p><p class="text-xl font-black text-yellow-900 bg-yellow-100 p-3 rounded mt-3">💡 Key Takeaway: Escalate early (✓), then keep documenting patterns and providing regular status updates throughout the engagement.</p></div><div class="grid md:grid-cols-2 gap-4 mb-6"><div class="bg-red-50 border-2 border-red-300 rounded-xl p-4"><p class="text-xl font-black text-red-900 mb-2">❌ SILENCE COSTS:</p><ul class="text-red-800 space-y-1 text-sm"><li>• Problems grow for weeks</li><li>• Projects fail after months</li><li>• You carry stress alone</li><li>• Recovery becomes impossible</li></ul></div><div class="bg-green-50 border-2 border-green-300 rounded-xl p-4"><p class="text-xl font-black text-green-900 mb-2">✅ SPEAKING UP WINS:</p><ul class="text-green-800 space-y-1 text-sm"><li>• Problems caught early</li><li>• Manager protection</li><li>• Shared responsibility</li><li>• Professional respect grows</li></ul></div></div><div class="bg-orange-900 text-white rounded-xl p-6 text-center"><p class="text-2xl font-bold">Today: Learn to brief your manager professionally</p></div>';
+        }
+    },
+    {
+        title: "S.P.E.A.K. Framework",
+        render: function() {
+            return '<h1 class="text-3xl font-black text-orange-900 mb-6 text-center">THE S.P.E.A.K. FRAMEWORK</h1><div class="space-y-4"><div class="bg-red-50 border-l-4 border-red-500 p-4 rounded"><div class="flex items-center mb-2"><span class="text-3xl mr-3">🔍</span><h3 class="text-xl font-black text-red-900">S = SPOT THE PATTERN EARLY</h3></div><p class="text-gray-700">Don\'t wait for disaster. Voice concerns within <strong>48 hours</strong> of spotting red flags.</p></div><div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded"><div class="flex items-center mb-2"><span class="text-3xl mr-3">📊</span><h3 class="text-xl font-black text-orange-900">P = PREPARE YOUR BRIEF</h3></div><p class="text-gray-700">Data, not emotion. Bring: <strong>Pattern</strong> (what), <strong>Problem</strong> (impact), <strong>Projection</strong> (future risk), <strong>Proof</strong> (evidence).</p></div><div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded"><div class="flex items-center mb-2"><span class="text-3xl mr-3">🤝</span><h3 class="text-xl font-black text-yellow-900">E = ESCALATE WITH MAGIC PHRASE</h3></div><div class="bg-yellow-100 border-2 border-yellow-400 rounded p-3 mt-2"><p class="text-xl font-black text-yellow-900 text-center">"I need your guidance on something..."</p></div></div><div class="bg-green-50 border-l-4 border-green-500 p-4 rounded"><div class="flex items-center mb-2"><span class="text-3xl mr-3">💬</span><h3 class="text-xl font-black text-green-900">A = ARTICULATE CLEARLY</h3></div><p class="text-gray-700"><strong>Structure:</strong> State pattern → Show impact → Present options → Request guidance</p></div><div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded"><div class="flex items-center mb-2"><span class="text-3xl mr-3">📝</span><h3 class="text-xl font-black text-blue-900">K = KEEP RECORDS</h3></div><p class="text-gray-700">Document everything. Email recap after verbal briefs. Protect yourself and Translab.</p></div></div><div class="bg-orange-900 text-white rounded-xl p-4 mt-6 text-center"><p class="text-xl font-bold">Signal early → Brief with data → Get guidance → Move forward together</p></div>';
+        }
+    },
+    {
+        title: "Scenario 1",
+        render: function() {
+            let html = '<div class="text-center mb-6"><h1 class="text-3xl font-black text-orange-900">SCENARIO 1: THE 48-HOUR RULE</h1><p class="text-lg text-orange-700">Testing your ability to spot patterns and act fast</p></div><div class="bg-orange-50 border-4 border-orange-300 rounded-xl p-6 mb-6"><p class="text-xl font-bold mb-3">THE SITUATION:</p><p class="text-lg mb-2">Monday: Client requests major scope change via email</p><p class="text-lg mb-2">Tuesday: Client asks for timeline compression</p><p class="text-lg mb-2">Wednesday: Client demands additional features</p><p class="text-2xl font-black text-orange-900 mt-4">Pattern emerging. What do you do?</p></div><div class="space-y-3">';
+            
+            scenario1Options.forEach((opt, idx) => {
+                html += '<div class="option-card border-2 p-4 rounded-lg cursor-pointer hover:border-blue-500" onclick="selectOption(this, 0, ' + idx + ')"><p class="font-bold">' + opt.text + '</p></div>';
+            });
+            
+            html += '</div><div id="feedback0" class="mt-6 hidden"></div>';
+            return html;
+        }
+    },
+    {
+        title: "Scenario 2",
+        render: function() {
+            let html = '<div class="text-center mb-6"><h1 class="text-3xl font-black text-orange-900">SCENARIO 2: THE MANAGER BRIEF</h1><p class="text-lg text-orange-700">How do you brief your manager professionally?</p></div><div class="bg-orange-50 border-4 border-orange-300 rounded-xl p-6 mb-6"><p class="text-xl font-bold mb-3">THE SITUATION:</p><p class="text-lg mb-3">You\'ve spotted a concerning pattern with a stakeholder who keeps ignoring your technical recommendations. This is the third time in 2 weeks. You need to brief your manager.</p><p class="text-2xl font-black text-orange-900 mt-4">How do you start the conversation?</p></div><div class="space-y-3">';
+            
+            scenario2Options.forEach((opt, idx) => {
+                html += '<div class="option-card border-2 p-4 rounded-lg cursor-pointer hover:border-blue-500" onclick="selectOption(this, 1, ' + idx + ')"><p class="font-bold">' + opt.text + '</p></div>';
+            });
+            
+            html += '</div><div id="feedback1" class="mt-6 hidden"></div>';
+            return html;
+        }
+    },
+    {
+        title: "Templates",
+        render: function() {
+            return '<h1 class="text-3xl font-black text-orange-900 mb-6 text-center">EMAIL TEMPLATES</h1><div class="bg-blue-50 border-2 border-blue-300 rounded-xl p-6 mb-6"><h3 class="text-xl font-black text-blue-900 mb-3">📧 TEMPLATE: Early Warning Email</h3><div class="bg-white p-4 rounded border text-sm font-mono mb-3">Subject: Need Your Guidance - Pattern with [Client]\n\nHi [Manager],\n\nI need your guidance on something I\'ve noticed.\n\nPattern: Over the past [X days], [behavior] has happened [Y times]\n- [Date]: [What happened]\n- [Date]: [What happened]\n\nImpact: This affects [deadline/quality] because [reason]\n\nI see three approaches:\n1. [Option A]\n2. [Option B]\n3. [Option C]\n\nWhat\'s your recommendation?\n\nThanks,\n[Your Name]</div><button onclick="copyTemplate()" class="px-4 py-2 bg-blue-500 text-white rounded font-bold">📋 Copy Template</button></div>';
+        }
+    },
+    {
+        title: "Complete",
+        render: function() {
+            return '<div class="text-center mb-8"><div class="text-7xl mb-4">🎉</div><h1 class="text-4xl font-black text-orange-900 mb-3">MODULE 8 COMPLETE!</h1><p class="text-2xl text-orange-700">You\'ve learned to speak up internally!</p></div><div class="bg-green-50 border-4 border-green-400 rounded-xl p-6 mb-6"><h2 class="text-2xl font-black text-green-900 mb-4">✅ WHAT YOU LEARNED:</h2><ul class="space-y-2 text-lg"><li>✓ S.P.E.A.K. Framework (5 steps)</li><li>✓ The 48-Hour Rule</li><li>✓ The Magic Phrase</li><li>✓ Email Templates</li></ul></div><div class="bg-orange-50 border-4 border-orange-300 rounded-xl p-6 mb-6"><h2 class="text-2xl font-black text-orange-900 mb-4">📝 YOUR COMMITMENT:</h2><textarea id="commitment" class="w-full border-2 rounded p-3 mb-3" rows="3" placeholder="This week I will..."></textarea><input type="text" id="buddy" class="w-full border-2 rounded p-3 mb-4" placeholder="Buddy name"><button onclick="saveCommitment()" class="px-6 py-3 bg-orange-500 text-white rounded-lg font-bold">Save Commitment</button></div>';
+        }
+    }
+];
+
+function render() {
+    const section = sections[currentSection];
+    document.getElementById('content').innerHTML = section.render();
+    document.getElementById('progress').style.width = ((currentSection + 1) / sections.length * 100) + '%';
+    document.getElementById('progressText').textContent = 'Section ' + (currentSection + 1) + ' of ' + sections.length;
+    document.getElementById('backBtn').classList.toggle('hidden', currentSection === 0);
+    document.getElementById('nextBtn').textContent = currentSection === sections.length - 1 ? 'Complete! 🎉' : 'Next →';
+    window.scrollTo(0, 0);
+}
+
+function selectOption(element, scenario, optionIndex) {
+    const options = document.querySelectorAll('.option-card');
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+    
+    const selectedOption = scenario === 0 ? scenario1Options[optionIndex] : scenario2Options[optionIndex];
+    const isCorrect = selectedOption.correct;
+    
+    element.style.borderColor = isCorrect ? '#10b981' : '#ef4444';
+    element.style.backgroundColor = isCorrect ? '#d1fae5' : '#fee2e2';
+    
+    const feedback = document.getElementById('feedback' + scenario);
+    feedback.classList.remove('hidden');
+    
+    if (isCorrect) {
+        score++;
+        feedback.innerHTML = '<div class="bg-green-100 border-4 border-green-400 rounded-xl p-6"><p class="text-2xl font-black text-green-900 mb-3">✅ CORRECT!</p><p class="text-lg text-green-800">' + selectedOption.feedback + '</p></div>';
+    } else {
+        feedback.innerHTML = '<div class="bg-red-100 border-4 border-red-400 rounded-xl p-6"><p class="text-2xl font-black text-red-900 mb-3">❌ NOT QUITE</p><p class="text-lg text-red-800">' + selectedOption.feedback + '</p><button onclick="location.reload()" class="mt-3 px-4 py-2 bg-red-500 text-white rounded font-bold">Try Again</button></div>';
+    }
+}
+
+function copyTemplate() {
+    alert('📋 Template copied! (Simulated)');
+}
+
+function saveCommitment() {
+    const commitment = document.getElementById('commitment').value;
+    const buddy = document.getElementById('buddy').value;
+    if (!commitment || !buddy) {
+        alert('Please fill in both fields!');
+        return;
+    }
+    localStorage.setItem('module8_commitment', commitment);
+    localStorage.setItem('module8_buddy', buddy);
+    confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+    alert('✅ Commitment saved! Check in with ' + buddy + ' on Friday!');
+}
+
+document.getElementById('nextBtn').onclick = function() {
+    if (currentSection < sections.length - 1) {
+        currentSection++;
+        render();
+    } else {
+        confetti({ particleCount: 200, spread: 120, origin: { y: 0.6 } });
+        alert('🎉 MODULE 8 COMPLETE!\n\nScore: ' + score + '/2');
+    }
+};
+
+document.getElementById('backBtn').onclick = function() {
+    if (currentSection > 0) {
+        currentSection--;
+        render();
+    }
+};
+
+initializeScenarios();
+render();
+console.log('Module 8 loaded - EVENT HANDLING FIXED!');
+</script>
+
+</body>
+</html>

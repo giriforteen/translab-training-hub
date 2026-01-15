@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 9: Speaking Up Externally</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 min-h-screen p-4 md:p-8">
+
+<div class="max-w-5xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black text-blue-900">Module 9: Speaking Up Externally</h1>
+                <p class="text-blue-700">Session 9 of 24 • Strength Layer</p>
+            </div>
+            <div class="text-5xl">💪</div>
+        </div>
+        <div class="mt-4 bg-gray-200 rounded-full h-3">
+            <div id="progress" class="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-500" style="width: 16%"></div>
+        </div>
+        <p id="progressText" class="text-center text-sm text-gray-600 mt-2">Section 1 of 6</p>
+    </div>
+
+    <div id="content" class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6"></div>
+
+    <div class="flex justify-between">
+        <button id="backBtn" class="hidden px-6 py-3 bg-gray-300 rounded-lg font-bold">← Back</button>
+        <button id="nextBtn" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-bold ml-auto">Next →</button>
+    </div>
+</div>
+
+<script>
+console.log('MODULE 9: SPEAKING UP EXTERNALLY - FIXED VERSION');
+
+let currentSection = 0;
+let score = 0;
+let scenario1Options = [];
+let scenario2Options = [];
+
+function shuffleArray(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+}
+
+function initializeScenarios() {
+    scenario1Options = shuffleArray([
+        {
+            text: "Agree to the 2-month timeline and mobilize the team to work overtime and weekends to meet the aggressive deadline.",
+            correct: false,
+            feedback: "This sets your team up for failure and burnout. Agreeing to impossible timelines without presenting alternatives damages credibility and risks project quality. Always brief manager, present realistic options with trade-offs."
+        },
+        {
+            text: "Thank you for the timeline update. Based on scope, here are three realistic approaches: Full delivery in 6 months, MVP in 2 months, or phased delivery. Which best fits your business needs? (Manager CC'd)",
+            correct: true,
+            feedback: "Perfect! You acknowledged the request professionally, stated reality based on scope, presented three realistic options (each with trade-offs), and had manager support. This is the unified front approach - presenting options with manager backing."
+        },
+        {
+            text: "This timeline is completely unrealistic given the scope. We need 6 months minimum to deliver with acceptable quality standards.",
+            correct: false,
+            feedback: "Too blunt and aggressive without manager support. Saying 'completely unrealistic' without presenting options burns bridges. Always brief manager first, get alignment, then present options together - never push back alone."
+        },
+        {
+            text: "Let me discuss this internally with the team and leadership, and I'll get back to you with our recommended approach within two business days.",
+            correct: false,
+            feedback: "While seeking input is good, this delays response unnecessarily. You should have already briefed your manager BEFORE this client request. The scenario says you're aligned - respond now with options, don't delay further."
+        }
+    ]);
+
+    scenario2Options = shuffleArray([
+        {
+            text: "Continue giving the client the benefit of the doubt and invest more effort to improve the relationship and demonstrate Translab's commitment to their success.",
+            correct: false,
+            feedback: "This extends your exposure to an increasingly risky situation. By Week 2, the pattern is clear. Continuing without escalation or exit recommendation repeats the same situation that led to challenges. Brief manager with exit options."
+        },
+        {
+            text: "Brief your manager by Week 2 with documented pattern data. Recommend three options: attempt mediation with client leadership, reduce scope significantly, or professional exit with proper notice.",
+            correct: true,
+            feedback: "Exactly right! The key learning: Brief early when patterns emerge (Week 2-3, not months later). Present data showing the pattern. Recommend options including exit strategy. This demonstrates professional judgment and protects Translab from extended exposure."
+        },
+        {
+            text: "Send the client a formal written notice documenting all the issues and establishing clear boundaries for how the engagement must proceed going forward.",
+            correct: false,
+            feedback: "Never confront clients directly without manager support! This is aggressive and could escalate the situation. Always brief your manager internally FIRST, get alignment on approach, then communicate together with unified front."
+        },
+        {
+            text: "Document everything thoroughly in your project notes and wait to see if the situation improves before raising concerns with your manager or leadership.",
+            correct: false,
+            feedback: "Documentation alone isn't enough when patterns threaten the project. Waiting to see if it improves means months of exposure. Brief manager by Week 2 with the documented pattern and recommend options including exit."
+        }
+    ]);
+}
+
+const sections = [
+    {
+        title: "Welcome",
+        render: function() {
+            return '<div class="text-center mb-8"><div class="text-7xl mb-4">💪</div><h1 class="text-4xl font-black text-blue-900 mb-3">SPEAKING UP EXTERNALLY</h1><p class="text-xl text-blue-700">How to Push Back on Clients with Manager Support</p></div><div class="bg-green-50 border-4 border-green-400 rounded-xl p-6 mb-6"><h2 class="text-2xl font-black text-green-900 mb-3">✅ YOU ARE READY NOW</h2><p class="text-lg mb-3"><strong>Module 8 Achievement:</strong> You learned to brief your manager internally using S.P.E.A.K.</p><p class="text-lg mb-3"><strong>Today:</strong> Now that you have manager support, learn to speak to clients professionally.</p><div class="bg-green-100 p-4 rounded-lg mt-3"><p class="text-xl font-black text-green-900">Key Difference:</p><p class="text-lg text-green-800">You are NOT pushing back alone. You speak WITH manager backing. This is the unified front.</p></div></div><div class="bg-blue-900 text-white rounded-xl p-6 text-center"><p class="text-2xl font-bold">Today: Learn professional pushback WITH manager support</p></div>';
+        }
+    },
+    {
+        title: "Framework",
+        render: function() {
+            return '<h1 class="text-3xl font-black text-blue-900 mb-6 text-center">THE UNIFIED FRONT FRAMEWORK</h1><div class="bg-blue-50 border-4 border-blue-300 rounded-xl p-6 mb-6"><h2 class="text-2xl font-black text-blue-900 mb-4">🤝 THE 3-STEP PROCESS:</h2><div class="space-y-4"><div class="bg-white p-4 rounded-lg border-l-4 border-blue-500"><p class="text-xl font-black text-blue-900 mb-2">STEP 1: INTERNAL BRIEF</p><p class="text-gray-700">Use S.P.E.A.K. to brief your manager first (Module 8 skill)</p></div><div class="bg-white p-4 rounded-lg border-l-4 border-green-500"><p class="text-xl font-black text-green-900 mb-2">STEP 2: GET ALIGNMENT</p><p class="text-gray-700">Manager and you agree on approach, message, boundaries</p></div><div class="bg-white p-4 rounded-lg border-l-4 border-purple-500"><p class="text-xl font-black text-purple-900 mb-2">STEP 3: UNIFIED RESPONSE</p><p class="text-gray-700">Present to client with confidence. Manager has your back.</p></div></div></div><div class="bg-purple-50 border-2 border-purple-300 rounded-xl p-6 mb-6"><h2 class="text-2xl font-black text-purple-900 mb-4">💡 THE ASSERTIVENESS DEFINITION:</h2><div class="space-y-3"><div class="bg-green-100 border-2 border-green-400 rounded-lg p-4"><p class="text-xl font-black text-green-900">✅ ASSERTIVE = You speak + Manager backs you</p></div><div class="bg-red-100 border-2 border-red-400 rounded-lg p-4"><p class="text-xl font-black text-red-900">❌ AGGRESSIVE = You push alone without support</p></div></div></div><div class="bg-blue-900 text-white rounded-xl p-4 mt-6 text-center"><p class="text-xl font-bold">Never push back alone. Brief manager first, get support, speak together.</p></div>';
+        }
+    },
+    {
+        title: "Scenario 1",
+        render: function() {
+            let html = '<div class="text-center mb-6"><h1 class="text-3xl font-black text-blue-900">SCENARIO 1: THE IMPOSSIBLE TIMELINE</h1><p class="text-lg text-blue-700">Client making unrealistic demands</p></div><div class="bg-blue-50 border-4 border-blue-300 rounded-xl p-6 mb-6"><p class="text-xl font-bold mb-3">THE SITUATION:</p><p class="text-lg mb-2">Client email: "We need the entire platform delivered in 2 months instead of 6 months. Timeline is non-negotiable."</p><p class="text-lg mb-3">Original estimate was 6 months based on scope. You have already briefed your manager and are aligned.</p><p class="text-2xl font-black text-blue-900 mt-4">How do you respond to the client?</p></div><div class="space-y-3">';
+            
+            scenario1Options.forEach((opt, idx) => {
+                html += '<div class="option-card border-2 p-4 rounded-lg cursor-pointer hover:border-blue-500" onclick="selectOption(this, 0, ' + idx + ')"><p class="font-bold">' + opt.text + '</p></div>';
+            });
+            
+            html += '</div><div id="feedback0" class="mt-6 hidden"></div>';
+            return html;
+        }
+    },
+    {
+        title: "Scenario 2",
+        render: function() {
+            let html = '<div class="text-center mb-6"><h1 class="text-3xl font-black text-red-900">SCENARIO 2: THE YES BANK MOMENT</h1><p class="text-lg text-red-700">When to recommend pulling out</p></div><div class="bg-red-50 border-4 border-red-300 rounded-xl p-6 mb-6"><p class="text-xl font-bold mb-3">THE SITUATION:</p><p class="text-lg mb-2"><strong>Week 1:</strong> Client rejects your technical recommendations without explanation</p><p class="text-lg mb-2"><strong>Week 2:</strong> Client changes requirements 3 times, refuses to document changes</p><p class="text-lg mb-2"><strong>Week 3:</strong> Client blames your team for delays they caused, threatens timesheet rejection</p><p class="text-lg mb-2"><strong>Week 4:</strong> Client demands free additional work, shows pattern of unreasonable behavior</p><p class="text-2xl font-black text-red-900 mt-4">At Week 2, what is the best approach to protect the project?</p></div><div class="space-y-3">';
+            
+            scenario2Options.forEach((opt, idx) => {
+                html += '<div class="option-card border-2 p-4 rounded-lg cursor-pointer hover:border-blue-500" onclick="selectOption(this, 1, ' + idx + ')"><p class="font-bold">' + opt.text + '</p></div>';
+            });
+            
+            html += '</div><div id="feedback1" class="mt-6 hidden"></div>';
+            return html;
+        }
+    },
+    {
+        title: "Templates",
+        render: function() {
+            return '<h1 class="text-3xl font-black text-blue-900 mb-6 text-center">EXTERNAL COMMUNICATION TEMPLATES</h1><div class="bg-blue-50 border-2 border-blue-300 rounded-xl p-6 mb-6"><h3 class="text-xl font-black text-blue-900 mb-3">📧 TEMPLATE: Professional Pushback</h3><div class="bg-white p-4 rounded border text-sm font-mono mb-3">Subject: Re: Timeline Request\n\nHi [Client],\n\nThank you for sharing your timeline needs.\n\nBased on scope, here are 3 realistic approaches:\n\nOption A: Full Scope - 6 months (all features)\nOption B: MVP - 2 months (core features only)\nOption C: Phased - 3+3 months (critical first)\n\nWhich approach best fits your requirements?\n\nBest regards,\n[Your Name]\nCC: [Your Manager]</div><button onclick="copyTemplate()" class="px-4 py-2 bg-blue-500 text-white rounded font-bold">📋 Copy Template</button></div><div class="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4 mt-6"><p class="text-xl font-black text-yellow-900 mb-2">⚠️ REMEMBER:</p><p class="text-lg text-yellow-800">Never send pushback emails without manager CC or prior approval.</p></div>';
+        }
+    },
+    {
+        title: "Complete",
+        render: function() {
+            return '<div class="text-center mb-8"><div class="text-7xl mb-4">🎉</div><h1 class="text-4xl font-black text-blue-900 mb-3">MODULE 9 COMPLETE!</h1><p class="text-2xl text-blue-700">You now know how to speak up both internally AND externally!</p></div><div class="bg-green-50 border-4 border-green-400 rounded-xl p-6 mb-6"><h2 class="text-2xl font-black text-green-900 mb-4">✅ YOUR NEW SUPERPOWERS:</h2><div class="grid md:grid-cols-2 gap-4"><div class="bg-white p-4 rounded-lg"><p class="text-xl font-bold text-orange-900 mb-2">MODULE 8 SKILLS:</p><ul class="space-y-1 text-sm"><li>✓ S.P.E.A.K. Framework</li><li>✓ 48-Hour Rule</li><li>✓ Magic Phrase</li></ul></div><div class="bg-white p-4 rounded-lg"><p class="text-xl font-bold text-blue-900 mb-2">MODULE 9 SKILLS:</p><ul class="space-y-1 text-sm"><li>✓ Unified Front Approach</li><li>✓ Professional Pushback</li><li>✓ Exit Recommendations</li></ul></div></div></div><div class="bg-purple-50 border-4 border-purple-300 rounded-xl p-6 mb-6"><h2 class="text-2xl font-black text-purple-900 mb-4">📝 YOUR COMMITMENT:</h2><textarea id="commitment" class="w-full border-2 rounded p-3 mb-3" rows="3" placeholder="This week I will..."></textarea><input type="text" id="buddy" class="w-full border-2 rounded p-3 mb-4" placeholder="Buddy name"><button onclick="saveCommitment()" class="px-6 py-3 bg-blue-500 text-white rounded-lg font-bold">Save Commitment</button></div>';
+        }
+    }
+];
+
+function render() {
+    const section = sections[currentSection];
+    document.getElementById('content').innerHTML = section.render();
+    document.getElementById('progress').style.width = ((currentSection + 1) / sections.length * 100) + '%';
+    document.getElementById('progressText').textContent = 'Section ' + (currentSection + 1) + ' of ' + sections.length;
+    document.getElementById('backBtn').classList.toggle('hidden', currentSection === 0);
+    document.getElementById('nextBtn').textContent = currentSection === sections.length - 1 ? 'Complete! 🎉' : 'Next →';
+    window.scrollTo(0, 0);
+}
+
+function selectOption(element, scenario, optionIndex) {
+    const options = document.querySelectorAll('.option-card');
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+    
+    const selectedOption = scenario === 0 ? scenario1Options[optionIndex] : scenario2Options[optionIndex];
+    const isCorrect = selectedOption.correct;
+    
+    element.style.borderColor = isCorrect ? '#10b981' : '#ef4444';
+    element.style.backgroundColor = isCorrect ? '#d1fae5' : '#fee2e2';
+    
+    const feedback = document.getElementById('feedback' + scenario);
+    feedback.classList.remove('hidden');
+    
+    if (isCorrect) {
+        score++;
+        feedback.innerHTML = '<div class="bg-green-100 border-4 border-green-400 rounded-xl p-6"><p class="text-2xl font-black text-green-900 mb-3">✅ CORRECT!</p><p class="text-lg text-green-800">' + selectedOption.feedback + '</p></div>';
+    } else {
+        feedback.innerHTML = '<div class="bg-red-100 border-4 border-red-400 rounded-xl p-6"><p class="text-2xl font-black text-red-900 mb-3">❌ NOT QUITE</p><p class="text-lg text-red-800">' + selectedOption.feedback + '</p><button onclick="location.reload()" class="mt-3 px-4 py-2 bg-red-500 text-white rounded font-bold">Try Again</button></div>';
+    }
+}
+
+function copyTemplate() {
+    alert('📋 Template copied! (Simulated)');
+}
+
+function saveCommitment() {
+    const commitment = document.getElementById('commitment').value;
+    const buddy = document.getElementById('buddy').value;
+    if (!commitment || !buddy) {
+        alert('Please fill in both fields!');
+        return;
+    }
+    localStorage.setItem('module9_commitment', commitment);
+    localStorage.setItem('module9_buddy', buddy);
+    confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+    alert('✅ Commitment saved! Check in with ' + buddy + ' on Friday!');
+}
+
+document.getElementById('nextBtn').onclick = function() {
+    if (currentSection < sections.length - 1) {
+        currentSection++;
+        render();
+    } else {
+        confetti({ particleCount: 200, spread: 120, origin: { y: 0.6 } });
+        alert('🎉 MODULE 9 COMPLETE!\n\nScore: ' + score + '/2\n\nYou have the complete speaking up toolkit!');
+    }
+};
+
+document.getElementById('backBtn').onclick = function() {
+    if (currentSection > 0) {
+        currentSection--;
+        render();
+    }
+};
+
+initializeScenarios();
+render();
+console.log('Module 9 loaded - EVENT HANDLING FIXED!');
+</script>
+
+</body>
+</html>
