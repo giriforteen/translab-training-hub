@@ -98,6 +98,7 @@
             text-decoration: none;
             color: white;
             display: block;
+            position: relative;
         }
 
         .module-card:hover {
@@ -115,6 +116,36 @@
             font-size: 14px;
             opacity: 0.95;
             line-height: 1.5;
+        }
+
+        .module-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .module-badge.new {
+            background: #f59e0b;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+            }
         }
 
         .footer {
@@ -154,32 +185,36 @@
         </div>
 
         <div class="programs-grid">
-          <!-- CSP FOUNDATION TRAINING -->
-<ul class="modules">
-    <li class="module-item">
-        <a href="csp/crisis-management.html" class="module-link">
-            <div class="module-number">1</div>
-            <div class="module-name">Crisis Management</div>
-            <div class="module-badge">LIVE</div>
-        </a>
-    </li>
-    
-    <li class="module-item">
-        <a href="csp/CSP_Module_5_Advanced_Growth_Skills.html" class="module-link">
-            <div class="module-number">5</div>
-            <div class="module-name">Advanced Growth Skills</div>
-            <div class="module-badge">LIVE</div>
-        </a>
-    </li>
-    
-    <li class="module-item">
-        <a href="csp/module7_quiz.html" class="module-link">
-            <div class="module-number">7</div>
-            <div class="module-name">Strategic Account Management Quiz</div>
-            <div class="module-badge new">NEW</div>
-        </a>
-    </li>
-</ul>
+            <!-- CSP FOUNDATION TRAINING -->
+            <div class="program-card">
+                <div class="program-header">
+                    <span class="program-icon">🎯</span>
+                    <h2>CSP Foundation Training</h2>
+                </div>
+                <p class="program-description">
+                    Master client success strategies and build lasting partnerships.
+                </p>
+                <div class="modules-container">
+                    <a href="csp/crisis-management.html" class="module-card">
+                        <span class="module-badge">LIVE</span>
+                        <h3>🚨 Module 1: Crisis Management</h3>
+                        <p>Handle critical situations with confidence and professionalism</p>
+                    </a>
+                    
+                    <a href="csp/CSP_Module_5_Advanced_Growth_Skills.html" class="module-card">
+                        <span class="module-badge">LIVE</span>
+                        <h3>📈 Module 5: Advanced Growth Skills</h3>
+                        <p>Drive expansion and deepen client relationships strategically</p>
+                    </a>
+                    
+                    <a href="csp/module7_quiz.html" class="module-card">
+                        <span class="module-badge new">NEW</span>
+                        <h3>🎯 Module 7: Strategic Account Management Quiz</h3>
+                        <p>Test your strategic account management knowledge and skills</p>
+                    </a>
+                </div>
+            </div>
+
             <!-- PM Excellence Program -->
             <div class="program-card">
                 <div class="program-header">
@@ -199,87 +234,92 @@
                         <h3>⚙️ Module 4: How to Do the Job</h3>
                         <p>Master the practical skills and frameworks for effective project management</p>
                     </a>
+                    
                     <a href="pm/session7_difficult_situations/module7_handling_difficult_situations.html" class="module-card">
                         <h3>🔥 Module 7: Handling Difficult Situations</h3>
                         <p>Master the CALM → CLARIFY → CONTROL framework for managing difficult situations</p>
                     </a>
+                    
                     <a href="pm/session8_speaking_up_internally/module8_speaking_up_internally.html" class="module-card">
-    <h3>🗣️ Module 8: Speaking Up Internally</h3>
-    <p>Master the S.P.E.A.K. framework for briefing your manager professionally</p>
-</a>
+                        <h3>🗣️ Module 8: Speaking Up Internally</h3>
+                        <p>Master the S.P.E.A.K. framework for briefing your manager professionally</p>
+                    </a>
 
-<a href="pm/session9_speaking_up_externally/module9_speaking_up_externally.html" class="module-card">
-    <h3>💪 Module 9: Speaking Up Externally</h3>
-    <p>Learn the Unified Front approach for client pushback with manager support</p>
-</a>
+                    <a href="pm/session9_speaking_up_externally/module9_speaking_up_externally.html" class="module-card">
+                        <h3>💪 Module 9: Speaking Up Externally</h3>
+                        <p>Learn the Unified Front approach for client pushback with manager support</p>
+                    </a>
                 </div>
             </div>
 
-        <!-- TSA Program -->
-<div class="program-card">
-    <div class="program-header">
-        <span class="program-icon">🎯</span>
-        <h2>Translab Sales Academy (TSA)</h2>
-    </div>
-    <p class="program-description">
-        Develop the skills to articulate value and close deals effectively.
-    </p>
-    <div class="modules-container">
-        <a href="tsa/module5_section1_v2_final (1).html" class="module-card">
-            <h3>📚 Module 5: Section 1</h3>
-            <p>Foundation concepts for effective sales communication</p>
-        </a>
-        
-        <a href="tsa/Module 5 Demonstrations.html" class="module-card">
-            <h3>🎬 Module 5: Demonstrations</h3>
-            <p>Watch expert demonstrations of key sales techniques</p>
-        </a>
-        
-        <a href="tsa/Module 5 Presentations.html" class="module-card">
-            <h3>📊 Module 5: Presentations</h3>
-            <p>Learn to create compelling sales presentations</p>
-        </a>
-        
-        <a href="tsa/Module 5 ROI.html" class="module-card">
-            <h3>💰 Module 5: ROI Analysis</h3>
-            <p>Master the art of demonstrating return on investment</p>
-        </a>
-        
-        <a href="tsa/module6a-recap-clean.html" class="module-card">
-    <h3>📘 Module 6A Recap</h3>
-    <p>Quick 5-minute review of negotiation prep frameworks</p>
-</a>
-        <a href="tsa/module6a-negotiation-prep.html" class="module-card">
-            <h3>🧠 Module 6A: Negotiation Prep</h3>
-            <p>Master buyer psychology, BATNA, and value-based pricing strategies</p>
-        </a>
-        
-        <a href="tsa/module6b-deal-closing.html" class="module-card">
-            <h3>🤝 Module 6B: Deal Closing</h3>
-            <p>Navigate complex stakeholders and close deals with confidence</p>
-        </a>
-        
-        <a href="tsa/Autonomous Banking & Tantor.html" class="module-card">
-            <h3>🏦 Autonomous Banking & Tantor</h3>
-            <p>Interactive toolkit for selling AI agents vs traditional automation</p>
-        </a>
-        
-        <a href="tsa/Stock Exchange Use Case.html" class="module-card">
-            <h3>📈 Stock Exchange Use Case</h3>
-            <p>Gamified case study: Scale NSE from 10K to 100K TPS</p>
-        </a>
-        
-        <a href="tsa/Cloudera & Tantor.html" class="module-card">
-            <h3>⚔️ Cloudera & Tantor Playbook</h3>
-            <p>Battle-tested strategies for winning against Cloudera</p>
-        </a>
-        
-        <a href="tsa/Tantor Business Uses One Pager.html" class="module-card">
-            <h3>📄 Tantor Business Uses</h3>
-            <p>Complete product overview and value proposition guide</p>
-        </a>
-    </div>
-</div>
+            <!-- TSA Program -->
+            <div class="program-card">
+                <div class="program-header">
+                    <span class="program-icon">💼</span>
+                    <h2>Translab Sales Academy (TSA)</h2>
+                </div>
+                <p class="program-description">
+                    Develop the skills to articulate value and close deals effectively.
+                </p>
+                <div class="modules-container">
+                    <a href="tsa/module5_section1_v2_final (1).html" class="module-card">
+                        <h3>📚 Module 5: Section 1</h3>
+                        <p>Foundation concepts for effective sales communication</p>
+                    </a>
+                    
+                    <a href="tsa/Module 5 Demonstrations.html" class="module-card">
+                        <h3>🎬 Module 5: Demonstrations</h3>
+                        <p>Watch expert demonstrations of key sales techniques</p>
+                    </a>
+                    
+                    <a href="tsa/Module 5 Presentations.html" class="module-card">
+                        <h3>📊 Module 5: Presentations</h3>
+                        <p>Learn to create compelling sales presentations</p>
+                    </a>
+                    
+                    <a href="tsa/Module 5 ROI.html" class="module-card">
+                        <h3>💰 Module 5: ROI Analysis</h3>
+                        <p>Master the art of demonstrating return on investment</p>
+                    </a>
+                    
+                    <a href="tsa/module6a-recap-clean.html" class="module-card">
+                        <h3>📘 Module 6A Recap</h3>
+                        <p>Quick 5-minute review of negotiation prep frameworks</p>
+                    </a>
+                    
+                    <a href="tsa/module6a-negotiation-prep.html" class="module-card">
+                        <h3>🧠 Module 6A: Negotiation Prep</h3>
+                        <p>Master buyer psychology, BATNA, and value-based pricing strategies</p>
+                    </a>
+                    
+                    <a href="tsa/module6b-deal-closing.html" class="module-card">
+                        <h3>🤝 Module 6B: Deal Closing</h3>
+                        <p>Navigate complex stakeholders and close deals with confidence</p>
+                    </a>
+                    
+                    <a href="tsa/Autonomous Banking & Tantor.html" class="module-card">
+                        <h3>🏦 Autonomous Banking & Tantor</h3>
+                        <p>Interactive toolkit for selling AI agents vs traditional automation</p>
+                    </a>
+                    
+                    <a href="tsa/Stock Exchange Use Case.html" class="module-card">
+                        <h3>📈 Stock Exchange Use Case</h3>
+                        <p>Gamified case study: Scale NSE from 10K to 100K TPS</p>
+                    </a>
+                    
+                    <a href="tsa/Cloudera & Tantor.html" class="module-card">
+                        <h3>⚔️ Cloudera & Tantor Playbook</h3>
+                        <p>Battle-tested strategies for winning against Cloudera</p>
+                    </a>
+                    
+                    <a href="tsa/Tantor Business Uses One Pager.html" class="module-card">
+                        <h3>📄 Tantor Business Uses</h3>
+                        <p>Complete product overview and value proposition guide</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <div class="footer">
             <p>Built with ❤️ by <a href="https://translab.io" target="_blank">Translab Technologies</a></p>
             <p style="margin-top: 10px; font-size: 14px;">© 2025 Translab Technologies Pvt Ltd</p>
