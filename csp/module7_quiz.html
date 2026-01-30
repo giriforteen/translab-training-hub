@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSP Certification - Final Exam</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .timer-bar {
+            background: rgba(239, 68, 68, 0.2);
+            height: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer-fill {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            height: 100%;
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        .timer-fill.warning {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .timer-fill.danger {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+        }
+
+        .welcome-screen .emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-screen h2 {
+            color: #1e293b;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .welcome-screen p {
+            color: #475569;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            color: #3730a3;
+            margin-bottom: 15px;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            color: #475569;
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .info-box li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Question Screen */
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .progress-text {
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .timer-display {
+            background: #fef3c7;
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: #92400e;
+            font-weight: bold;
+        }
+
+        .timer-display.warning {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .timer-display.danger {
+            background: #fecaca;
+            color: #991b1b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .module-badge {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            color: #1e293b;
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: start;
+            gap: 15px;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #e0e7ff;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .option-letter {
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: #3730a3;
+        }
+
+        .option-text {
+            color: #334155;
+            font-size: 1.05em;
+            flex-grow: 1;
+            line-height: 1.5;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+        }
+
+        .results-emoji {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-size: 2.5em;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .score-display.pass {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .score-display.fail {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .score-number {
+            font-size: 4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        .breakdown {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .breakdown h3 {
+            color: #1e293b;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .module-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .module-name {
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .module-result {
+            font-weight: bold;
+        }
+
+        .module-result.correct {
+            color: #10b981;
+        }
+
+        .module-result.incorrect {
+            color: #ef4444;
+        }
+
+        .certificate {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .certificate-badge {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 50px;
+        }
+
+        .certificate h2 {
+            color: #1e293b;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .certificate-name {
+            font-size: 2.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .certificate-text {
+            color: #64748b;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .certificate-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .certificate-date {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .certificate-signature {
+            color: #475569;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            .question-text {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎓 CSP Certification Exam</h1>
+            <p class="subtitle">Final Assessment</p>
+        </div>
+
+        <div class="timer-bar">
+            <div class="timer-fill" id="timerFill"></div>
+        </div>
+
+        <div class="content">
+            <!-- Welcome Screen -->
+            <div class="screen active" id="welcomeScreen">
+                <div class="welcome-screen">
+                    <div class="emoji">📋</div>
+                    <h2>Ready to Earn Your CSP Certification?</h2>
+                    <p>You've completed 5 comprehensive modules. This exam tests your mastery of the frameworks and concepts you've learned.</p>
+
+                    <div class="info-box">
+                        <h3>Exam Details:</h3>
+                        <ul>
+                            <li><strong>15 questions</strong> (3 per module)</li>
+                            <li><strong>30 minutes</strong> to complete</li>
+                            <li><strong>75% to pass</strong> (12 out of 15 correct)</li>
+                            <li><strong>Instant results</strong> and certificate upon passing</li>
+                            <li>Mix of scenario-based and knowledge questions</li>
+                        </ul>
+                    </div>
+
+                    <p style="margin-top: 30px;"><strong>Once you start, the timer begins.</strong> Make sure you're ready and won't be interrupted.</p>
+
+                    <button class="btn" onclick="startExam()">Start Exam</button>
+                </div>
+            </div>
+
+            <!-- Question Screen -->
+            <div class="screen" id="questionScreen">
+                <div class="progress">
+                    <div class="progress-text" id="progressText">Question 1 of 15</div>
+                    <div class="timer-display" id="timerDisplay">30:00</div>
+                </div>
+
+                <div class="module-badge" id="moduleBadge">Module 1</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+
+                <div class="navigation">
+                    <button class="btn" onclick="previousQuestion()" id="prevBtn" style="display: none;">← Previous</button>
+                    <button class="btn" onclick="nextQuestion()" id="nextBtn" disabled>Next →</button>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="screen" id="resultsScreen">
+                <div class="results-screen">
+                    <div class="results-emoji" id="resultsEmoji"></div>
+                    <h2 class="results-title" id="resultsTitle"></h2>
+
+                    <div class="score-display" id="scoreDisplay">
+                        <div class="score-number" id="scoreNumber"></div>
+                        <div class="score-label" id="scoreLabel"></div>
+                    </div>
+
+                    <div class="breakdown">
+                        <h3>Performance by Module:</h3>
+                        <div id="moduleBreakdown"></div>
+                    </div>
+
+                    <div id="certificateContainer"></div>
+
+                    <button class="btn" onclick="location.reload()" style="margin-top: 20px;">Retake Exam</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // EXAM QUESTIONS
+        const questions = [
+            // MODULE 1: Foundation (3 questions)
+            {
+                module: "Module 1: Foundation",
+                question: "You're meeting a new client for the first time. According to the Trust Equation, which action MOST builds credibility?",
+                options: [
+                    { text: "Share success stories from similar clients in their industry", correct: true },
+                    { text: "Talk about your years of experience", correct: false },
+                    { text: "Offer to discount your services to prove commitment", correct: false },
+                    { text: "Promise faster delivery than competitors", correct: false }
+                ],
+                explanation: "Credibility is built through demonstrating expertise relevant to their context. Industry-specific success stories show you understand their challenges and have solved similar problems."
+            },
+            {
+                module: "Module 1: Foundation",
+                question: "In SPIN selling, you ask: 'What happens if this integration delay continues for another quarter?' This is an example of which question type?",
+                options: [
+                    { text: "Situation", correct: false },
+                    { text: "Problem", correct: false },
+                    { text: "Implication", correct: true },
+                    { text: "Need-Payoff", correct: false }
+                ],
+                explanation: "Implication questions explore consequences and create urgency by helping clients understand the cost of inaction."
+            },
+            {
+                module: "Module 1: Foundation",
+                question: "A client says your recent delivery is 'unacceptable.' Using the CSP framework, what's your FIRST response?",
+                options: [
+                    { text: "Apologize and promise to fix it immediately", correct: false },
+                    { text: "Ask specifically what didn't meet expectations", correct: true },
+                    { text: "Defend your team's work with data", correct: false },
+                    { text: "Escalate to your manager", correct: false }
+                ],
+                explanation: "Seek to understand before reacting. Gathering specific feedback shows professionalism and helps you address actual concerns rather than assumptions."
+            },
+
+            // MODULE 2: Advanced Account Strategy (3 questions)
+            {
+                module: "Module 2: Advanced Account Strategy",
+                question: "You're preparing a QBR for a client who's been frustrated with support response times. What should you prioritize in the agenda?",
+                options: [
+                    { text: "Product roadmap and upcoming features", correct: false },
+                    { text: "Success metrics and value delivered", correct: false },
+                    { text: "Acknowledge concerns and present improvement plan first", correct: true },
+                    { text: "Quarterly usage statistics", correct: false }
+                ],
+                explanation: "Address the elephant in the room first. Acknowledging known issues and showing you've heard them builds trust and allows productive conversation about other topics."
+            },
+            {
+                module: "Module 2: Advanced Account Strategy",
+                question: "In executive engagement, you notice the CFO keeps asking about ROI while the CIO focuses on innovation velocity. What's the best approach?",
+                options: [
+                    { text: "Pick the more senior executive and align to their priorities", correct: false },
+                    { text: "Create separate presentations for each executive", correct: false },
+                    { text: "Find the common goal that satisfies both (e.g., competitive advantage)", correct: true },
+                    { text: "Focus on whichever metric your product performs better on", correct: false }
+                ],
+                explanation: "Multi-threading requires finding shared outcomes. Competitive advantage can be achieved through both cost efficiency (CFO) and innovation (CIO)."
+            },
+            {
+                module: "Module 2: Advanced Account Strategy",
+                question: "Your client has been using your platform for 6 months but adoption is only 40%. What's the first step in your value realization strategy?",
+                options: [
+                    { text: "Schedule training sessions for non-adopters", correct: false },
+                    { text: "Understand why 60% haven't adopted (barriers analysis)", correct: true },
+                    { text: "Show leadership the adoption metrics", correct: false },
+                    { text: "Recommend they purchase additional licenses", correct: false }
+                ],
+                explanation: "Diagnosis before prescription. Understanding barriers (technical, cultural, training, etc.) allows you to target the right intervention."
+            },
+
+            // MODULE 3: Expansion & Growth (3 questions)
+            {
+                module: "Module 3: Expansion & Growth",
+                question: "During a call, the client mentions they're opening 3 new regional offices next quarter. This is a potential expansion signal. What's your BEST next move?",
+                options: [
+                    { text: "Immediately send a proposal for additional licenses", correct: false },
+                    { text: "Ask discovery questions about their plans and needs for the new offices", correct: true },
+                    { text: "Wait for them to formally request expansion", correct: false },
+                    { text: "Mention that other clients typically expand during growth", correct: false }
+                ],
+                explanation: "Curiosity before pitching. Discovery helps you understand if this is a real opportunity and what specific value you can deliver to the new offices."
+            },
+            {
+                module: "Module 3: Expansion & Growth",
+                question: "You're building a business case for expansion. The client's procurement team is pushing back on price. What strengthens your position MOST?",
+                options: [
+                    { text: "Emphasize your relationship with the executive sponsor", correct: false },
+                    { text: "Show quantified cost of NOT expanding (opportunity cost)", correct: true },
+                    { text: "Offer a discount to close faster", correct: false },
+                    { text: "Reference competitor pricing", correct: false }
+                ],
+                explanation: "Procurement evaluates cost vs. value. Demonstrating the cost of inaction (lost revenue, productivity, competitive position) reframes the conversation from expense to investment."
+            },
+            {
+                module: "Module 3: Expansion & Growth",
+                question: "You've identified an upsell opportunity, but your primary contact doesn't control the budget. What's the framework-driven approach?",
+                options: [
+                    { text: "Ask your contact to introduce you to the budget holder", correct: false },
+                    { text: "Go around them and reach out to the budget holder directly", correct: false },
+                    { text: "Build the business case WITH your contact so they can champion it internally", correct: true },
+                    { text: "Wait until contract renewal to discuss expansion", correct: false }
+                ],
+                explanation: "Enable your champion to sell internally. Providing them with the business case, ROI data, and talking points makes them an effective advocate without going around them."
+            },
+
+            // MODULE 4: Churn Prevention (3 questions)
+            {
+                module: "Module 4: Churn Prevention",
+                question: "Which combination of signals MOST strongly indicates churn risk?",
+                options: [
+                    { text: "Usage declined 20%, but NPS is still 8/10", correct: false },
+                    { text: "Champion left company + executive sponsor unresponsive + usage flat", correct: true },
+                    { text: "Client asked for discount at renewal", correct: false },
+                    { text: "Support tickets increased but are being resolved", correct: false }
+                ],
+                explanation: "Multiple compounding signals indicate higher risk. Loss of champion + executive silence + stagnant usage suggests disengagement at multiple levels."
+            },
+            {
+                module: "Module 4: Churn Prevention",
+                question: "You discover a major service outage that will impact your client's operations. They don't know yet. What's the crisis management protocol?",
+                options: [
+                    { text: "Wait for your support team to notify them officially", correct: false },
+                    { text: "Proactively call them, explain situation, share mitigation plan", correct: true },
+                    { text: "Fix the issue first, then inform them after it's resolved", correct: false },
+                    { text: "Send an email update when you have complete information", correct: false }
+                ],
+                explanation: "Proactive transparency builds trust during crises. Clients want to hear from you directly (not support tickets) with clear communication about impact and your plan."
+            },
+            {
+                module: "Module 4: Churn Prevention",
+                question: "A client threatens to churn due to product limitations. You know a competitor can't solve their issue either. How do you respond?",
+                options: [
+                    { text: "Point out that competitors have the same limitation", correct: false },
+                    { text: "Acknowledge the gap and explore workarounds or roadmap timeline", correct: true },
+                    { text: "Offer a discount to compensate for the limitation", correct: false },
+                    { text: "Explain why the limitation exists technically", correct: false }
+                ],
+                explanation: "Validate their concern and problem-solve together. Bashing competitors or defending limitations doesn't help. Focus on 'What CAN we do given current constraints?'"
+            },
+
+            // MODULE 5: Leadership & Influence (3 questions)
+            {
+                module: "Module 5: Leadership & Growth",
+                question: "You need support from the product team to customize a feature for your strategic account. They're hesitant due to workload. What's your approach?",
+                options: [
+                    { text: "Escalate to leadership to force prioritization", correct: false },
+                    { text: "Frame the request with business impact and product team's goals", correct: true },
+                    { text: "Offer to pay for their time from your budget", correct: false },
+                    { text: "Find a workaround without their involvement", correct: false }
+                ],
+                explanation: "Influence without authority requires alignment on shared goals. Showing product team how this request serves their roadmap goals (usage data, customer insights) creates partnership."
+            },
+            {
+                module: "Module 5: Leadership & Growth",
+                question: "Your client mentions they're evaluating a new platform for a different use case that your company doesn't serve. You know a partner who does. What do you do?",
+                options: [
+                    { text: "Stay focused on your own product relationship", correct: false },
+                    { text: "Introduce them to your partner proactively", correct: true },
+                    { text: "Wait until they ask for a recommendation", correct: false },
+                    { text: "Suggest they handle the search on their own", correct: false }
+                ],
+                explanation: "Trusted advisors help clients succeed beyond your product. Strategic introductions build goodwill, expand your influence, and often lead to reciprocal referrals."
+            },
+            {
+                module: "Module 5: Leadership & Growth",
+                question: "You're leading a strategic planning session for a major account. Three stakeholders have conflicting priorities. How do you facilitate?",
+                options: [
+                    { text: "Let the most senior person's priority win", correct: false },
+                    { text: "Facilitate discussion to find shared objectives across their priorities", correct: true },
+                    { text: "Propose your own priority that splits the difference", correct: false },
+                    { text: "Schedule separate planning sessions with each stakeholder", correct: false }
+                ],
+                explanation: "Leadership means enabling alignment. Facilitating stakeholders to discover shared goals (rather than imposing your view) creates buy-in and sustainable plans."
+            }
+        ];
+
+        // EXAM STATE
+        let currentQuestion = 0;
+        let answers = [];
+        let timeRemaining = 1800; // 30 minutes in seconds
+        let timerInterval = null;
+        let examStartTime = null;
+
+        function startExam() {
+            document.getElementById('welcomeScreen').classList.remove('active');
+            document.getElementById('questionScreen').classList.add('active');
+            
+            examStartTime = Date.now();
+            startTimer();
+            showQuestion();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            document.getElementById('timerDisplay').textContent = display;
+            
+            const timerFill = document.getElementById('timerFill');
+            const timerDisplay = document.getElementById('timerDisplay');
+            const percentRemaining = (timeRemaining / 1800) * 100;
+            
+            timerFill.style.width = percentRemaining + '%';
+            
+            if (timeRemaining < 300) { // Less than 5 minutes
+                timerFill.classList.add('danger');
+                timerDisplay.classList.add('danger');
+            } else if (timeRemaining < 600) { // Less than 10 minutes
+                timerFill.classList.add('warning');
+                timerDisplay.classList.add('warning');
+            }
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            
+            document.getElementById('progressText').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('moduleBadge').textContent = question.module;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            // Randomize options
+            const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
+            
+            shuffledOptions.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                if (answers[currentQuestion] === question.options.indexOf(option)) {
+                    optionDiv.classList.add('selected');
+                }
+                
+                const letter = String.fromCharCode(65 + index); // A, B, C, D
+                
+                optionDiv.innerHTML = `
+                    <div class="option-letter">${letter}</div>
+                    <div class="option-text">${option.text}</div>
+                `;
+                
+                optionDiv.onclick = () => selectOption(question.options.indexOf(option));
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'inline-block' : 'none';
+            document.getElementById('nextBtn').disabled = answers[currentQuestion] === undefined;
+            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? 'Submit Exam' : 'Next →';
+        }
+
+        function selectOption(originalIndex) {
+            answers[currentQuestion] = originalIndex;
+            document.getElementById('nextBtn').disabled = false;
+            
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                submitExam();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+            }
+        }
+
+        function submitExam() {
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            let correct = 0;
+            const moduleScores = {};
+            
+            questions.forEach((question, index) => {
+                const module = question.module;
+                if (!moduleScores[module]) {
+                    moduleScores[module] = { correct: 0, total: 0 };
+                }
+                
+                moduleScores[module].total++;
+                
+                const userAnswer = answers[index];
+                const isCorrect = userAnswer !== undefined && question.options[userAnswer].correct;
+                
+                if (isCorrect) {
+                    correct++;
+                    moduleScores[module].correct++;
+                }
+            });
+            
+            const percentage = Math.round((correct / questions.length) * 100);
+            const passed = percentage >= 75;
+            
+            showResults(correct, percentage, passed, moduleScores);
+        }
+
+        function showResults(correct, percentage, passed, moduleScores) {
+            document.getElementById('questionScreen').classList.remove('active');
+            document.getElementById('resultsScreen').classList.add('active');
+            
+            // Results display
+            document.getElementById('resultsEmoji').textContent = passed ? '🎉' : '😔';
+            document.getElementById('resultsTitle').textContent = passed ? 'Congratulations!' : 'Not Quite There';
+            
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.className = 'score-display ' + (passed ? 'pass' : 'fail');
+            
+            document.getElementById('scoreNumber').textContent = `${correct}/15`;
+            document.getElementById('scoreLabel').textContent = `${percentage}% - ${passed ? 'PASSED' : 'FAILED'}`;
+            
+            // Module breakdown
+            const breakdownHTML = Object.entries(moduleScores).map(([module, score]) => `
+                <div class="module-score">
+                    <div class="module-name">${module}</div>
+                    <div class="module-result ${score.correct === score.total ? 'correct' : 'incorrect'}">
+                        ${score.correct}/${score.total}
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('moduleBreakdown').innerHTML = breakdownHTML;
+            
+            // Certificate
+            if (passed) {
+                const certLevel = percentage >= 90 ? 'with Distinction' : '';
+                const today = new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                document.getElementById('certificateContainer').innerHTML = `
+                    <div class="certificate">
+                        <div class="certificate-badge">🏆</div>
+                        <h2>CSP Certified ${certLevel}</h2>
+                        <div class="certificate-name">[Your Name]</div>
+                        <div class="certificate-text">
+                            Has successfully completed the Client Success Partner Foundation Training 
+                            and demonstrated mastery of CSP frameworks, methodologies, and best practices.
+                        </div>
+                        <div class="certificate-text" style="margin-top: 20px;">
+                            <strong>Final Score:</strong> ${percentage}% (${correct}/15 questions)
+                        </div>
+                        <div class="certificate-footer">
+                            <div class="certificate-date">Awarded: ${today}</div>
+                            <div class="certificate-signature">Girish Vijayan<br>Program Director</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('certificateContainer').innerHTML = `
+                    <div class="info-box" style="background: #fee2e2; border-left-color: #ef4444;">
+                        <h3 style="color: #991b1b;">Review & Retake</h3>
+                        <ul style="margin-top: 15px;">
+                            <li style="color: #7f1d1d;">You need 75% (12/15) to pass. You scored ${percentage}%.</li>
+                            <li style="color: #7f1d1d;">Review modules where you scored low</li>
+                            <li style="color: #7f1d1d;">You can retake immediately - click "Retake Exam" below</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
